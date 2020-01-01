@@ -1,0 +1,8 @@
+bandit
+black
+coverage
+gitlint
+mypy
+pylint
+yamllint
+truffleHog

@@ -1,0 +1,6 @@
+---
+ignored:
+  - DL3025
+
+trustedRegistries:
+  - docker.io

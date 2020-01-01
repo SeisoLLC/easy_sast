@@ -1,0 +1,13 @@
+[run]
+data_file = reports/.coverage
+omit = */test_*.py
+branch = True
+
+[report]
+fail_under = 100
+exclude_lines =
+    if __name__ == .__main__.:
+    pragma: no cover
+
+[html]
+directory = reports/htmlcov

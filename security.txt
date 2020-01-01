@@ -1,0 +1,5 @@
+# Our security address
+Contact: mailto:security@SeisoLLC.com
+ 
+# Our security policy
+Policy: https://github.com/SeisoLLC/easy_sast/blob/master/SECURITY.md

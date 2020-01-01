@@ -1,0 +1,4 @@
+[MASTER]
+good-names=f
+disable=bad-continuation,
+        line-too-long

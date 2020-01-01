@@ -1,0 +1,48 @@
+---
+apis:
+  results:
+    base_url: "https://analysiscenter.veracode.com/api/"
+    version: {
+              "detailedreport.do": "5.0",
+              "detailedreportpdf.do": "4.0",
+              "getaccountcustomfieldlist.do": "5.0",
+              "getappbuilds.do": "4.0",
+              "getcallstacks.do": "5.0",
+              "summaryreport.do": "4.0",
+              "summaryreportpdf.do": "4.0",
+              "thirdpartyreportpdf.do": "4.0",
+             }
+    app_id: "31337"
+    ignore_compliance_status: False
+  upload:
+    base_url: "https://analysiscenter.veracode.com/api/"
+    version: {
+              "beginprescan.do": "5.0",
+              "beginscan.do": "5.0",
+              "createapp.do": "5.0",
+              "createbuild.do": "5.0",
+              "deleteapp.do": "5.0",
+              "deletebuild.do": "5.0",
+              "getappinfo.do": "5.0",
+              "getapplist.do": "5.0",
+              "getbuildinfo.do": "5.0",
+              "getbuildlist.do": "5.0",
+              "getfilelist.do": "5.0",
+              "getpolicylist.do": "5.0",
+              "getprescanresults.do": "5.0",
+              "getvendorlist.do": "5.0",
+              "removefile.do": "5.0",
+              "updateapp.do": "5.0",
+              "updatebuild.do": "5.0",
+              "uploadfile.do": "5.0",
+              "uploadlargefile.do": "5.0"
+             }
+    app_id: "31337"
+    build_dir: "/build/"
+    build_id: "2037-03-13_03-14-15"
+    scan_all_nonfatal_top_level_modules: True
+    auto_scan: True
+loglevel: "warning"
+workflow:
+  - "submit_artifacts"
+  - "check_compliance"
