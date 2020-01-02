@@ -83,7 +83,7 @@ push_tag:
 # Linters
 lint_docker:
 	@$(PYTHON) -c 'print("Linting the Dockerfile...")'
-	@if [ "$$($(DOCKER) images -q $(IMAGE_NAME):$(COMMIT_HASH)-$@ 2>/dev/null)" == "" ]; then DOCKER_BUILDKIT=1 $(DOCKER) build --target $@ -t $(IMAGE_NAME):$(VERSION)-$@ -t $(IMAGE_NAME):$(COMMIT_HASH)-$@ -t $(IMAGE_NAME):latest-$@ .; fi
+	@DOCKER_BUILDKIT=1 $(DOCKER) build --target $@ -t $(IMAGE_NAME):$(VERSION)-$@ -t $(IMAGE_NAME):$(COMMIT_HASH)-$@ -t $(IMAGE_NAME):latest-$@ .
 	@$(DOCKER) run --rm -v $$(pwd):/usr/src/app/ $(IMAGE_NAME):latest-$@
 
 lint_git:
