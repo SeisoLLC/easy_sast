@@ -8,14 +8,14 @@
 <a href="https://opensource.org/licenses/BSD-3-Clause"><img alt="License: BSD 3-Clause" src="https://img.shields.io/badge/License-BSD%203--Clause-blue.svg"></a>
 </p>
 
-`easy_sast` is a docker container for use in integration pipelines to submit an application's build artifacts to a static analysis tool. This has been developed in a way to serve as a build pattern for other containers meant to facilitate similar functionality, and natively integrates with Veracode's Static Analysis product.
+easy_sast is a docker container for use in integration pipelines to submit an application's build artifacts to a static analysis tool. This has been developed in a way to serve as a build pattern for other containers meant to facilitate similar functionality, and natively integrates with Veracode's Static Analysis product.
 
  - [Features](#features)
  - [Quickstart](#quickstart)
  - [Usage](#usage)
  - [Contributing](#contributing)
 
-`easy_sast` is available from [Docker Hub](https://hub.docker.com/r/seiso/easy_sast) by running `docker pull seiso/easy_sast`
+easy_sast is available from [Docker Hub](https://hub.docker.com/r/seiso/easy_sast) by running `docker pull seiso/easy_sast`
 
 For advanced usage and more information, see [the wiki](https://github.com/SeisoLLC/easy_sast/wiki/).
 
