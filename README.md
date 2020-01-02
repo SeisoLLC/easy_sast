@@ -1,5 +1,5 @@
-# Easy SAST
 <p align="center">
+<h1>Easy SAST</h1>
 <a href="https://github.com/SeisoLLC/easy_sast/actions"><img alt="CI: GitHub Actions" src="https://github.com/seisollc/easy_sast/workflows/Docker%20Image%20CI/badge.svg"></a>
 <a href="https://codecov.io/gh/seisollc/easy_sast"><img alt="CI: Code Coverage" src="https://codecov.io/gh/seisollc/easy_sast/branch/master/graph/badge.svg"></a>
 <a href="https://snyk.io/test/github/seisollc/easy_sast"><img alt="Security: Snyk Vulnerabilities" src="https://snyk.io/test/github/seisollc/easy_sast/badge.svg"></a>
