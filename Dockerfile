@@ -12,9 +12,9 @@ WORKDIR /usr/src/app/
 # The requirements.txt files are separated to improve Docker caching
 COPY ./requirements.txt /usr/src/app/requirements.txt
 COPY ./${ARG_VENDOR}/requirements.txt /usr/src/app/${ARG_VENDOR}/requirements.txt
+ENV PATH=/root/.local/bin:$PATH
 RUN pip3 install --user -r requirements.txt && pip3 install --user -r ${ARG_VENDOR}/requirements.txt
 COPY ./ ./
-ENV PATH=/root/.local/bin:$PATH
 
 ## Lint Docker
 # https://hub.docker.com/r/hadolint/hadolint/tags
