@@ -1,14 +1,21 @@
-# easy_sast
-[![Coverage](https://codecov.io/gh/seisollc/easy_sast/branch/master/graph/badge.svg)](https://codecov.io/gh/seisollc/easy_sast)
-[![Security](https://snyk.io/test/github/SeisoLLC/badges/badge.svg)](https://snyk.io/test/github/SeisoLLC/badges)
-[![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
+<h1 align="center">Easy SAST</h1>
+<p align="center">
+<a href="https://github.com/SeisoLLC/easy_sast/actions"><img alt="CI: GitHub Actions" src="https://github.com/seisollc/easy_sast/workflows/Docker%20Image%20CI/badge.svg"></a>
+<a href="https://codecov.io/gh/seisollc/easy_sast"><img alt="CI: Code Coverage" src="https://codecov.io/gh/seisollc/easy_sast/branch/master/graph/badge.svg"></a>
+<a href="https://snyk.io/test/github/seisollc/easy_sast"><img alt="Security: Snyk Vulnerabilities" src="https://snyk.io/test/github/seisollc/easy_sast/badge.svg"></a>
+<a href="https://github.com/PyCQA/bandit"><img alt="Security: Bandit" src="https://img.shields.io/badge/security-bandit-yellow.svg"></a>
+<a href="https://github.com/psf/black"><img alt="Code style: black" src="https://img.shields.io/badge/code%20style-black-000000.svg"></a>
+<a href="https://opensource.org/licenses/BSD-3-Clause"><img alt="License: BSD 3-Clause" src="https://img.shields.io/badge/License-BSD%203--Clause-blue.svg"></a>
+</p>
 
-`easy_sast` is a docker container for use in integration pipelines to submit an application's build artifacts to a static analysis tool. This has been developed in a way to serve as a build pattern for other containers meant to facilitate similar functionality, and natively integrates with Veracode's Static Analysis product.
+easy_sast is a docker container for use in integration pipelines to submit an application's build artifacts to a static analysis tool. This has been developed in a way to serve as a build pattern for other containers meant to facilitate similar functionality, and natively integrates with Veracode's Static Analysis product.
 
  - [Features](#features)
  - [Quickstart](#quickstart)
  - [Usage](#usage)
  - [Contributing](#contributing)
+
+easy_sast is available from [Docker Hub](https://hub.docker.com/r/seiso/easy_sast) by running `docker pull seiso/easy_sast`
 
 For advanced usage and more information, see [the wiki](https://github.com/SeisoLLC/easy_sast/wiki/).
 
