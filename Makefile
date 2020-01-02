@@ -76,6 +76,10 @@ hook_commit-msg:
 shell:
 	@$(DOCKER) run -it --entrypoint /bin/sh easy_sast:latest
 
+push_tag:
+	@git tag v$(VERSION)
+	@git push origin v$(VERSION)
+
 # Linters
 lint_docker:
 	@$(PYTHON) -c 'print("Linting the Dockerfile...")'
@@ -133,4 +137,4 @@ report_security: test_security
 	@$(PYTHON) -c 'print("Updating the security testing reports...")'
 	@$(DOCKER) run --rm -v $$(pwd):/usr/src/app/ $(IMAGE_NAME):latest-test_security /bin/bash -c "find . -type f -name '*.py' -exec bandit --format json -o reports/bandit_report.json {} +"
 
-.PHONY: clean init lint test build report format clean_python init_git upgrade_requirements lint_docker lint_git lint_make lint_python lint_types lint_yaml test_complexity test_security test_unit report_coverage report_security all
+.PHONY: clean init lint test build report format clean_python init_git requirements hook_commit-msg shell push_tag lint_docker lint_git lint_make lint_python lint_types lint_yaml test_complexity test_security test_unit report_coverage report_security all
