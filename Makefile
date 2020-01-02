@@ -31,11 +31,11 @@ init: init_git
 # is resolved
 lint: clean lint_docker lint_git lint_make lint_python lint_yaml
 
-test: clean test_unit test_security
+test: test_unit test_security
 
 report: report_coverage report_security
 
-build: clean
+build: lint test
 	@DOCKER_BUILDKIT=1 $(DOCKER) build -t $(IMAGE_NAME):latest -t $(IMAGE_NAME):$(VERSION) -t $(IMAGE_NAME):$(COMMIT_HASH) --build-arg "ARG_FROM_IMAGE=$(FROM_IMAGE)" --build-arg "ARG_FROM_IMAGE_TAG=$(FROM_IMAGE_TAG)" --build-arg "ARG_VENDOR=$(VENDOR)" --build-arg "ARG_VERSION=$(VERSION)" .
 
 # Experimental feature - https://docs.docker.com/buildx/working-with-buildx/
@@ -83,49 +83,49 @@ push_tag:
 # Linters
 lint_docker:
 	@$(PYTHON) -c 'print("Linting the Dockerfile...")'
-	@if [ "$$($(DOCKER) images -q $(IMAGE_NAME):$(COMMIT_HASH)-$@ 2>/dev/null)" == "" ]; then DOCKER_BUILDKIT=1 $(DOCKER) build --target $@ -t $(IMAGE_NAME):$(VERSION)-$@ -t $(IMAGE_NAME):$(COMMIT_HASH)-$@ -t $(IMAGE_NAME):latest-$@ .; fi
+	@DOCKER_BUILDKIT=1 $(DOCKER) build --target $@ -t $(IMAGE_NAME):latest-$@ .
 	@$(DOCKER) run --rm -v $$(pwd):/usr/src/app/ $(IMAGE_NAME):latest-$@
 
 lint_git:
 	@$(PYTHON) -c 'print("Linting all git commit messages...")'
-	@if [ "$$($(DOCKER) images -q $(IMAGE_NAME):$(COMMIT_HASH)-$@ 2>/dev/null)" == "" ]; then DOCKER_BUILDKIT=1 $(DOCKER) build --target $@ -t $(IMAGE_NAME):$(VERSION)-$@ -t $(IMAGE_NAME):$(COMMIT_HASH)-$@ -t $(IMAGE_NAME):latest-$@ .; fi
+	@DOCKER_BUILDKIT=1 $(DOCKER) build --target $@ -t $(IMAGE_NAME):latest-$@ .
 	@$(DOCKER) run --rm -v $$(pwd):/usr/src/app/ $(IMAGE_NAME):latest-$@
 
 lint_make:
 	@$(PYTHON) -c 'print("Linting the Makefile...")'
-	@if [ "$$($(DOCKER) images -q $(IMAGE_NAME):$(COMMIT_HASH)-$@ 2>/dev/null)" == "" ]; then DOCKER_BUILDKIT=1 $(DOCKER) build --target $@ -t $(IMAGE_NAME):$(VERSION)-$@ -t $(IMAGE_NAME):$(COMMIT_HASH)-$@ -t $(IMAGE_NAME):latest-$@ .; fi
+	@DOCKER_BUILDKIT=1 $(DOCKER) build --target $@ -t $(IMAGE_NAME):latest-$@ .
 	@$(DOCKER) run --rm -v $$(pwd):/usr/src/app/ $(IMAGE_NAME):latest-$@
 
 lint_python:
 	@$(PYTHON) -c 'print("Linting Python files...")'
-	@if [ "$$($(DOCKER) images -q $(IMAGE_NAME):$(COMMIT_HASH)-$@ 2>/dev/null)" == "" ]; then DOCKER_BUILDKIT=1 $(DOCKER) build --target $@ -t $(IMAGE_NAME):$(VERSION)-$@ -t $(IMAGE_NAME):$(COMMIT_HASH)-$@ -t $(IMAGE_NAME):latest-$@ .; fi
+	@DOCKER_BUILDKIT=1 $(DOCKER) build --target $@ -t $(IMAGE_NAME):latest-$@ .
 	@$(DOCKER) run --rm -v $$(pwd):/usr/src/app/ $(IMAGE_NAME):latest-$@
 	@$(FIND) . -type f -name '*.py' -exec $(DOCKER) run --rm -v $$(pwd):/data cytopia/black:latest --check {} +
 
 lint_types:
 	@$(PYTHON) -c 'print("Running a Python static type checker...")'
-	@if [ "$$($(DOCKER) images -q $(IMAGE_NAME):$(COMMIT_HASH)-$@ 2>/dev/null)" == "" ]; then DOCKER_BUILDKIT=1 $(DOCKER) build --target $@ -t $(IMAGE_NAME):$(VERSION)-$@ -t $(IMAGE_NAME):$(COMMIT_HASH)-$@ -t $(IMAGE_NAME):latest-$@ .; fi
+	@DOCKER_BUILDKIT=1 $(DOCKER) build --target $@ -t $(IMAGE_NAME):latest-$@ .
 	@$(DOCKER) run --rm -v $$(pwd):/usr/src/app/ $(IMAGE_NAME):latest-$@
 
 lint_yaml:
 	@$(PYTHON) -c 'print("Linting the yaml files...")'
-	@if [ "$$($(DOCKER) images -q $(IMAGE_NAME):$(COMMIT_HASH)-$@ 2>/dev/null)" == "" ]; then DOCKER_BUILDKIT=1 $(DOCKER) build --target $@ -t $(IMAGE_NAME):$(VERSION)-$@ -t $(IMAGE_NAME):$(COMMIT_HASH)-$@ -t $(IMAGE_NAME):latest-$@ .; fi
+	@DOCKER_BUILDKIT=1 $(DOCKER) build --target $@ -t $(IMAGE_NAME):latest-$@ .
 	@$(DOCKER) run --rm -v $$(pwd):/usr/src/app/ $(IMAGE_NAME):latest-$@
 
 # Tests
 test_complexity:
 	@$(PYTHON) -c 'print("Running complexity tests...")'
-	@if [ "$$($(DOCKER) images -q $(IMAGE_NAME):$(COMMIT_HASH)-$@ 2>/dev/null)" == "" ]; then DOCKER_BUILDKIT=1 $(DOCKER) build --target $@ -t $(IMAGE_NAME):$(VERSION)-$@ -t $(IMAGE_NAME):$(COMMIT_HASH)-$@ -t $(IMAGE_NAME):latest-$@ .; fi
+	@DOCKER_BUILDKIT=1 $(DOCKER) build --target $@ -t $(IMAGE_NAME):latest-$@ .
 	@$(DOCKER) run --rm -v $$(pwd):/usr/src/app/ $(IMAGE_NAME):latest-$@
 
 test_security:
 	@$(PYTHON) -c 'print("Running security tests...")'
-	@if [ "$$($(DOCKER) images -q $(IMAGE_NAME):$(COMMIT_HASH)-$@ 2>/dev/null)" == "" ]; then DOCKER_BUILDKIT=1 $(DOCKER) build --target $@ -t $(IMAGE_NAME):$(VERSION)-$@ -t $(IMAGE_NAME):$(COMMIT_HASH)-$@ -t $(IMAGE_NAME):latest-$@ .; fi
+	@DOCKER_BUILDKIT=1 $(DOCKER) build --target $@ -t $(IMAGE_NAME):latest-$@ .
 	@$(DOCKER) run --rm -v $$(pwd):/usr/src/app/ $(IMAGE_NAME):latest-$@
 
 test_unit:
 	@$(PYTHON) -c 'print("Running unit tests...")'
-	@if [ "$$($(DOCKER) images -q $(IMAGE_NAME):$(COMMIT_HASH)-$@ 2>/dev/null)" == "" ]; then DOCKER_BUILDKIT=1 $(DOCKER) build --target $@ -t $(IMAGE_NAME):$(VERSION)-$@ -t $(IMAGE_NAME):$(COMMIT_HASH)-$@ -t $(IMAGE_NAME):latest-$@ .; fi
+	@DOCKER_BUILDKIT=1 $(DOCKER) build --target $@ -t $(IMAGE_NAME):latest-$@ .
 	@$(DOCKER) run --rm -v $$(pwd):/usr/src/app/ $(IMAGE_NAME):latest-$@
 
 # Report Generators
