@@ -42,12 +42,12 @@ FROM builder AS lint_yaml
 RUN find . -type f \( -name '*.yml' -o -name '*.yaml' \) -exec yamllint {} +
 
 ## Type Annotations Linter
-FROM builder AS lint_types
-CMD find "${ENV_VENDOR}" -type f -name '*.py' -exec mypy {} +
+#FROM builder AS lint_types
+#RUN find "${ENV_VENDOR}" -type f -name '*.py' -exec mypy {} +
 
 ## Complexity Linter
-FROM builder AS lint_complexity
-CMD find "${ENV_VENDOR}" -type f -name '*.py' -exec xenon --max-absolute B {} +
+#FROM builder AS lint_complexity
+#RUN find "${ENV_VENDOR}" -type f -name '*.py' -exec xenon --max-absolute B {} +
 
 ## Unit Tests
 FROM builder AS test_unit
