@@ -35,7 +35,7 @@ test: test_unit test_security
 
 report: report_coverage report_security
 
-ci_report: ci_report_coverage
+ci_report: report ci_report_coverage
 
 build: lint test
 	@DOCKER_BUILDKIT=1 $(DOCKER) build --rm -t $(IMAGE_NAME):latest -t $(IMAGE_NAME):$(VERSION) -t $(IMAGE_NAME):$(COMMIT_HASH) --build-arg "ARG_FROM_IMAGE=$(FROM_IMAGE)" --build-arg "ARG_FROM_IMAGE_TAG=$(FROM_IMAGE_TAG)" --build-arg "ARG_VENDOR=$(VENDOR)" --build-arg "ARG_VERSION=$(VERSION)" .
