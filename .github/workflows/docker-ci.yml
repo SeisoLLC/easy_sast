@@ -31,3 +31,5 @@ jobs:
           ref: ${{ github.event.pull_request.head.sha }}
       - name: report
         run: make ci_report
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
