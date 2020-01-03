@@ -22,4 +22,3 @@ dmypy.json
 
 # Ignored Reports
 reports/.coverage
-reports/coverage.xml
