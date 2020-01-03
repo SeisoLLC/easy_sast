@@ -35,12 +35,14 @@ test: test_unit test_security
 
 report: report_coverage report_security
 
+ci_report: ci_report_coverage
+
 build: lint test
-	@DOCKER_BUILDKIT=1 $(DOCKER) build -t $(IMAGE_NAME):latest -t $(IMAGE_NAME):$(VERSION) -t $(IMAGE_NAME):$(COMMIT_HASH) --build-arg "ARG_FROM_IMAGE=$(FROM_IMAGE)" --build-arg "ARG_FROM_IMAGE_TAG=$(FROM_IMAGE_TAG)" --build-arg "ARG_VENDOR=$(VENDOR)" --build-arg "ARG_VERSION=$(VERSION)" .
+	@DOCKER_BUILDKIT=1 $(DOCKER) build --rm -t $(IMAGE_NAME):latest -t $(IMAGE_NAME):$(VERSION) -t $(IMAGE_NAME):$(COMMIT_HASH) --build-arg "ARG_FROM_IMAGE=$(FROM_IMAGE)" --build-arg "ARG_FROM_IMAGE_TAG=$(FROM_IMAGE_TAG)" --build-arg "ARG_VENDOR=$(VENDOR)" --build-arg "ARG_VERSION=$(VERSION)" .
 
 # Experimental feature - https://docs.docker.com/buildx/working-with-buildx/
 buildx: clean
-	@DOCKER_BUILDKIT=1 $(DOCKER) buildx -t $(IMAGE_NAME):latest -t $(IMAGE_NAME):$(VERSION) -t $(IMAGE_NAME):$(COMMIT_HASH) --build-arg "ARG_FROM_IMAGE=$(FROM_IMAGE)" --build-arg "ARG_FROM_IMAGE_TAG=$(FROM_IMAGE_TAG)" --build-arg "ARG_VENDOR=$(VENDOR)" --build-arg "ARG_VERSION=$(VERSION)" .
+	@DOCKER_BUILDKIT=1 $(DOCKER) buildx --rm -t $(IMAGE_NAME):latest -t $(IMAGE_NAME):$(VERSION) -t $(IMAGE_NAME):$(COMMIT_HASH) --build-arg "ARG_FROM_IMAGE=$(FROM_IMAGE)" --build-arg "ARG_FROM_IMAGE_TAG=$(FROM_IMAGE_TAG)" --build-arg "ARG_VENDOR=$(VENDOR)" --build-arg "ARG_VERSION=$(VERSION)" .
 
 format: clean
 	@$(PYTHON) -c 'print("Reformatting the code...")'
@@ -83,58 +85,62 @@ push_tag:
 # Linters
 lint_docker:
 	@$(PYTHON) -c 'print("Linting the Dockerfile...")'
-	@DOCKER_BUILDKIT=1 $(DOCKER) build --target $@ -t $(IMAGE_NAME):latest-$@ .
+	@DOCKER_BUILDKIT=1 $(DOCKER) build --rm --target $@ -t $(IMAGE_NAME):latest-$@ .
 	@$(DOCKER) run --rm -v $$(pwd):/usr/src/app/ $(IMAGE_NAME):latest-$@
 
 lint_git:
 	@$(PYTHON) -c 'print("Linting all git commit messages...")'
-	@DOCKER_BUILDKIT=1 $(DOCKER) build --target $@ -t $(IMAGE_NAME):latest-$@ .
+	@DOCKER_BUILDKIT=1 $(DOCKER) build --rm --target $@ -t $(IMAGE_NAME):latest-$@ .
 	@$(DOCKER) run --rm -v $$(pwd):/usr/src/app/ $(IMAGE_NAME):latest-$@
 
 lint_make:
 	@$(PYTHON) -c 'print("Linting the Makefile...")'
-	@DOCKER_BUILDKIT=1 $(DOCKER) build --target $@ -t $(IMAGE_NAME):latest-$@ .
+	@DOCKER_BUILDKIT=1 $(DOCKER) build --rm --target $@ -t $(IMAGE_NAME):latest-$@ .
 	@$(DOCKER) run --rm -v $$(pwd):/usr/src/app/ $(IMAGE_NAME):latest-$@
 
 lint_python:
 	@$(PYTHON) -c 'print("Linting Python files...")'
-	@DOCKER_BUILDKIT=1 $(DOCKER) build --target $@ -t $(IMAGE_NAME):latest-$@ .
+	@DOCKER_BUILDKIT=1 $(DOCKER) build --rm --target $@ -t $(IMAGE_NAME):latest-$@ .
 	@$(DOCKER) run --rm -v $$(pwd):/usr/src/app/ $(IMAGE_NAME):latest-$@
 	@$(FIND) . -type f -name '*.py' -exec $(DOCKER) run --rm -v $$(pwd):/data cytopia/black:latest --check {} +
 
 lint_types:
 	@$(PYTHON) -c 'print("Running a Python static type checker...")'
-	@DOCKER_BUILDKIT=1 $(DOCKER) build --target $@ -t $(IMAGE_NAME):latest-$@ .
+	@DOCKER_BUILDKIT=1 $(DOCKER) build --rm --target $@ -t $(IMAGE_NAME):latest-$@ .
 	@$(DOCKER) run --rm -v $$(pwd):/usr/src/app/ $(IMAGE_NAME):latest-$@
 
 lint_yaml:
 	@$(PYTHON) -c 'print("Linting the yaml files...")'
-	@DOCKER_BUILDKIT=1 $(DOCKER) build --target $@ -t $(IMAGE_NAME):latest-$@ .
+	@DOCKER_BUILDKIT=1 $(DOCKER) build --rm --target $@ -t $(IMAGE_NAME):latest-$@ .
 	@$(DOCKER) run --rm -v $$(pwd):/usr/src/app/ $(IMAGE_NAME):latest-$@
 
 # Tests
 test_complexity:
 	@$(PYTHON) -c 'print("Running complexity tests...")'
-	@DOCKER_BUILDKIT=1 $(DOCKER) build --target $@ -t $(IMAGE_NAME):latest-$@ .
+	@DOCKER_BUILDKIT=1 $(DOCKER) build --rm --target $@ -t $(IMAGE_NAME):latest-$@ .
 	@$(DOCKER) run --rm -v $$(pwd):/usr/src/app/ $(IMAGE_NAME):latest-$@
 
 test_security:
 	@$(PYTHON) -c 'print("Running security tests...")'
-	@DOCKER_BUILDKIT=1 $(DOCKER) build --target $@ -t $(IMAGE_NAME):latest-$@ .
+	@DOCKER_BUILDKIT=1 $(DOCKER) build --rm --target $@ -t $(IMAGE_NAME):latest-$@ .
 	@$(DOCKER) run --rm -v $$(pwd):/usr/src/app/ $(IMAGE_NAME):latest-$@
 
 test_unit:
 	@$(PYTHON) -c 'print("Running unit tests...")'
-	@DOCKER_BUILDKIT=1 $(DOCKER) build --target $@ -t $(IMAGE_NAME):latest-$@ .
+	@DOCKER_BUILDKIT=1 $(DOCKER) build --rm --target $@ -t $(IMAGE_NAME):latest-$@ .
 	@$(DOCKER) run --rm -v $$(pwd):/usr/src/app/ $(IMAGE_NAME):latest-$@
 
 # Report Generators
 report_coverage: test_unit
 	@$(PYTHON) -c 'print("Updating the code coverage reports...")'
-	@$(DOCKER) run --rm -v $$(pwd):/usr/src/app/ $(IMAGE_NAME):latest-test_unit /bin/bash -c "coverage report --include='main.py,$(VENDOR)/*.py' ; coverage html --include='main.py,$(VENDOR)/*.py'"
+	@$(DOCKER) run --rm -v $$(pwd):/usr/src/app/ $(IMAGE_NAME):latest-test_unit /bin/bash -c "coverage report --include='main.py,$(VENDOR)/*.py' ; coverage html --include='main.py,$(VENDOR)/*.py' ; coverage xml --include='main.py,$(VENDOR)/*.py' -o reports/coverage.xml"
 
 report_security: test_security
 	@$(PYTHON) -c 'print("Updating the security testing reports...")'
 	@$(DOCKER) run --rm -v $$(pwd):/usr/src/app/ $(IMAGE_NAME):latest-test_security /bin/bash -c "find . -type f -name '*.py' -exec bandit --format json -o reports/bandit_report.json {} +"
 
-.PHONY: clean init lint test build report format clean_python init_git requirements hook_commit-msg shell push_tag lint_docker lint_git lint_make lint_python lint_types lint_yaml test_complexity test_security test_unit report_coverage report_security all
+# CI tasks
+ci_report_coverage: test_unit
+	@$(DOCKER) run --rm -e CODECOV_TOKEN=$${CODECOV_TOKEN} -v $$(pwd):/usr/src/app/ $(IMAGE_NAME):latest-test_unit /bin/bash -c "codecov --token=$${CODECOV_TOKEN} --file reports/coverage.xml"
+
+.PHONY: clean init lint test build report ci_report format clean_python init_git requirements hook_commit-msg shell push_tag lint_docker lint_git lint_make lint_python lint_types lint_yaml test_complexity test_security test_unit report_coverage report_security ci_report_coverage all

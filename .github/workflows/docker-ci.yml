@@ -20,3 +20,16 @@ jobs:
           ref: ${{ github.event.pull_request.head.sha }}
       - name: Build the Docker image
         run: make build
+  ci_report:
+    strategy:
+      matrix:
+        platform: [ubuntu-latest]
+    runs-on: ${{ matrix.platform }}
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+      - name: report
+        run: make ci_report
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}

@@ -20,5 +20,5 @@ dmypy.json
 *.swp
 .vscode
 
-# Binary Reports
+# Ignored Reports
 reports/.coverage
