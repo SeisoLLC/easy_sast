@@ -133,7 +133,7 @@ test_unit:
 # Report Generators
 report_coverage: test_unit
 	@$(PYTHON) -c 'print("Updating the code coverage reports...")'
-	@$(DOCKER) run --rm -v $$(pwd):/usr/src/app/ $(IMAGE_NAME):latest-test_unit /bin/bash -c "coverage report --include='main.py,$(VENDOR)/*.py' ; coverage html --include='main.py,$(VENDOR)/*.py' ; coverage xml --include='main.py,$(VENDOR)/*.py' -o reports/coverage.xml"
+	@$(DOCKER) run --rm -v $$(pwd):/usr/src/app/ $(IMAGE_NAME):latest-test_unit /bin/bash -c "coverage report --include='main.py,$(VENDOR)/*.py' ; coverage html --include='main.py,$(VENDOR)/*.py'"
 
 report_security: test_security
 	@$(PYTHON) -c 'print("Updating the security testing reports...")'
@@ -141,6 +141,6 @@ report_security: test_security
 
 # CI tasks
 ci_report_coverage: test_unit
-	@$(DOCKER) run --rm -v $$(pwd):/usr/src/app/ $(IMAGE_NAME):latest-test_unit /bin/bash -c "codecov --token=${CODECOV_TOKEN} --file reports/coverage.xml"
+	@$(DOCKER) run --rm -v $$(pwd):/usr/src/app/ $(IMAGE_NAME):latest-test_unit /bin/bash -c "coverage xml --include='main.py,$(VENDOR)/*.py' -o reports/coverage.xml ; codecov --token=${CODECOV_TOKEN} --file reports/coverage.xml"
 
 .PHONY: clean init lint test build report ci_report format clean_python init_git requirements hook_commit-msg shell push_tag lint_docker lint_git lint_make lint_python lint_types lint_yaml test_complexity test_security test_unit report_coverage report_security ci_report_coverage all
