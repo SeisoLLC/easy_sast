@@ -5,6 +5,7 @@ docopt==0.6.2
 httpie==1.0.3
 idna==2.8
 Pygments==2.5.2
+PyYAML==5.2
 requests==2.22.0
 urllib3==1.25.7
 veracode-api-signing==19.9.0
