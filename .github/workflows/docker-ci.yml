@@ -9,6 +9,28 @@ on:
     branches:
       - master
 jobs:
+  lint:
+    strategy:
+      matrix:
+        platform: [ubuntu-latest]
+    runs-on: ${{ matrix.platform }}
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+      - name: Run linting
+        run: make lint
+  test:
+    strategy:
+      matrix:
+        platform: [ubuntu-latest]
+    runs-on: ${{ matrix.platform }}
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+      - name: Run the tests
+        run: make test
   build:
     strategy:
       matrix:
@@ -29,7 +51,7 @@ jobs:
       - uses: actions/checkout@v2
         with:
           ref: ${{ github.event.pull_request.head.sha }}
-      - name: report
+      - name: run ci reporting
         run: make ci_report
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
