@@ -9,9 +9,9 @@ ARG ARG_VENDOR=veracode
 ENV ENV_VENDOR=${ARG_VENDOR}
 WORKDIR /usr/src/app/
 # requirements.txt is separated to improve caching
-COPY ./${ENV_VENDOR}/requirements.txt /usr/src/app/${ENV_VENDOR}/requirements.txt
+COPY "./${ENV_VENDOR}/requirements.txt" "/usr/src/app/${ENV_VENDOR}/requirements.txt"
 ENV PATH=/root/.local/bin:$PATH
-RUN pip3 install --user -r ${ENV_VENDOR}/requirements.txt
+RUN pip3 install --user -r "${ENV_VENDOR}/requirements.txt"
 
 ## CI stage
 FROM builder AS ci
@@ -68,6 +68,7 @@ ENTRYPOINT find . -type f -name '*.py' -exec bandit {} + && \
 FROM "${ARG_FROM_IMAGE}":"${ARG_FROM_IMAGE_TAG}" AS Final
 
 ARG ARG_VERSION
+ARG ARG_VENDOR
 
 LABEL MAINTAINER="Seiso"
 LABEL AUTHOR="Jon Zeolla"
@@ -77,11 +78,11 @@ LABEL VERSION="${ARG_VERSION}"
 
 WORKDIR /usr/src/app/
 
-COPY "${ENV_VENDOR}" "${ENV_VENDOR}"
-COPY main.py main.py
+COPY "./${ARG_VENDOR}" "${ARG_VENDOR}"
+COPY ./main.py main.py
 COPY --from=builder /root/.local /root/.local
 
-ENV PATH=/root/.local/bin:$PATH
+ENV PATH="/root/.local/bin:${PATH}"
 
 # Assumes that the compiled files/debug symbols are in a folder which is volume
 # mapped to /build
