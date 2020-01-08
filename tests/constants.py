@@ -464,16 +464,18 @@ VALID_FILE["names"] = [
     "valid_file.apk",
     "valid_file.ipa",
     "valid_file.tar.gz",
+    "this.is.a.valid.file.dll",
+    "this.is..also..valid.jar",
 ]
 VALID_FILE["bytes"] = b"Seiso was here!\n"
 VALID_FILE["Path"] = Path("/path/" + str(VALID_FILE["name"]))
 
 INVALID_FILE: Dict[str, Union[str, List[str], bytes, Path]] = {}
-INVALID_FILE["name"] = "invalid_file.gz.tar"
+INVALID_FILE["name"] = "invalid_file.tar.gz.bar"
 INVALID_FILE["names"] = [
     "invalid_file.thingy",
     "invalid_file",
-    "invalid_file.gz.tar",
+    "invalid_file.tar.gz.bar",
     "invalid_file.dll.gz",
     "invalid_file.exe.docx",
 ]

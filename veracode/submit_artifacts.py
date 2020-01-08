@@ -73,14 +73,11 @@ def filter_file(*, artifact: Path) -> bool:
     couldn't find one """
     allowed = False
 
-    if (
-        len(artifact.suffixes) == 1
-        and artifact.suffix in constants.WHITELIST_FILE_SUFFIX_SET
-    ):
+    if artifact.suffix in constants.WHITELIST_FILE_SUFFIX_SET:
         LOG.debug("Suffix for %s is in the whitelist", artifact)
         allowed = True
 
-    if artifact.suffixes == constants.WHITELIST_FILE_SUFFIXES_LIST:
+    if artifact.suffixes[-2:] == constants.WHITELIST_FILE_SUFFIXES_LIST:
         LOG.debug("Suffixes for %s are in the whitelist", artifact)
         allowed = True
 
