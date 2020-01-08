@@ -14,8 +14,9 @@ from requests.exceptions import HTTPError, Timeout, RequestException, TooManyRed
 # custom
 from veracode.api import UploadAPI, validate
 from veracode import constants
+from veracode import __project_name__
 
-LOG = logging.getLogger(__name__)
+LOG = logging.getLogger(__project_name__ + "." + __name__)
 
 
 @validate

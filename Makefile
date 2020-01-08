@@ -1,20 +1,25 @@
 ## Initialization
-COMMIT_HASH    := $(shell git rev-parse HEAD)
 DOCKER         := docker
 FIND           := find
 FORMATTER      := black
 FROM_IMAGE     := python
 FROM_IMAGE_TAG := 3.8-alpine
-IMAGE_NAME     := easy_sast
 PIP            := pip3
 PYTHON         := python3
 VENDOR         := veracode
-VERSION        := $(shell $(PYTHON) -c "from $(VENDOR).__init__ import __version__; print(__version__)")
+
+COMMIT_HASH    := $(shell git rev-parse HEAD)
+IMAGE_NAME     := $(shell $(PYTHON) -c "from $(VENDOR) import __project_name__; print(__project_name__)")
+VERSION        := $(shell $(PYTHON) -c "from $(VENDOR) import __version__; print(__version__)")
 
 
 ## Validation
 ifndef COMMIT_HASH
 $(error COMMIT_HASH was not properly set)
+endif
+
+ifndef IMAGE_NAME
+$(error IMAGE_NAME was not properly set)
 endif
 
 ifndef VERSION
@@ -66,10 +71,10 @@ init_git:
 	@if ! grep -q "make lint_git || exit 1" .git/hooks/post-rewrite 2>/dev/null ; then echo '# $@ \nmake lint_git || exit 1' >> .git/hooks/post-rewrite && chmod a+x .git/hooks/post-rewrite && echo 'Successfully installed `make lint_git || exit 1` in a post-rewrite hook'; fi
 
 # Helper Rules
-upgrade_requirements: requirements-to-freeze.txt $(VENDOR)/requirements-to-freeze.txt
+requirements: requirements-to-freeze.txt $(VENDOR)/requirements-to-freeze.txt
 	@$(PYTHON) -c 'print("Updating the requirements.txt files...")'
-	@$(DOCKER) run --rm -v $$(pwd):/usr/src/app/ python:3.8 /bin/bash -c "$(PIP) install -r /usr/src/app/requirements-to-freeze.txt ; $(PIP) freeze > /usr/src/app/requirements.txt"
-	@$(DOCKER) run --rm -v $$(pwd):/usr/src/app/ python:3.8 /bin/bash -c "$(PIP) install -r /usr/src/app/$(VENDOR)/requirements-to-freeze.txt ; $(PIP) freeze > /usr/src/app/$(VENDOR)/requirements.txt"
+	@$(DOCKER) run --rm -v $$(pwd):/usr/src/app/ python:3.8 /bin/bash -c "$(PIP) install -r /usr/src/app/requirements-to-freeze.txt && $(PIP) freeze > /usr/src/app/requirements.txt"
+	@$(DOCKER) run --rm -v $$(pwd):/usr/src/app/ python:3.8 /bin/bash -c "$(PIP) install -r /usr/src/app/$(VENDOR)/requirements-to-freeze.txt && $(PIP) freeze > /usr/src/app/$(VENDOR)/requirements.txt"
 
 hook_commit-msg:
 	@$(PYTHON) -c 'print("Linting the latest git commit message...")'
@@ -133,14 +138,16 @@ test_unit:
 # Report Generators
 report_coverage: test_unit
 	@$(PYTHON) -c 'print("Updating the code coverage reports...")'
-	@$(DOCKER) run --rm -v $$(pwd):/usr/src/app/ $(IMAGE_NAME):latest-test_unit /bin/bash -c "coverage report --include='main.py,$(VENDOR)/*.py' ; coverage html --include='main.py,$(VENDOR)/*.py' ; coverage xml --include='main.py,$(VENDOR)/*.py' -o reports/coverage.xml"
+	@$(DOCKER) run --rm -v $$(pwd):/usr/src/app/ $(IMAGE_NAME):latest-test_unit report --include='main.py,$(VENDOR)/*.py'
+	@$(DOCKER) run --rm -v $$(pwd):/usr/src/app/ $(IMAGE_NAME):latest-test_unit html --include='main.py,$(VENDOR)/*.py'
+	@$(DOCKER) run --rm -v $$(pwd):/usr/src/app/ $(IMAGE_NAME):latest-test_unit xml --include='main.py,$(VENDOR)/*.py' -o reports/coverage.xml
 
 report_security: test_security
 	@$(PYTHON) -c 'print("Updating the security testing reports...")'
-	@$(DOCKER) run --rm -v $$(pwd):/usr/src/app/ $(IMAGE_NAME):latest-test_security /bin/bash -c "find . -type f -name '*.py' -exec bandit --format json -o reports/bandit_report.json {} +"
+	@$(DOCKER) run --rm -v $$(pwd):/usr/src/app/ $(IMAGE_NAME):latest-test_security && find . -type f -name '*.py' -exec bandit --format json -o reports/bandit_report.json {} +
 
 # CI tasks
 ci_report_coverage: test_unit
-	@$(DOCKER) run --rm -e CODECOV_TOKEN=$${CODECOV_TOKEN} -v $$(pwd):/usr/src/app/ $(IMAGE_NAME):latest-test_unit /bin/bash -c "codecov --token=$${CODECOV_TOKEN} --file reports/coverage.xml"
+	@$(DOCKER) run --rm -e CODECOV_TOKEN=$${CODECOV_TOKEN} -v $$(pwd):/usr/src/app/ --entrypoint "codecov" $(IMAGE_NAME):latest-test_unit --token=$${CODECOV_TOKEN} --file reports/coverage.xml
 
 .PHONY: clean init lint test build report ci_report format clean_python init_git requirements hook_commit-msg shell push_tag lint_docker lint_git lint_make lint_python lint_types lint_yaml test_complexity test_security test_unit report_coverage report_security ci_report_coverage all

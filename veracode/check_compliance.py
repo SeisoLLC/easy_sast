@@ -12,8 +12,9 @@ from xml.etree import (  # nosec (Used only when TYPE_CHECKING)
 
 # custom
 from veracode.api import ResultsAPI, validate
+from veracode import __project_name__
 
-LOG = logging.getLogger(__name__)
+LOG = logging.getLogger(__project_name__ + "." + __name__)
 
 
 @validate
