@@ -40,7 +40,8 @@ test: test_unit test_security
 
 report: report_coverage report_security
 
-ci_report: ci_report_coverage
+codecov: test_unit
+	@$(DOCKER) run --rm -e CODECOV_TOKEN=$${CODECOV_TOKEN} -v $$(pwd):/usr/src/app/ --entrypoint "codecov" $(IMAGE_NAME):latest-test_unit --token=$${CODECOV_TOKEN} --file reports/coverage.xml
 
 build: clean
 	@DOCKER_BUILDKIT=1 $(DOCKER) build --rm -t $(IMAGE_NAME):latest -t $(IMAGE_NAME):$(VERSION) -t $(IMAGE_NAME):$(COMMIT_HASH) --build-arg "ARG_FROM_IMAGE=$(FROM_IMAGE)" --build-arg "ARG_FROM_IMAGE_TAG=$(FROM_IMAGE_TAG)" --build-arg "ARG_VENDOR=$(VENDOR)" --build-arg "ARG_VERSION=$(VERSION)" .
@@ -146,8 +147,4 @@ report_security: test_security
 	@$(PYTHON) -c 'print("Updating the security testing reports...")'
 	@$(DOCKER) run --rm -v $$(pwd):/usr/src/app/ $(IMAGE_NAME):latest-test_security && find . -type f -name '*.py' -exec bandit --format json -o reports/bandit_report.json {} +
 
-# CI tasks
-ci_report_coverage: test_unit
-	@$(DOCKER) run --rm -e CODECOV_TOKEN=$${CODECOV_TOKEN} -v $$(pwd):/usr/src/app/ --entrypoint "codecov" $(IMAGE_NAME):latest-test_unit --token=$${CODECOV_TOKEN} --file reports/coverage.xml
-
-.PHONY: clean init lint test build report ci_report format clean_python init_git requirements hook_commit-msg shell push_tag lint_docker lint_git lint_make lint_python lint_types lint_yaml test_complexity test_security test_unit report_coverage report_security ci_report_coverage all
+.PHONY: clean init lint test build report codecov format clean_python init_git requirements hook_commit-msg shell push_tag lint_docker lint_git lint_make lint_python lint_types lint_yaml test_complexity test_security test_unit report_coverage report_security all
