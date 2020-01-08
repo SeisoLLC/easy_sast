@@ -87,4 +87,3 @@ ENV PATH="/root/.local/bin:${PATH}"
 # Assumes that the compiled files/debug symbols are in a folder which is volume
 # mapped to /build
 ENTRYPOINT ["/usr/src/app/main.py"]
-CMD ["-h"]
