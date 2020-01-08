@@ -7,23 +7,34 @@ scanning and checking an app for compliance against the configured policy
 # built-ins
 import logging
 import sys
+import json
 
 # custom
 from veracode.check_compliance import check_compliance
 from veracode.submit_artifacts import submit_artifacts
 from veracode.api import ResultsAPI, UploadAPI, configure_environment
 from veracode.config import get_config, apply_config
+from veracode import __project_name__
 
 
 def main() -> None:
     """
     Integration with Veracode Static Analysis
     """
-    ## Setup logging, default to warn until the config is parsed
-    formatting = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+    ## Setup logging
+    # Format the logs as JSON for simplicity
+    formatting = json.dumps(
+        {
+            "timestamp": "%(asctime)s",
+            "namespace": "%(name)s",
+            "loglevel": "%(levelname)s",
+            "message": "%(message)s",
+        }
+    )
+    # Default to a log level of WARNING until the config is parsed
     logging.basicConfig(level="WARNING", format=formatting)
     logging.raiseExceptions = True
-    log = logging.getLogger("veracode")
+    log = logging.getLogger(__project_name__)
 
     # Get the effective config
     try:

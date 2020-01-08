@@ -22,8 +22,8 @@ pathspec==0.7.0
 pbr==5.4.4
 pylint==2.4.4
 python-dateutil==2.8.1
-PyYAML==5.2
-regex==2019.12.20
+PyYAML==5.3
+regex==2020.1.7
 requests==2.22.0
 sh==1.12.14
 six==1.13.0

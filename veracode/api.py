@@ -31,9 +31,9 @@ from veracode_api_signing.plugin_requests import RequestsAuthPluginVeracodeHMAC 
 from defusedxml import ElementTree  # type: ignore
 
 # custom
-from veracode import constants
+from veracode import constants, __project_name__
 
-LOG = logging.getLogger(__name__)
+LOG = logging.getLogger(__project_name__ + "." + __name__)
 
 
 def validate(func: Callable) -> Callable:

@@ -17,9 +17,9 @@ import yaml
 # custom
 from veracode.api import is_valid_attribute, ResultsAPI, UploadAPI
 from veracode import constants
-from veracode import __version__
+from veracode import __version__, __project_name__
 
-LOG = logging.getLogger(__name__)
+LOG = logging.getLogger(__project_name__ + "." + __name__)
 
 
 def remove_nones(*, obj: Any) -> Any:
