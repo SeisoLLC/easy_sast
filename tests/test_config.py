@@ -229,6 +229,17 @@ class TestVeracodeConfig(CLITestCase):
                 {}, config.parse_file_config(config_file=invalid_config_file_name)
             )
 
+        # Get an empty dict after calling the parse_file_config function with a
+        # config_file argument that causes a FileNotFoundError on read
+        with patch("veracode.config.open") as mock_file_open:
+            mock_file_open.side_effect = FileNotFoundError
+            self.assertEqual(
+                {},
+                config.parse_file_config(
+                    config_file=test_constants.SIMPLE_CONFIG_FILE["Path"]
+                ),
+            )
+
         # Fail when attempting to call the parse_file_config function with a
         # config_file argument that causes a PermissionError on read
         with patch("veracode.config.open") as mock_file_open:
@@ -239,15 +250,14 @@ class TestVeracodeConfig(CLITestCase):
                 config_file=test_constants.SIMPLE_CONFIG_FILE["Path"],
             )
 
-        # Get an empty dict after calling the parse_file_config function with a
-        # config_file argument that causes a FileNotFoundError on read
+        # Fail when attempting to call the parse_file_config function with a
+        # config_file argument that causes a IsADirectoryError on read
         with patch("veracode.config.open") as mock_file_open:
-            mock_file_open.side_effect = FileNotFoundError
-            self.assertEqual(
-                {},
-                config.parse_file_config(
-                    config_file=test_constants.SIMPLE_CONFIG_FILE["Path"]
-                ),
+            mock_file_open.side_effect = IsADirectoryError
+            self.assertRaises(
+                IsADirectoryError,
+                config.parse_file_config,
+                config_file=test_constants.SIMPLE_CONFIG_FILE["Path"],
             )
 
         # Fail when attempting to call the parse_file_config function with a
