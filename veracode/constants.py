@@ -3,20 +3,23 @@
 Constants for easy_sast
 """
 DEFAULT_WORKFLOW = ["submit_artifacts", "check_compliance"]
-UPLOAD_API_ATTRIBUTES = {
-    "base_url",
-    "version",
-    "app_id",
-    "build_dir",
-    "build_id",
-    "scan_all_nonfatal_top_level_modules",
-    "auto_scan",
-}
-RESULTS_API_ATTRIBUTES = {
-    "base_url",
-    "version",
-    "app_id",
-    "ignore_compliance_status",
+API_ATTRIBUTES = {
+    "upload": {
+        "base_url",
+        "version",
+        "app_id",
+        "build_dir",
+        "build_id",
+        "scan_all_nonfatal_top_level_modules",
+        "auto_scan",
+    },
+    "results": {
+        "base_url",
+        "version",
+        "app_id",
+        "ignore_compliance_status",
+        "ignore_compliance_status",
+    },
 }
 REQUIRED_CONFIG_ATTRIBUTES_API = {"app_id"}
 REQUIRED_CONFIG_ATTRIBUTES_TOP = {"loglevel", "workflow", "config_file"}
