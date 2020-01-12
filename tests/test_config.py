@@ -102,6 +102,14 @@ class TestVeracodeConfig(CLITestCase):
         after = test_constants.INVALID_CONFIG_CLEAN
         self.assertEqual(config.filter_config(config=before), after)
 
+        # Succeed when calling the filter_config function with a config dict
+        # that was already filtered
+        mock_remove_nones.return_value = test_constants.INVALID_CONFIG_CLEAN
+        mock_remove_empty_dicts.return_value = test_constants.INVALID_CONFIG_CLEAN
+        before = test_constants.INVALID_CONFIG_CLEAN
+        after = test_constants.INVALID_CONFIG_CLEAN
+        self.assertEqual(config.filter_config(config=before), after)
+
     def test_filter_config_w_iteration(self):
         """
         Test the filter_config function when iteration is necessary
@@ -320,7 +328,8 @@ class TestVeracodeConfig(CLITestCase):
         """
         Test the normalize_config function
         """
-        # For linting.  See `side_effect` and `return_unmodified_config` above
+        # For linting.  See mock `side_effect` and the
+        # `return_unmodified_config` function above
         mock_filter_config.return_value = None
 
         # Succeed when calling the normalize_config function with a
@@ -329,13 +338,9 @@ class TestVeracodeConfig(CLITestCase):
         before = {
             "base_url": "https://analysiscenter.veracode.com/api/",
             "app_id": "31337",
-            "ignore_compliance_status": False,
-            "build_dir": "/build/",
-            "build_id": "2037-03-13_03-14-15",
-            "scan_all_nonfatal_top_level_modules": True,
-            "auto_scan": True,
             "loglevel": "WARNING",
             "workflow": ["submit_artifacts", "check_compliance"],
+            "apis": {"upload": {"build_dir": "/build/"}},
         }
         after = {
             "loglevel": "WARNING",
@@ -344,21 +349,17 @@ class TestVeracodeConfig(CLITestCase):
                 "results": {
                     "app_id": "31337",
                     "base_url": "https://analysiscenter.veracode.com/api/",
-                    "ignore_compliance_status": False,
                 },
                 "upload": {
-                    "build_dir": Path("/build/"),
                     "app_id": "31337",
-                    "auto_scan": True,
                     "base_url": "https://analysiscenter.veracode.com/api/",
-                    "build_id": "2037-03-13_03-14-15",
-                    "scan_all_nonfatal_top_level_modules": True,
+                    "build_dir": Path("/build/"),
                 },
             },
         }
         mock_is_valid_attribute.return_value = True
-        output = config.normalize_config(config=before)
-        self.assertEqual(output, after)
+        before_normalized = config.normalize_config(config=before)
+        self.assertEqual(before_normalized, after)
 
         # Succeed when calling the normalize_config function with a
         # non-normalized config dict, a lowercase loglevel, and a Path
@@ -366,13 +367,12 @@ class TestVeracodeConfig(CLITestCase):
         before = {
             "base_url": "https://analysiscenter.veracode.com/api/",
             "app_id": "31337",
-            "ignore_compliance_status": False,
-            "build_dir": Path("/build/"),
-            "build_id": "2037-03-13_03-14-15",
-            "scan_all_nonfatal_top_level_modules": True,
-            "auto_scan": True,
             "loglevel": "info",
             "workflow": ["submit_artifacts", "check_compliance"],
+            "apis": {
+                "upload": {"build_dir": Path("/build/")},
+                "results": {"ignore_compliance_status": False},
+            },
         }
         after = {
             "loglevel": "INFO",
@@ -384,31 +384,66 @@ class TestVeracodeConfig(CLITestCase):
                     "ignore_compliance_status": False,
                 },
                 "upload": {
-                    "build_dir": Path("/build/"),
                     "app_id": "31337",
-                    "auto_scan": True,
                     "base_url": "https://analysiscenter.veracode.com/api/",
-                    "build_id": "2037-03-13_03-14-15",
-                    "scan_all_nonfatal_top_level_modules": True,
+                    "build_dir": Path("/build/"),
                 },
             },
         }
         mock_is_valid_attribute.return_value = True
-        output = config.normalize_config(config=before)
-        self.assertEqual(output, after)
+        before_normalized = config.normalize_config(config=before)
+        self.assertEqual(before_normalized, after)
 
-        # Succeed when calling the normalize_config function with an already
-        # normalized dict, and return that dict unchanged
-        before = copy.deepcopy(test_constants.VALID_CLEAN_FILE_CONFIG["dict"])
-        after = before  # No change
+        # Succeed when calling the normalize_config function with a
+        # non-normalized config dict, a missing loglevel, and a Path build_dir,
+        # and return that dict properly normalized
+        before = {
+            "base_url": "https://analysiscenter.veracode.com/api/",
+            "app_id": "31337",
+            "workflow": ["submit_artifacts", "check_compliance"],
+            "apis": {
+                "upload": {"build_dir": Path("/build/")},
+                "results": {"ignore_compliance_status": False},
+            },
+        }
+        after = {
+            "workflow": ["submit_artifacts", "check_compliance"],
+            "apis": {
+                "results": {
+                    "app_id": "31337",
+                    "base_url": "https://analysiscenter.veracode.com/api/",
+                    "ignore_compliance_status": False,
+                },
+                "upload": {
+                    "app_id": "31337",
+                    "base_url": "https://analysiscenter.veracode.com/api/",
+                    "build_dir": Path("/build/"),
+                },
+            },
+        }
         mock_is_valid_attribute.return_value = True
-        output = config.normalize_config(config=before)
-        self.assertEqual(output, after)
+        before_normalized = config.normalize_config(config=before)
+        self.assertEqual(before_normalized, after)
+
+        # Fail when calling the normalize_config function with a non-normalized
+        # config dict, a Path build_dir, but a loglevel value of the wrong type
+        before = {
+            "base_url": "https://analysiscenter.veracode.com/api/",
+            "app_id": "31337",
+            "loglevel": 10,
+            "workflow": ["submit_artifacts", "check_compliance"],
+            "apis": {
+                "upload": {"build_dir": Path("/build/")},
+                "results": {"ignore_compliance_status": False},
+            },
+        }
+        mock_is_valid_attribute.return_value = True
+        self.assertRaises(TypeError, config.normalize_config, config=before)
 
         # Fail when attempting to call the normalize_config function with a
         # config that contains an invalid loglevel
         before = copy.deepcopy(test_constants.VALID_CLEAN_FILE_CONFIG["dict"])
-        before["loglevel"] = "unknown_attribute"
+        before["loglevel"] = "unknown_loglevel"
         mock_is_valid_attribute.return_value = True
         self.assertRaises(AttributeError, config.normalize_config, config=before)
 
@@ -434,12 +469,13 @@ class TestVeracodeConfig(CLITestCase):
         # values validation
         before = copy.deepcopy(test_constants.VALID_CLEAN_FILE_CONFIG["dict"])
         after = before  # No change
-        output = config.normalize_config(config=before)
-        self.assertEqual(output, after)
+        before_normalized = config.normalize_config(config=before)
+        self.assertEqual(before_normalized, after)
 
     ## get_args_config tests
     @patch("veracode.config.create_arg_parser")
-    def test_get_args_config(self, mock_create_arg_parser):
+    @patch("veracode.config.normalize_config")
+    def test_get_args_config(self, mock_normalize_config, mock_create_arg_parser):
         """
         Test the get_args_config function
         """
@@ -451,7 +487,7 @@ class TestVeracodeConfig(CLITestCase):
             "api_key_secret": test_constants.VALID_UPLOAD_API["api_key_secret"],
             "loglevel": 30,
             "apis": {
-                "results": {"app_id": "1337"},
+                "results": {"app_id": "1337", "ignore_compliance_status": True},
                 "upload": {
                     "app_id": "1337",
                     "build_id": "v1.2.3",
@@ -461,6 +497,7 @@ class TestVeracodeConfig(CLITestCase):
                 },
             },
         }
+        mock_normalize_config.return_value = parsed
         with patch(
             "argparse.ArgumentParser.parse_args",
             return_value=Namespace(
@@ -472,6 +509,7 @@ class TestVeracodeConfig(CLITestCase):
                     "scan_all_nonfatal_top_level_modules"
                 ],
                 loglevel=logging.WARNING,
+                ignore_compliance_status=True,
                 api_key_id=test_constants.VALID_UPLOAD_API["api_key_id"],
                 api_key_secret=test_constants.VALID_UPLOAD_API["api_key_secret"],
             ),
@@ -495,6 +533,7 @@ class TestVeracodeConfig(CLITestCase):
                 },
             },
         }
+        mock_normalize_config.return_value = parsed
         with patch(
             "argparse.ArgumentParser.parse_args",
             return_value=Namespace(

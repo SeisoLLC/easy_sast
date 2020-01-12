@@ -149,13 +149,10 @@ def get_env_config() -> Dict:
     return env_var_config
 
 
-# pylint: disable=too-many-branches
-def normalize_config(*, config: Dict) -> Dict:
+def add_apis_to_config(*, config: Dict) -> Dict:
     """
-    Normalize a provided config dict into the preferred format for the
-    supported APIs
+    Add the supported apis to a config
     """
-    ## Establish normalized structure
     # Add the top level "apis" key
     if "apis" not in config.keys():
         config["apis"] = {}
@@ -165,22 +162,31 @@ def normalize_config(*, config: Dict) -> Dict:
         if api not in config["apis"].keys():
             config["apis"][api] = {}
 
+    return config
+
+
+# pylint: disable=too-many-branches
+def normalize_config(*, config: Dict) -> Dict:
+    """
+    Normalize a provided config dict into the preferred format for the
+    supported APIs
+    """
+    ## Establish normalized structure
+    config = add_apis_to_config(config=config)
+
     ## Move configs into the normalized structure
-    # Distribute the keys into the appropriate slots
-    for upload_attribute in constants.UPLOAD_API_ATTRIBUTES:
-        if upload_attribute in config.keys():
-            config["apis"]["upload"][upload_attribute] = config[upload_attribute]
+    for common_attribute in constants.API_ATTRIBUTES["upload"].intersection(
+        constants.API_ATTRIBUTES["results"]
+    ):
+        if common_attribute not in config.keys():
+            continue
 
-            # Only clean up if the attribute is not also in results. This
-            # approach will need to be reconsidered as more APIs are supported
-            if upload_attribute not in constants.RESULTS_API_ATTRIBUTES:
-                del config[upload_attribute]
+        # Distribute the keys into the appropriate slots
+        for api in constants.SUPPORTED_APIS:
+            config["apis"][api][common_attribute] = config[common_attribute]
 
-    for results_attribute in constants.RESULTS_API_ATTRIBUTES:
-        if results_attribute in config.keys():
-            config["apis"]["results"][results_attribute] = config[results_attribute]
-            # Since this is the last normalization step, cleanup without regard
-            del config[results_attribute]
+        # Clean up
+        del config[common_attribute]
 
     ## Normalize config value formats
     # Search for a loglevel value provided as a string and modify it to be an
@@ -191,6 +197,9 @@ def normalize_config(*, config: Dict) -> Dict:
         else:
             LOG.error("Unable to normalize the provided loglevel")
             raise AttributeError
+    elif "loglevel" in config.keys():
+        LOG.error("loglevel must be a string")
+        raise TypeError
 
     # Search for a build_dir value provided as a string in the upload API
     # config and modify it to be a Path object
@@ -221,36 +230,39 @@ def normalize_config(*, config: Dict) -> Dict:
 
 def get_args_config() -> Dict:
     """
-    Get the config passed as an argument
+    Get the configs passed as arguments
     """
     parser = create_arg_parser()
     parsed_args = vars(parser.parse_args())
 
-    normal_keys = [
-        "app_id",
-        "api_key_id",
-        "api_key_secret",
-        "build_dir",
-        "build_id",
-        "config_file",
-        "loglevel",
-        "workflow",
-        "ignore_compliance_status",
-    ]
-    disable_keys = {
+    inverted_attributes = {
         "auto_scan": "disable_auto_scan",
         "scan_all_nonfatal_top_level_modules": "disable_scan_nonfatal_modules",
     }
 
-    # Load parsed arguments into args_config
-    args_config = {}
-    for key in normal_keys:
-        if key in parsed_args.keys():
-            args_config[key] = parsed_args[key]
-
-    for key, value in disable_keys.items():
+    # Invert and rename the inverted_attributes appropriately
+    for key, value in inverted_attributes.items():
         if value in parsed_args.keys():
-            args_config[key] = not parsed_args[value]
+            parsed_args[key] = not parsed_args[value]
+            del parsed_args[value]
+
+    ## Load parsed arguments into args_config
+    args_config = add_apis_to_config(config={})
+
+    # Apply the configs from parsed_args
+    for key in parsed_args.keys():
+        # Distribute the parsed_args configurations appropriately
+        if key in constants.API_ATTRIBUTES["upload"].difference(
+            constants.API_ATTRIBUTES["results"]
+        ):
+            args_config["apis"]["upload"][key] = parsed_args[key]
+        elif key in constants.API_ATTRIBUTES["results"].difference(
+            constants.API_ATTRIBUTES["upload"]
+        ):
+            args_config["apis"]["results"][key] = parsed_args[key]
+        else:
+            # Put in top level
+            args_config[key] = parsed_args[key]
 
     normalized_args_config = normalize_config(config=args_config)
 
