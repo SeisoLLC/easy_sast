@@ -130,6 +130,9 @@ def parse_file_config(*, config_file: Path) -> Dict:
             "Permission denied when attempting to read the config file %s", config_file
         )
         raise pe_err
+    except IsADirectoryError as isdir_err:
+        LOG.error("The specified config file is a directory: %s", config_file)
+        raise isdir_err
     except OSError as os_err:
         LOG.error(
             "Unknown OS error when attempting to read the config file %s", config_file
