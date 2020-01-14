@@ -10,6 +10,9 @@ from xml.etree import (  # nosec (Used only when TYPE_CHECKING)
     ElementTree as InsecureElementTree,
 )
 
+# third party
+from requests.exceptions import HTTPError, Timeout, RequestException, TooManyRedirects
+
 # custom
 from veracode.api import ResultsAPI, validate
 from veracode import __project_name__
@@ -20,13 +23,24 @@ LOG = logging.getLogger(__project_name__ + "." + __name__)
 @validate
 def get_latest_completed_build(
     *, results_api: ResultsAPI, only_latest: Optional[bool] = True
-) -> Union[InsecureElementTree.Element, None]:
+) -> Union[InsecureElementTree.Element, bool]:
     """
     Get the latest completed build build_id for a given app_id
     https://help.veracode.com/reader/LMv_dtSHyb7iIxAQznC~9w/Q8E6r4JDAN1lykB08oGDSA
     """
     params = {"only_latest": only_latest}
-    appbuilds = results_api.http_get(endpoint="getappbuilds.do", params=params)
+    try:
+        appbuilds = results_api.http_get(endpoint="getappbuilds.do", params=params)
+    except (
+        HTTPError,
+        ConnectionError,
+        Timeout,
+        TooManyRedirects,
+        RequestException,
+        RuntimeError,
+    ):
+        LOG.error("Failed to retrieve the application builds from Veracode")
+        return False
 
     # Filter on the provided app_id
     for app in appbuilds:
@@ -34,11 +48,10 @@ def get_latest_completed_build(
             LOG.debug("Found app_id %s, returning %s", results_api.app_id, app)
             return app
 
-    LOG.debug(
-        "Unable to find a completed build for app_id %s, returning None",
-        results_api.app_id,
+    LOG.error(
+        "Unable to find a completed build for app_id %s", results_api.app_id,
     )
-    return None
+    return False
 
 
 @validate

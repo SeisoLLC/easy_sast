@@ -39,7 +39,7 @@ def create_build(*, upload_api: UploadAPI) -> bool:
         RequestException,
         RuntimeError,
     ):
-        LOG.exception("The Veracode API post to the %s endpoint failed", endpoint)
+        LOG.error("The Veracode API post to the %s endpoint failed", endpoint)
         return False
 
 
@@ -59,9 +59,16 @@ def begin_prescan(*, upload_api: UploadAPI) -> bool:
     try:
         upload_api.http_post(endpoint=endpoint, params=params)
         return True
-    except:
-        LOG.exception("The Veracode API post to the %s endpoint failed", endpoint)
-        raise
+    except (
+        HTTPError,
+        ConnectionError,
+        Timeout,
+        TooManyRedirects,
+        RequestException,
+        RuntimeError,
+    ):
+        LOG.error("The Veracode API post to the %s endpoint failed", endpoint)
+        return False
 
 
 def filter_file(*, artifact: Path) -> bool:
