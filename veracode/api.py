@@ -407,7 +407,7 @@ def parse_xml(*, content: bytes):
         element = ElementTree.fromstring(content)
         LOG.info("parse_xml successful")
     except InsecureElementTree.ParseError as parse_err:
-        LOG.exception("Failed to parse the XML response, untrustworthy endpoint")
+        LOG.error("Failed to parse the XML response, untrustworthy endpoint")
         raise parse_err
     return element
 
@@ -454,23 +454,23 @@ def http_request(  # pylint: disable=too-many-statements
             response.raise_for_status()
     except HTTPError as http_err:
         function_name = cast(types.FrameType, inspect.currentframe()).f_code.co_name
-        LOG.exception("%s encountered a HTTP error: %s", function_name, http_err)
+        LOG.error("%s encountered a HTTP error: %s", function_name, http_err)
         raise http_err
     except ConnectionError as conn_err:
         function_name = cast(types.FrameType, inspect.currentframe()).f_code.co_name
-        LOG.exception("%s encountered a connection error: %s", function_name, conn_err)
+        LOG.error("%s encountered a connection error: %s", function_name, conn_err)
         raise conn_err
     except Timeout as time_err:
         function_name = cast(types.FrameType, inspect.currentframe()).f_code.co_name
-        LOG.exception("%s encountered a timeout error: %s", function_name, time_err)
+        LOG.error("%s encountered a timeout error: %s", function_name, time_err)
         raise time_err
     except TooManyRedirects as redir_err:
         function_name = cast(types.FrameType, inspect.currentframe()).f_code.co_name
-        LOG.exception("%s encountered too many redirects: %s", function_name, redir_err)
+        LOG.error("%s encountered too many redirects: %s", function_name, redir_err)
         raise redir_err
     except RequestException as req_err:
         function_name = cast(types.FrameType, inspect.currentframe()).f_code.co_name
-        LOG.exception(
+        LOG.error(
             "%s encountered a request exception error: %s", function_name, req_err
         )
         raise req_err

@@ -11,6 +11,7 @@ from unittest import TestCase
 
 # third party
 from defusedxml import ElementTree
+from requests.exceptions import HTTPError, Timeout, RequestException, TooManyRedirects
 
 # custom
 from tests import constants as test_constants
@@ -192,8 +193,8 @@ class TestVeracodeCheckCompliance(TestCase):
                 [output.tag, output.attrib], [expected.tag, expected.attrib]
             )
 
-        # Return None when calling the get_latest_completed_build function with
-        # a valid results_api and the http_get method returns an
+        # Return False when calling the get_latest_completed_build function
+        # with a valid results_api and the http_get method returns an
         # ElementTree.Element which doesn't contain the provided app_id
         with patch.object(
             ResultsAPI,
@@ -206,4 +207,22 @@ class TestVeracodeCheckCompliance(TestCase):
             output = check_compliance.get_latest_completed_build(
                 results_api=results_api
             )
-            self.assertIsNone(output)
+            self.assertFalse(output)
+
+        # Return False when calling the get_latest_completed_build function
+        # with a valid results_api and the http_get method raises one of a
+        # series of exceptions
+        results_api = ResultsAPI(app_id="31337")
+        for err in [
+            HTTPError,
+            ConnectionError,
+            Timeout,
+            TooManyRedirects,
+            RequestException,
+            RuntimeError,
+        ]:
+            with patch.object(ResultsAPI, "http_get", side_effect=err):
+                output = check_compliance.get_latest_completed_build(
+                    results_api=results_api
+                )
+                self.assertFalse(output)

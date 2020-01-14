@@ -66,15 +66,13 @@ class TestSubmitArtifacts(TestCase):
         mock_post.return_value.raise_for_status.side_effect = HTTPError()
         self.assertTrue(submit_artifacts.begin_prescan(upload_api=upload_api))
 
-    @patch("requests.post")
-    def test_begin_prescan_failure(self, mock_post):
-        """Test the begin_prescan function with a 403 response"""
-        upload_api = UploadAPI(app_id=test_constants.VALID_UPLOAD_API["app_id"])
-        mock_post.return_value.status_code = 403
-        mock_post.return_value.raise_for_status.side_effect = HTTPError()
-        self.assertRaises(
-            HTTPError, submit_artifacts.begin_prescan, upload_api=upload_api,
-        )
+    def test_begin_prescan_failure(self):
+        """
+        Test the begin_prescan function when http_post raises a HTTPError
+        """
+        with patch.object(UploadAPI, "http_post", side_effect=HTTPError()):
+            upload_api = UploadAPI(app_id="31337")
+            self.assertFalse(submit_artifacts.begin_prescan(upload_api=upload_api))
 
     def test_filter_file_file_is_in_whitelist(self):
         """Test the filter_file function with a valid file suffix"""

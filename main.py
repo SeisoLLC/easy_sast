@@ -33,7 +33,6 @@ def main() -> None:
     )
     # Default to a log level of WARNING until the config is parsed
     logging.basicConfig(level="WARNING", format=formatting)
-    logging.raiseExceptions = True
     log = logging.getLogger(__project_name__)
 
     # Get the effective config
