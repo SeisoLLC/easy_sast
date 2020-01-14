@@ -200,9 +200,6 @@ def normalize_config(*, config: Dict) -> Dict:
         else:
             LOG.error("Unable to normalize the provided loglevel")
             raise AttributeError
-    elif "loglevel" in config.keys():
-        LOG.error("loglevel must be a string")
-        raise TypeError
 
     # Search for a build_dir value provided as a string in the upload API
     # config and modify it to be a Path object
@@ -435,17 +432,16 @@ def apply_config(
     """
     Apply a provided config dict to a provided object
     """
-    for api_name, settings in config["apis"].items():
-        if api_name not in constants.SUPPORTED_APIS:
-            LOG.warning("Unsupported API of %s specified in the config", api_name)
-            continue
-        for option in settings.keys():
-            if isinstance(api, ResultsAPI):
-                setattr(api, option, settings[option])
-            elif isinstance(api, UploadAPI):
-                setattr(api, option, settings[option])
-            else:
-                LOG.error("api argument is not a supported type (%s)", type(api))
-                raise TypeError
+    config = add_apis_to_config(config=config)
+
+    if isinstance(api, ResultsAPI):
+        for key, value in config["apis"]["results"].items():
+            setattr(api, key, value)
+    elif isinstance(api, UploadAPI):
+        for key, value in config["apis"]["upload"].items():
+            setattr(api, key, value)
+    else:
+        LOG.error("api argument is not a supported type (%s)", type(api))
+        raise TypeError
 
     return api

@@ -435,21 +435,6 @@ class TestVeracodeConfig(CLITestCase):
         before_normalized = config.normalize_config(config=before)
         self.assertEqual(before_normalized, after)
 
-        # Fail when calling the normalize_config function with a non-normalized
-        # config dict, a Path build_dir, but a loglevel value of the wrong type
-        before = {
-            "base_url": "https://analysiscenter.veracode.com/api/",
-            "app_id": "31337",
-            "loglevel": 10,
-            "workflow": ["submit_artifacts", "check_compliance"],
-            "apis": {
-                "upload": {"build_dir": Path("/build/")},
-                "results": {"ignore_compliance_status": False},
-            },
-        }
-        mock_is_valid_attribute.return_value = True
-        self.assertRaises(TypeError, config.normalize_config, config=before)
-
         # Fail when attempting to call the normalize_config function with a
         # config that contains an invalid loglevel
         before = copy.deepcopy(test_constants.VALID_CLEAN_FILE_CONFIG["dict"])
@@ -867,16 +852,22 @@ class TestVeracodeConfig(CLITestCase):
         # Succeed when calling the apply_config function with a valid
         # Upload API object and config
         upload_api = UploadAPI(app_id="31337")
-        self.assertEqual(
-            config.apply_config(api=upload_api, config=configuration), upload_api
-        )
+        applied_upload_api = config.apply_config(api=upload_api, config=configuration)
+        self.assertEqual(applied_upload_api, upload_api)
 
         # Succeed when calling the apply_config function with a valid
         # Results API object and config
         results_api = ResultsAPI(app_id="31337")
-        self.assertEqual(
-            config.apply_config(api=results_api, config=configuration), results_api
-        )
+        applied_results_api = config.apply_config(api=results_api, config=configuration)
+        self.assertEqual(applied_results_api, results_api)
+
+        # Ensure calling the apply_config with different does not result in an
+        # object with the same version string (which is unique per-API)
+        upload_api = UploadAPI(app_id="31337")
+        applied_upload_api = config.apply_config(api=upload_api, config=configuration)
+        results_api = ResultsAPI(app_id="31337")
+        applied_results_api = config.apply_config(api=results_api, config=configuration)
+        self.assertNotEqual(applied_results_api.version, applied_upload_api.version)
 
         # Fail when calling the apply_config function with a string instead of
         # an API object
