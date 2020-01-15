@@ -308,6 +308,9 @@ def create_arg_parser() -> ArgumentParser:
         action="store_true",
         help="ignore (but still check) the compliance status",
     )
+    parser.add_argument(
+        "--sandbox", type=str, help="application sandbox as provided by Veracode"
+    )
     parser.add_argument("--version", action="version", version=__version__)
     parser.add_argument(
         "--workflow", nargs="+", help="specify the workflow steps to enable and order"

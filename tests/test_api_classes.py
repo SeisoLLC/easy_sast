@@ -226,7 +226,6 @@ class TestVeracodeApiUploadAPI(TestCase):
         # Succeed when creating an UploadAPI object when the app_id property is
         # properly provided to the constructor
         upload_api = UploadAPI(app_id=constants.VALID_UPLOAD_API["app_id"])
-
         self.assertIsInstance(getattr(upload_api, "app_id"), str)
 
         # Succeed when setting the app_id property to a valid value
@@ -362,6 +361,37 @@ class TestVeracodeApiUploadAPI(TestCase):
         # Fail when attempting to delete the build_id property, because the
         # deleter is intentionally missing
         self.assertRaises(AttributeError, delattr, upload_api, "build_id")
+
+    ## UploadAPI sandbox property
+    def test_upload_api_sandbox(self):
+        """
+        Test the UploadAPI sandbox property
+        """
+        upload_api = UploadAPI(app_id=constants.VALID_UPLOAD_API["app_id"])
+
+        # Succeed when getting a the default sandbox property
+        self.assertIsNone(upload_api.sandbox)
+
+        # Succeed when setting the sandbox property to a valid value
+        self.assertIsNone(setattr(upload_api, "sandbox", None))
+        self.assertIsNone(setattr(upload_api, "sandbox", "12489"))
+
+        # Succeed when getting a valid app_id property
+        self.assertIsInstance(upload_api.sandbox, str)
+
+        # Fail when attempting to set the sandbox property to an invalid value
+        self.assertRaises(
+            ValueError, setattr, upload_api, "sandbox", 12489,
+        )
+
+        # Fail when attempting to get the sandbox property when it contains an
+        # invalid value
+        upload_api._sandbox = 12489  # pylint: disable=protected-access
+        self.assertRaises(ValueError, getattr, upload_api, "sandbox")
+
+        # Fail when attempting to delete the sandbox property, because the
+        # deleter is intentionally missing
+        self.assertRaises(AttributeError, delattr, upload_api, "sandbox")
 
     ## UploadAPI scan_all_nonfatal_top_level_modules property
     def test_upload_api_scan_all_nonfatal_top_level_modules(self):

@@ -10,6 +10,7 @@ API_ATTRIBUTES = {
         "app_id",
         "build_dir",
         "build_id",
+        "sandbox",
         "scan_all_nonfatal_top_level_modules",
         "auto_scan",
     },

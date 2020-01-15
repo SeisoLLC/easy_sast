@@ -40,6 +40,7 @@ apis:
     app_id: "31337"
     build_dir: "/build/"
     build_id: "2037-03-13_03-14-15"
+    sandbox: "54321"
     scan_all_nonfatal_top_level_modules: True
     auto_scan: True
 loglevel: "warning"

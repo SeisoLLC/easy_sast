@@ -1008,6 +1008,31 @@ class TestVeracodeApiFunctions(TestCase):
         # that is an int
         self.assertFalse(api.is_valid_attribute(key="build_id", value=7))
 
+    # sandbox validation
+    def test_is_valid_attribute_sandbox(self):
+        """
+        Test the sandbox validation in is_valid_attribute
+        """
+        # Succeed when calling the is_valid_attribute function with a sandbox
+        # that is whole number represented as a string
+        self.assertTrue(api.is_valid_attribute(key="sandbox", value="54321"))
+
+        # Succeed when calling the is_valid_attribute function with a sandbox
+        # that is None (the default)
+        self.assertTrue(api.is_valid_attribute(key="sandbox", value=None))
+
+        # Fail when calling the is_valid_attribute function with a sandbox that
+        # is an int
+        self.assertFalse(api.is_valid_attribute(key="sandbox", value=54321))
+
+        # Fail when calling the is_valid_attribute function with a sandbox that
+        # is a string but not a whole number
+        self.assertFalse(api.is_valid_attribute(key="sandbox", value="success"))
+
+        # Fail when calling the is_valid_attribute function with a sandbox that
+        # is a float
+        self.assertFalse(api.is_valid_attribute(key="sandbox", value=543.21))
+
     # scan_all_nonfatal_top_level_modules validation
     def test_is_valid_attribute_scan_all_nonfatal_top_level_modules(self):
         """

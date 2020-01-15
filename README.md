@@ -54,12 +54,11 @@ Additional details and configuration options are outlined in [usage](#usage) and
 ## Usage
 ### Command-line
 ```bash
-usage: main.py [-h] [--api-key-id API_KEY_ID]
-               [--api-key-secret API_KEY_SECRET] [--app-id APP_ID]
-               [--build-dir BUILD_DIR] [--build-id BUILD_ID]
+usage: main.py [-h] [--api-key-id API_KEY_ID] [--api-key-secret API_KEY_SECRET]
+               [--app-id APP_ID] [--build-dir BUILD_DIR] [--build-id BUILD_ID]
                [--config-file CONFIG_FILE] [--disable-auto-scan]
-               [--disable-scan-nonfatal-modules]
-               [--ignore-compliance-status] [--version]
+               [--disable-scan-nonfatal-modules] [--ignore-compliance-status]
+               [--sandbox SANDBOX] [--version]
                [--workflow WORKFLOW [WORKFLOW ...]] [--debug | --verbose]
 
 optional arguments:
@@ -73,6 +72,7 @@ optional arguments:
   --disable-auto-scan                 disable auto_scan
   --disable-scan-nonfatal-modules     disable scan_all_nonfatal_top_level_modules
   --ignore-compliance-status          ignore (but still check) the compliance status
+  --sandbox SANDBOX                   application sandbox as provided by Veracode
   --version                           show program's version number and exit
   --workflow WORKFLOW [WORKFLOW ...]  specify the workflow steps to enable and order
   --debug                             enable debug level logging
