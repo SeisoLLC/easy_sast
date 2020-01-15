@@ -232,6 +232,7 @@ class UploadAPI(VeracodeXMLAPI):  # pylint: disable=too-many-instance-attributes
         }
         self.build_dir = Path("/build").absolute()
         self.build_id = datetime.utcnow().strftime("%F_%H-%M-%S")
+        self.sandbox = None
         self.scan_all_nonfatal_top_level_modules = True
         self.auto_scan = True
 
@@ -284,6 +285,31 @@ class UploadAPI(VeracodeXMLAPI):  # pylint: disable=too-many-instance-attributes
         # Validate what was provided
         self._validate(key="build_id", value=build_id)
         self._build_id = build_id
+
+    @property
+    def sandbox(self):
+        """
+        Create the sandbox property
+        """
+        return self._sandbox  # pragma: no cover
+
+    @sandbox.getter
+    def sandbox(self):
+        """
+        Create a sandbox getter that validates before returning
+        """
+        # Validate what was already stored
+        self._validate(key="sandbox", value=self._sandbox)
+        return self._sandbox
+
+    @sandbox.setter
+    def sandbox(self, sandbox):
+        """
+        Create a sandbox setter that validates before setting
+        """
+        # Validate what was provided
+        self._validate(key="sandbox", value=sandbox)
+        self._sandbox = sandbox
 
     @property
     def scan_all_nonfatal_top_level_modules(self):
@@ -567,14 +593,25 @@ def is_valid_attribute(  # pylint: disable=too-many-branches, too-many-statement
         elif not re.fullmatch("[a-zA-Z0-9-._~]+", value):
             is_valid = False
             LOG.error("An invalid build_id was provided")
+    elif key == "sandbox":
+        if not isinstance(value, str) and value is not None:
+            is_valid = False
+            LOG.error("sandbox must be a string or None")
+
+        if isinstance(value, str):
+            try:
+                int(value)
+            except (ValueError, TypeError):
+                is_valid = False
+                LOG.error("sandbox must be None or a string containing a whole number")
     elif key == "scan_all_nonfatal_top_level_modules":
         if not isinstance(value, bool):
             is_valid = False
-            LOG.error("An invalid scan_all_nonfatal_top_level_modules was provided")
+            LOG.error("scan_all_nonfatal_top_level_modules must be a boolean")
     elif key == "auto_scan":
         if not isinstance(value, bool):
             is_valid = False
-            LOG.error("An invalid auto_scan was provided")
+            LOG.error("auto_scan must be a boolean")
     elif key == "api_key_id":
         if not isinstance(value, str) or len(str(value)) != 32:
             is_valid = False
@@ -598,7 +635,7 @@ def is_valid_attribute(  # pylint: disable=too-many-branches, too-many-statement
     elif key == "ignore_compliance_status":
         if not isinstance(value, bool):
             is_valid = False
-            LOG.error("An invalid ignore_compliance_status was provided")
+            LOG.error("ignore_compliance_status must be a boolean")
     elif key == "loglevel":
         if value not in constants.ALLOWED_LOG_LEVELS:
             is_valid = False

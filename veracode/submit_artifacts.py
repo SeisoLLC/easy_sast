@@ -24,11 +24,15 @@ def create_build(*, upload_api: UploadAPI) -> bool:
     """
     https://help.veracode.com/reader/LMv_dtSHyb7iIxAQznC~9w/vhuQ5lMdxRNQWUK1br1mDg
     """
-    endpoint = "createbuild.do"
-
-    params = {"app_id": upload_api.app_id, "version": upload_api.build_id}
-
     try:
+        endpoint = "createbuild.do"
+        params = {"app_id": upload_api.app_id, "version": upload_api.build_id}
+
+        # If a sandbox is specified, add it to the params
+        if isinstance(upload_api.sandbox, str):
+            params["sandbox"] = upload_api.sandbox
+
+        # Create the build
         upload_api.http_post(endpoint=endpoint, params=params)
         return True
     except (
@@ -49,12 +53,15 @@ def begin_prescan(*, upload_api: UploadAPI) -> bool:
     https://help.veracode.com/reader/LMv_dtSHyb7iIxAQznC~9w/PX5ReM5acqjM~IOVEg2~rA
     """
     endpoint = "beginprescan.do"
-
     params = {
         "app_id": upload_api.app_id,
         "scan_all_nonfatal_top_level_modules": upload_api.scan_all_nonfatal_top_level_modules,
         "auto_scan": upload_api.auto_scan,
     }
+
+    # If a sandbox is specified, add it to the params
+    if isinstance(upload_api.sandbox, str):
+        params["sandbox"] = upload_api.sandbox
 
     try:
         upload_api.http_post(endpoint=endpoint, params=params)
@@ -108,17 +115,19 @@ def upload_large_file(*, upload_api: UploadAPI, artifact: Path) -> bool:
     """
     filename = artifact.name
 
-    headers = {"Content-Type": "binary/octet-stream"}
+    endpoint = "uploadlargefile.do"
     params = {"app_id": upload_api.app_id, "filename": filename}
+    headers = {"Content-Type": "binary/octet-stream"}
+
+    # If a sandbox is specified, add it to the params
+    if isinstance(upload_api.sandbox, str):
+        params["sandbox"] = upload_api.sandbox
 
     try:
         with open(artifact, "rb") as f:
             data = f.read()
             upload_api.http_post(
-                endpoint="uploadlargefile.do",
-                data=data,
-                params=params,
-                headers=headers,
+                endpoint=endpoint, data=data, params=params, headers=headers,
             )
         return True
     except:

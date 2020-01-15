@@ -31,47 +31,77 @@ class TestSubmitArtifacts(TestCase):
     Test submit_artifacts.py
     """
 
-    @patch("requests.post")
-    def test_create_build_successful(self, mock_post):
-        """Test the create_build function with a successful response"""
-        upload_api = UploadAPI(app_id=test_constants.VALID_UPLOAD_API["app_id"])
-        mock_post.return_value.content = test_constants.VALID_UPLOAD_API_CREATEBUILD_RESPONSE_XML[
-            "bytes"
-        ]
-        mock_post.return_value.status_code = 200
-        mock_post.return_value.raise_for_status.side_effect = HTTPError()
-
-        self.assertTrue(submit_artifacts.create_build(upload_api=upload_api))
-
-    @patch("requests.post")
-    def test_create_build_failure(self, mock_post):
-        """Test the create_build function with an error response"""
-        upload_api = UploadAPI(app_id=test_constants.VALID_UPLOAD_API["app_id"])
-        mock_post.return_value.content = test_constants.VERACODE_ERROR_RESPONSE_XML[
-            "bytes"
-        ]
-        mock_post.return_value.status_code = 200
-        mock_post.return_value.raise_for_status.side_effect = HTTPError()
-
-        self.assertFalse(submit_artifacts.create_build(upload_api=upload_api))
-
-    @patch("requests.post")
-    def test_begin_prescan_success(self, mock_post):
-        """Test the begin_prescan function with a successful response"""
-        upload_api = UploadAPI(app_id=test_constants.VALID_UPLOAD_API["app_id"])
-        mock_post.return_value.content = test_constants.VALID_UPLOAD_API_BEGINPRESCAN_RESPONSE_XML[
-            "bytes"
-        ]
-        mock_post.return_value.status_code = 200
-        mock_post.return_value.raise_for_status.side_effect = HTTPError()
-        self.assertTrue(submit_artifacts.begin_prescan(upload_api=upload_api))
-
-    def test_begin_prescan_failure(self):
+    def test_create_build(self):
         """
-        Test the begin_prescan function when http_post raises a HTTPError
+        Test the create_build function
         """
+        # Succeed when calling the create_build function and the api call gets
+        # a valid response
+        with patch.object(
+            UploadAPI,
+            "http_post",
+            return_value=test_constants.VALID_UPLOAD_API_CREATEBUILD_RESPONSE_XML[
+                "bytes"
+            ],
+        ):
+            # Policy scan
+            upload_api = UploadAPI(app_id=test_constants.VALID_UPLOAD_API["app_id"])
+            self.assertTrue(submit_artifacts.create_build(upload_api=upload_api))
+
+            # Sandbox scan
+            upload_api = UploadAPI(app_id=test_constants.VALID_UPLOAD_API["app_id"])
+            upload_api.sandbox = "12345"
+            self.assertTrue(submit_artifacts.create_build(upload_api=upload_api))
+
+        # Fail when calling the create_build function and the api call gets a
+        # mocked error message response and a mocked side effect of HTTPError
+        with patch.object(
+            UploadAPI,
+            "http_post",
+            return_value=test_constants.VERACODE_ERROR_RESPONSE_XML["bytes"],
+            side_effect=HTTPError(),
+        ):
+            # Policy scan
+            upload_api = UploadAPI(app_id=test_constants.VALID_UPLOAD_API["app_id"])
+            self.assertFalse(submit_artifacts.create_build(upload_api=upload_api))
+
+            # Sandbox scan
+            upload_api = UploadAPI(app_id=test_constants.VALID_UPLOAD_API["app_id"])
+            upload_api.sandbox = "12345"
+            self.assertFalse(submit_artifacts.create_build(upload_api=upload_api))
+
+    def test_begin_prescan(self):
+        """
+        Test the begin_prescan function
+        """
+        # Succeed when calling the begin_prescan function and the api call gets
+        # a valid response
+        with patch.object(
+            UploadAPI,
+            "http_post",
+            return_value=test_constants.VALID_UPLOAD_API_BEGINPRESCAN_RESPONSE_XML[
+                "bytes"
+            ],
+        ):
+            # Policy scan
+            upload_api = UploadAPI(app_id=test_constants.VALID_UPLOAD_API["app_id"])
+            self.assertTrue(submit_artifacts.begin_prescan(upload_api=upload_api))
+
+            # Sandbox scan
+            upload_api = UploadAPI(app_id=test_constants.VALID_UPLOAD_API["app_id"])
+            upload_api.sandbox = "12345"
+            self.assertTrue(submit_artifacts.begin_prescan(upload_api=upload_api))
+
+        # Fail when calling the begin_prescan function and the api call gets a
+        # mocked side effect of HTTPError
         with patch.object(UploadAPI, "http_post", side_effect=HTTPError()):
+            # Policy scan
             upload_api = UploadAPI(app_id="31337")
+            self.assertFalse(submit_artifacts.begin_prescan(upload_api=upload_api))
+
+            # Sandbox scan
+            upload_api = UploadAPI(app_id="31337")
+            upload_api.sandbox = "12345"
             self.assertFalse(submit_artifacts.begin_prescan(upload_api=upload_api))
 
     def test_filter_file_file_is_in_whitelist(self):
@@ -86,48 +116,88 @@ class TestSubmitArtifacts(TestCase):
             invalid_artifact = Path("/path/" + filename)
             self.assertFalse(submit_artifacts.filter_file(artifact=invalid_artifact))
 
-    @patch("requests.post")
-    def test_upload_large_file_happy_path(self, mock_post):
-        """Test the upload_large_file function happy path"""
-        upload_api = UploadAPI(app_id=test_constants.VALID_UPLOAD_API["app_id"])
-        valid_artifact = test_constants.VALID_FILE["Path"]
-        mock_post.return_value.content = test_constants.VALID_UPLOAD_API_UPLOADLARGEFILE_RESPONSE_XML[
-            "bytes"
-        ]
-        mock_post.return_value.status_code = 200
-        mock_post.return_value.raise_for_status.side_effect = HTTPError()
-
-        with patch(
-            "veracode.submit_artifacts.open",
-            new=mock_open(read_data=test_constants.VALID_FILE["bytes"]),
+    def test_upload_large_file(self):
+        """
+        Test the upload_large_file function
+        """
+        # Succeed when calling the upload_large_file function and the api call
+        # gets a valid response
+        with patch.object(
+            UploadAPI,
+            "http_post",
+            return_value=test_constants.VALID_UPLOAD_API_UPLOADLARGEFILE_RESPONSE_XML[
+                "bytes"
+            ],
         ):
-            self.assertTrue(
-                submit_artifacts.upload_large_file(
-                    upload_api=upload_api, artifact=valid_artifact
+            # Policy scan
+            upload_api = UploadAPI(app_id=test_constants.VALID_UPLOAD_API["app_id"])
+            valid_artifact = test_constants.VALID_FILE["Path"]
+
+            with patch(
+                "veracode.submit_artifacts.open",
+                new=mock_open(read_data=test_constants.VALID_FILE["bytes"]),
+            ):
+                self.assertTrue(
+                    submit_artifacts.upload_large_file(
+                        upload_api=upload_api, artifact=valid_artifact
+                    )
                 )
-            )
 
-    @patch("requests.post")
-    def test_upload_large_file_unhappy_path(self, mock_post):
-        """Test the upload_large_file function unhappy path"""
-        upload_api = UploadAPI(app_id=test_constants.VALID_UPLOAD_API["app_id"])
-        valid_artifact = test_constants.VALID_FILE["Path"]
-        mock_post.return_value.content = test_constants.VALID_UPLOAD_API_UPLOADLARGEFILE_RESPONSE_XML[
-            "bytes"
-        ]
-        mock_post.return_value.status_code = 403
-        mock_post.return_value.raise_for_status.side_effect = HTTPError()
+            # Sandbox scan
+            upload_api = UploadAPI(app_id=test_constants.VALID_UPLOAD_API["app_id"])
+            upload_api.sandbox = "12345"
+            valid_artifact = test_constants.VALID_FILE["Path"]
 
-        with patch(
-            "veracode.submit_artifacts.open",
-            new=mock_open(read_data=test_constants.VALID_FILE["bytes"]),
+            with patch(
+                "veracode.submit_artifacts.open",
+                new=mock_open(read_data=test_constants.VALID_FILE["bytes"]),
+            ):
+                self.assertTrue(
+                    submit_artifacts.upload_large_file(
+                        upload_api=upload_api, artifact=valid_artifact
+                    )
+                )
+
+        # Fail when calling the upload_large_file function and the api call
+        # raises a HTTPError
+        with patch.object(
+            UploadAPI,
+            "http_post",
+            return_value=test_constants.VALID_UPLOAD_API_UPLOADLARGEFILE_RESPONSE_XML[
+                "bytes"
+            ],
+            side_effect=HTTPError(),
         ):
-            self.assertRaises(
-                HTTPError,
-                submit_artifacts.upload_large_file,
-                upload_api=upload_api,
-                artifact=valid_artifact,
-            )
+            # Policy scan
+            upload_api = UploadAPI(app_id=test_constants.VALID_UPLOAD_API["app_id"])
+            valid_artifact = test_constants.VALID_FILE["Path"]
+
+            with patch(
+                "veracode.submit_artifacts.open",
+                new=mock_open(read_data=test_constants.VALID_FILE["bytes"]),
+            ):
+                self.assertRaises(
+                    HTTPError,
+                    submit_artifacts.upload_large_file,
+                    upload_api=upload_api,
+                    artifact=valid_artifact,
+                )
+
+            # Sandbox scan
+            upload_api = UploadAPI(app_id=test_constants.VALID_UPLOAD_API["app_id"])
+            upload_api.sandbox = "12345"
+            valid_artifact = test_constants.VALID_FILE["Path"]
+
+            with patch(
+                "veracode.submit_artifacts.open",
+                new=mock_open(read_data=test_constants.VALID_FILE["bytes"]),
+            ):
+                self.assertRaises(
+                    HTTPError,
+                    submit_artifacts.upload_large_file,
+                    upload_api=upload_api,
+                    artifact=valid_artifact,
+                )
 
     @patch("pathlib.Path.iterdir")
     @patch("requests.post")
