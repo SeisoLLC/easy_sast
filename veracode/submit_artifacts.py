@@ -30,7 +30,7 @@ def create_build(*, upload_api: UploadAPI) -> bool:
 
         # If a sandbox is specified, add it to the params
         if isinstance(upload_api.sandbox, str):
-            params["sandbox"] = upload_api.sandbox
+            params["sandbox_id"] = upload_api.sandbox
 
         # Create the build
         upload_api.http_post(endpoint=endpoint, params=params)
@@ -61,7 +61,7 @@ def begin_prescan(*, upload_api: UploadAPI) -> bool:
 
     # If a sandbox is specified, add it to the params
     if isinstance(upload_api.sandbox, str):
-        params["sandbox"] = upload_api.sandbox
+        params["sandbox_id"] = upload_api.sandbox
 
     try:
         upload_api.http_post(endpoint=endpoint, params=params)
@@ -121,7 +121,7 @@ def upload_large_file(*, upload_api: UploadAPI, artifact: Path) -> bool:
 
     # If a sandbox is specified, add it to the params
     if isinstance(upload_api.sandbox, str):
-        params["sandbox"] = upload_api.sandbox
+        params["sandbox_id"] = upload_api.sandbox
 
     try:
         with open(artifact, "rb") as f:
