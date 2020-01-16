@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 """
-A python module to interface with the Veracode API(s)
+A python module to interface with the Veracode Static Analysis APIs
 """
 
 # built-ins
 from functools import wraps
 import types
 import os
-from typing import cast, Any, Callable, Dict, Optional
+from typing import cast, Any, Callable, Dict, Optional, Union
 from pathlib import Path
 import logging
 import re
@@ -44,10 +44,9 @@ def validate(func: Callable) -> Callable:
     @wraps(func)
     def wrapper(**kwargs: Any) -> Callable:
         for key, value in kwargs.items():
-            if isinstance(value, ResultsAPI):
-                validate_results_api(results_api=value)
-            elif isinstance(value, UploadAPI):
-                validate_upload_api(upload_api=value)
+            if type(value).__name__ in constants.SUPPORTED_API_CLASSES:
+                validate_api(api=value)
+                LOG.debug("%s is valid", key)
 
             if is_valid_attribute(key=key, value=value):
                 LOG.debug("%s is valid", key)
@@ -689,39 +688,23 @@ def configure_environment(*, api_key_id: str, api_key_secret: str) -> None:
     os.environ["VERACODE_API_KEY_SECRET"] = api_key_secret
 
 
-def validate_results_api(*, results_api: ResultsAPI) -> None:
+def validate_api(*, api: Union[ResultsAPI, UploadAPI]) -> None:
     """
-    Validate the ResultsAPI object contains the required information
+    Validate that an api object contains the required information
     """
+    api_type = type(api)
+
     property_set = set(
-        p for p in dir(ResultsAPI) if isinstance(getattr(ResultsAPI, p), property)
+        p for p in dir(api_type) if isinstance(getattr(api_type, p), property)
     )
 
     # Validate that the properties pass sanitization
     for prop in property_set:
         # Use the getters to ensure that all of the properties of the instance
         # are valid
-        getattr(results_api, prop)
+        getattr(api, prop)
 
-    LOG.info("results_api passed validation")
-
-
-def validate_upload_api(*, upload_api: UploadAPI) -> None:
-    """
-    Validate the UploadAPI object contains the required information
-    """
-    # Validate that the required properties exist
-    property_set = set(
-        p for p in dir(UploadAPI) if isinstance(getattr(UploadAPI, p), property)
-    )
-
-    # Validate that the properties pass sanitization
-    for prop in property_set:
-        # Use the getters to ensure that all of the properties of the instance
-        # are valid
-        getattr(upload_api, prop)
-
-    LOG.info("upload_api passed validation")
+    LOG.debug("The provided %s passed validation", api_type)
 
 
 def protocol_is_insecure(*, protocol: str) -> bool:

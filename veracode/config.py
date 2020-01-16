@@ -178,9 +178,7 @@ def normalize_config(*, config: Dict) -> Dict:
     config = add_apis_to_config(config=config)
 
     ## Move configs into the normalized structure
-    for common_attribute in constants.API_ATTRIBUTES["upload"].intersection(
-        constants.API_ATTRIBUTES["results"]
-    ):
+    for common_attribute in constants.COMMON_API_ATTRIBUTES:
         if common_attribute not in config.keys():
             continue
 
@@ -252,13 +250,9 @@ def get_args_config() -> Dict:
     # Apply the configs from parsed_args
     for key in parsed_args.keys():
         # Distribute the parsed_args configurations appropriately
-        if key in constants.API_ATTRIBUTES["upload"].difference(
-            constants.API_ATTRIBUTES["results"]
-        ):
+        if key in constants.ONLY_UPLOAD_ATTRIBUTES:
             args_config["apis"]["upload"][key] = parsed_args[key]
-        elif key in constants.API_ATTRIBUTES["results"].difference(
-            constants.API_ATTRIBUTES["upload"]
-        ):
+        elif key in constants.ONLY_RESULTS_ATTRIBUTES:
             args_config["apis"]["results"][key] = parsed_args[key]
         else:
             # Put in top level

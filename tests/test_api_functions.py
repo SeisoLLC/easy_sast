@@ -36,28 +36,35 @@ class TestVeracodeApiFunctions(TestCase):
 
     ## validate tests
     # validate decorator on a Results API function
-    @patch("veracode.api.validate_results_api")
+    @patch("veracode.api.validate_api")
     @patch("veracode.api.is_valid_attribute")
-    def test_validate_decorator_w_results_api(
-        self, mock_is_valid_attribute, mock_validate_results_api
-    ):
+    def test_validate_decorator(self, mock_is_valid_attribute, mock_validate_api):
         """
         Test the validate decorator
         """
-        # Test the validate decorator with a valid ResultsAPI
+        # Prereqs to test the validate decorator with a valid ResultsAPI
         @api.validate
         def test_results_function(
             *, results_api: ResultsAPI, variable: int  # pylint: disable=unused-argument
-        ) -> None:  # pylint: disable=unused-argument
+        ) -> None:
             pass
 
         results_api = ResultsAPI(app_id=test_constants.VALID_RESULTS_API["app_id"])
 
-        # Test all of the expected combinations
+        # Prereqs to test the validate decorator with a valid UploadAPI
+        @api.validate
+        def test_upload_function(
+            *, upload_api: UploadAPI, variable: int  # pylint: disable=unused-argument
+        ) -> None:
+            pass
+
+        upload_api = UploadAPI(app_id=test_constants.VALID_UPLOAD_API["app_id"])
+
+        # Test the validate decorator with a valid ResultsAPI
         for is_valid_attribute_return_value in [True, False]:
             for validate_api_side_effect in [None, KeyError, ValueError]:
                 mock_is_valid_attribute.return_value = is_valid_attribute_return_value
-                mock_validate_results_api.side_effect = validate_api_side_effect
+                mock_validate_api.side_effect = validate_api_side_effect
 
                 if validate_api_side_effect == KeyError:
                     self.assertRaises(
@@ -85,29 +92,11 @@ class TestVeracodeApiFunctions(TestCase):
                         test_results_function(results_api=results_api, variable=123)
                     )
 
-    # validate decorator on an Upload API function
-    @patch("veracode.api.validate_upload_api")
-    @patch("veracode.api.is_valid_attribute")
-    def test_validate_decorator_w_upload_api(
-        self, mock_is_valid_attribute, mock_validate_upload_api
-    ):
-        """
-        Test the validate decorator
-        """
-        # Test the validate decorator with a valid UploadAPI
-        @api.validate
-        def test_upload_function(
-            *, upload_api: UploadAPI, variable: int  # pylint: disable=unused-argument
-        ) -> None:  # pylint: disable=unused-argument
-            pass
-
-        upload_api = UploadAPI(app_id=test_constants.VALID_UPLOAD_API["app_id"])
-
-        # Test all of the expected combinations
+        # Test the validate decorator with a valid ResultsAPI
         for is_valid_attribute_return_value in [True, False]:
             for validate_api_side_effect in [None, KeyError, ValueError]:
                 mock_is_valid_attribute.return_value = is_valid_attribute_return_value
-                mock_validate_upload_api.side_effect = validate_api_side_effect
+                mock_validate_api.side_effect = validate_api_side_effect
 
                 if validate_api_side_effect == KeyError:
                     self.assertRaises(
@@ -1325,42 +1314,37 @@ class TestVeracodeApiFunctions(TestCase):
             api_key_secret=invalid_api_key_secret,
         )
 
-    ## validate_results_api tests
-    def test_validate_results_api(self):
+    ## validate_api tests
+    def test_validate_api(self):
         """
-        Test the validate_results_api function
+        Test the validate_api function
         """
-        # Succeed when calling the validate_results_api function, given a
+        # Succeed when calling the validate_api function, given a
         # properly configured ResultsAPI object
         results_api = ResultsAPI(app_id=test_constants.VALID_RESULTS_API["app_id"])
-        self.assertIsNone(api.validate_results_api(results_api=results_api))
+        self.assertIsNone(api.validate_api(api=results_api))
 
-        # Fail when attempting to call the validate_results_api function, given
+        # Succeed when calling the validate_api function, given a
+        # properly configured UploadAPI object
+        upload_api = UploadAPI(app_id=test_constants.VALID_UPLOAD_API["app_id"])
+        self.assertIsNone(api.validate_api(api=upload_api))
+
+        # Fail when attempting to call the validate_api function, given
         # an improperly configured results_api due to an invalid property
         results_api._app_id = test_constants.INVALID_RESULTS_API_INCORRECT_APP_ID[  # pylint: disable=protected-access
             "app_id"
         ]
         self.assertRaises(
-            ValueError, api.validate_results_api, results_api=results_api,
+            ValueError, api.validate_api, api=results_api,
         )
 
-    ## validate_upload_api tests
-    def test_validate_upload_api(self):
-        """
-        Test the validate_upload_api function
-        """
-        # Succeed when calling the validate_upload_api function, given a
-        # properly configured UploadAPI object
-        upload_api = UploadAPI(app_id=test_constants.VALID_UPLOAD_API["app_id"])
-        self.assertIsNone(api.validate_upload_api(upload_api=upload_api))
-
-        # Fail when attempting to call the validate_upload_api function, given
+        # Fail when attempting to call the validate_api function, given
         # an improperly configured upload_api due to an invalid property
         upload_api._base_url = test_constants.INVALID_UPLOAD_API_MISSING_DOMAIN[  # pylint: disable=protected-access
             "base_url"
         ]
         self.assertRaises(
-            ValueError, api.validate_upload_api, upload_api=upload_api,
+            ValueError, api.validate_api, api=upload_api,
         )
 
     ## protocol_is_insecure tests
