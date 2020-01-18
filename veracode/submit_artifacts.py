@@ -12,7 +12,8 @@ from typing import List
 from requests.exceptions import HTTPError, Timeout, RequestException, TooManyRedirects
 
 # custom
-from veracode.api import UploadAPI, validate
+from veracode.api import UploadAPI
+from veracode.utils import validate
 from veracode import constants
 from veracode import __project_name__
 

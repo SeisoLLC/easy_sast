@@ -12,7 +12,8 @@ import json
 # custom
 from veracode.check_compliance import check_compliance
 from veracode.submit_artifacts import submit_artifacts
-from veracode.api import ResultsAPI, UploadAPI, configure_environment
+from veracode.api import ResultsAPI, UploadAPI
+from veracode.utils import configure_environment
 from veracode.config import get_config, apply_config
 from veracode import __project_name__
 

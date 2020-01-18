@@ -14,7 +14,8 @@ from xml.etree import (  # nosec (Used only when TYPE_CHECKING)
 from requests.exceptions import HTTPError, Timeout, RequestException, TooManyRedirects
 
 # custom
-from veracode.api import ResultsAPI, validate
+from veracode.api import ResultsAPI
+from veracode.utils import validate
 from veracode import __project_name__
 
 LOG = logging.getLogger(__project_name__ + "." + __name__)
