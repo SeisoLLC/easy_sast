@@ -15,7 +15,7 @@ import os
 import yaml
 
 # custom
-from veracode.api import ResultsAPI, UploadAPI
+from veracode.api import ResultsAPI, UploadAPI, SandboxAPI
 from veracode.utils import is_valid_attribute
 from veracode import constants
 from veracode import __version__, __project_name__
@@ -303,9 +303,7 @@ def create_arg_parser() -> ArgumentParser:
         action="store_true",
         help="ignore (but still check) the compliance status",
     )
-    parser.add_argument(
-        "--sandbox", type=str, help="application sandbox as provided by Veracode"
-    )
+    parser.add_argument("--sandbox-name", type=str, help="application sandbox name")
     parser.add_argument("--version", action="version", version=__version__)
     parser.add_argument(
         "--workflow", nargs="+", help="specify the workflow steps to enable and order"
@@ -425,8 +423,8 @@ def get_config() -> Dict:
 
 
 def apply_config(
-    *, api: Union[ResultsAPI, UploadAPI], config: dict
-) -> Union[ResultsAPI, UploadAPI]:
+    *, api: Union[ResultsAPI, UploadAPI, SandboxAPI], config: dict
+) -> Union[ResultsAPI, UploadAPI, SandboxAPI]:
     """
     Apply a provided config dict to a provided object
     """

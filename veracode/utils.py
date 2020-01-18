@@ -37,7 +37,7 @@ from defusedxml import ElementTree  # type: ignore
 from veracode import constants, __project_name__
 
 if TYPE_CHECKING:
-    from veracode.api import ResultsAPI, UploadAPI
+    from veracode.api import ResultsAPI, UploadAPI, SandboxAPI
 
 LOG = logging.getLogger(__project_name__ + "." + __name__)
 
@@ -231,17 +231,19 @@ def is_valid_attribute(  # pylint: disable=too-many-branches, too-many-statement
         elif not re.fullmatch("[a-zA-Z0-9-._~]+", value):
             is_valid = False
             LOG.error("An invalid build_id was provided")
-    elif key == "sandbox":
+    elif key == "sandbox_id":
         if not isinstance(value, str) and value is not None:
             is_valid = False
-            LOG.error("sandbox must be a string or None")
+            LOG.error("sandbox_id must be a string or None")
 
         if isinstance(value, str):
             try:
                 int(value)
             except (ValueError, TypeError):
                 is_valid = False
-                LOG.error("sandbox must be None or a string containing a whole number")
+                LOG.error(
+                    "sandbox_id must be None or a string containing a whole number"
+                )
     elif key == "scan_all_nonfatal_top_level_modules":
         if not isinstance(value, bool):
             is_valid = False
@@ -250,6 +252,16 @@ def is_valid_attribute(  # pylint: disable=too-many-branches, too-many-statement
         if not isinstance(value, bool):
             is_valid = False
             LOG.error("auto_scan must be a boolean")
+    elif key == "sandbox_name":
+        if not isinstance(value, str):
+            is_valid = False
+            LOG.error("sandbox_name must be a string")
+        # Limiting to unreserved characters as defined in
+        # https://tools.ietf.org/html/rfc3986#section-2.3
+        # with the addition of a /
+        elif not re.fullmatch("[a-zA-Z0-9-._~/]+", value):
+            is_valid = False
+            LOG.error("An invalid sandbox_name was provided")
     elif key == "api_key_id":
         if not isinstance(value, str) or len(str(value)) != 32:
             is_valid = False
@@ -327,7 +339,7 @@ def configure_environment(*, api_key_id: str, api_key_secret: str) -> None:
     os.environ["VERACODE_API_KEY_SECRET"] = api_key_secret
 
 
-def validate_api(*, api: Union[ResultsAPI, UploadAPI]) -> None:
+def validate_api(*, api: Union[ResultsAPI, UploadAPI, SandboxAPI]) -> None:
     """
     Validate that an api object contains the required information
     """

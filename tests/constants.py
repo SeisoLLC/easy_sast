@@ -16,7 +16,7 @@ from xml.etree import (  # nosec (Used only when TYPE_CHECKING)
 from defusedxml import ElementTree
 import yaml
 
-## Sample results API environmental information
+## Sample Results API environmental information
 VALID_RESULTS_API: Dict[str, Union[str, bool, Dict[str, str]]] = {}
 VALID_RESULTS_API["base_url"] = "https://analysiscenter.veracode.com/api/"
 VALID_RESULTS_API["version"] = {
@@ -232,7 +232,7 @@ VALID_RESULTS_API_GETAPPBUILDS_RESPONSE_XML_PASSING_POLICY_COMPLIANCE_STATUS[
     ]
 )
 
-## Sample upload API environmental information
+## Sample Upload API environmental information
 VALID_UPLOAD_API: Dict[str, Union[str, Dict[str, str], Path, bool]] = {}
 VALID_UPLOAD_API["base_url"] = "https://analysiscenter.veracode.com/api/"
 VALID_UPLOAD_API["version"] = {
@@ -259,6 +259,7 @@ VALID_UPLOAD_API["version"] = {
 VALID_UPLOAD_API["app_id"] = "1337"
 VALID_UPLOAD_API["build_dir"] = Path("/usr/local/bin/").absolute()
 VALID_UPLOAD_API["build_id"] = "v1.2.3"
+VALID_UPLOAD_API["sandbox_id"] = "321"
 VALID_UPLOAD_API["scan_all_nonfatal_top_level_modules"] = True
 VALID_UPLOAD_API["auto_scan"] = True
 VALID_UPLOAD_API["api_key_id"] = secrets.token_hex(16)
@@ -446,6 +447,52 @@ VALID_UPLOAD_API_GETAPPINFO_RESPONSE_XML["bytes"] = bytes(
 VALID_UPLOAD_API_GETAPPINFO_RESPONSE_XML["Element"] = ElementTree.fromstring(
     VALID_UPLOAD_API_GETAPPINFO_RESPONSE_XML["bytes"]
 )
+
+## Sample Sandbox API environmental information
+VALID_SANDBOX_API: Dict[str, Union[str, Dict[str, str], Path, bool]] = {}
+VALID_SANDBOX_API["base_url"] = "https://analysiscenter.veracode.com/api/"
+VALID_SANDBOX_API["version"] = {
+    "createsandbox.do": "5.0",
+    "getsandboxlist.do": "5.0",
+    "promotesandbox.do": "5.0",
+    "updatesandbox.do": "5.0",
+    "deletesandbox.do": "5.0",
+}
+VALID_SANDBOX_API["app_id"] = "1337"
+VALID_SANDBOX_API["build_id"] = "v1.2.3"
+VALID_SANDBOX_API["sandbox_id"] = "321"
+VALID_SANDBOX_API["sandbox_name"] = "fb/jonzeolla/add-sandbox_name"
+VALID_SANDBOX_API["api_key_id"] = secrets.token_hex(16)
+VALID_SANDBOX_API["api_key_secret"] = secrets.token_hex(64)  # nosec
+
+
+INVALID_SANDBOX_API_BUILD_ID = {}
+INVALID_SANDBOX_API_BUILD_ID.update(VALID_SANDBOX_API)
+INVALID_SANDBOX_API_BUILD_ID["build_id"] = "invalid(build_id)"
+
+
+INVALID_SANDBOX_API_SANDBOX_NAME = {}
+INVALID_SANDBOX_API_SANDBOX_NAME.update(VALID_SANDBOX_API)
+INVALID_SANDBOX_API_SANDBOX_NAME["sandbox_name"] = "invalid[sandbox_name]"
+
+
+INVALID_SANDBOX_API_INCORRECT_VERSION_VALUES: Dict[
+    str, Union[str, Union[Dict[str, str], Dict[str, float]], Path, bool]
+] = {}
+INVALID_SANDBOX_API_INCORRECT_VERSION_VALUES.update(VALID_SANDBOX_API)
+INVALID_SANDBOX_API_INCORRECT_VERSION_VALUES["version"] = {
+    "createsandbox.do": 5.0,
+    "getsandboxlist.do": 5.0,
+    "promotesandbox.do": 5.0,
+    "updatesandbox.do": 5.0,
+    "deletesandbox.do": 5.0,
+}
+
+
+INVALID_SANDBOX_API_INCORRECT_DOMAIN = {}
+INVALID_SANDBOX_API_INCORRECT_DOMAIN.update(VALID_RESULTS_API)
+INVALID_SANDBOX_API_INCORRECT_DOMAIN["base_url"] = "https:///api/"
+
 
 ## Example file info
 VALID_FILE: Dict[str, Union[str, List[str], bytes, Path]] = {}

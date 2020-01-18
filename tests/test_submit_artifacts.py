@@ -52,7 +52,7 @@ class TestSubmitArtifacts(TestCase):
 
                 # Sandbox scan, no error in response body
                 upload_api = UploadAPI(app_id=test_constants.VALID_UPLOAD_API["app_id"])
-                upload_api.sandbox = "12345"
+                upload_api.sandbox_id = "12345"
                 self.assertTrue(submit_artifacts.create_build(upload_api=upload_api))
 
             # Fail when the create_build function gets a response containing an
@@ -66,7 +66,7 @@ class TestSubmitArtifacts(TestCase):
 
                 # Sandbox scan, response body contains error
                 upload_api = UploadAPI(app_id=test_constants.VALID_UPLOAD_API["app_id"])
-                upload_api.sandbox = "12345"
+                upload_api.sandbox_id = "12345"
                 self.assertFalse(submit_artifacts.create_build(upload_api=upload_api))
 
         # Fail when calling the create_build function and the api call gets a
@@ -86,7 +86,7 @@ class TestSubmitArtifacts(TestCase):
 
                 # Sandbox scan, no error in response body
                 upload_api = UploadAPI(app_id=test_constants.VALID_UPLOAD_API["app_id"])
-                upload_api.sandbox = "12345"
+                upload_api.sandbox_id = "12345"
                 self.assertFalse(submit_artifacts.create_build(upload_api=upload_api))
 
     def test_begin_prescan(self):
@@ -111,7 +111,7 @@ class TestSubmitArtifacts(TestCase):
 
                 # Sandbox scan
                 upload_api = UploadAPI(app_id=test_constants.VALID_UPLOAD_API["app_id"])
-                upload_api.sandbox = "12345"
+                upload_api.sandbox_id = "12345"
                 self.assertTrue(submit_artifacts.begin_prescan(upload_api=upload_api))
 
             # Fail when the begin_prescan function gets a response containing an
@@ -125,7 +125,7 @@ class TestSubmitArtifacts(TestCase):
 
                 # Sandbox scan
                 upload_api = UploadAPI(app_id=test_constants.VALID_UPLOAD_API["app_id"])
-                upload_api.sandbox = "12345"
+                upload_api.sandbox_id = "12345"
                 self.assertFalse(submit_artifacts.begin_prescan(upload_api=upload_api))
 
         # Fail when calling the begin_prescan function and the api call gets a
@@ -140,7 +140,7 @@ class TestSubmitArtifacts(TestCase):
 
                 # Sandbox scan
                 upload_api = UploadAPI(app_id="31337")
-                upload_api.sandbox = "12345"
+                upload_api.sandbox_id = "12345"
                 self.assertFalse(submit_artifacts.begin_prescan(upload_api=upload_api))
 
     def test_filter_file_file_is_in_whitelist(self):
@@ -186,7 +186,7 @@ class TestSubmitArtifacts(TestCase):
 
             # Sandbox scan
             upload_api = UploadAPI(app_id=test_constants.VALID_UPLOAD_API["app_id"])
-            upload_api.sandbox = "12345"
+            upload_api.sandbox_id = "12345"
             valid_artifact = test_constants.VALID_FILE["Path"]
 
             with patch(
@@ -226,7 +226,7 @@ class TestSubmitArtifacts(TestCase):
 
             # Sandbox scan
             upload_api = UploadAPI(app_id=test_constants.VALID_UPLOAD_API["app_id"])
-            upload_api.sandbox = "12345"
+            upload_api.sandbox_id = "12345"
             valid_artifact = test_constants.VALID_FILE["Path"]
 
             with patch(

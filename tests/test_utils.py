@@ -1010,30 +1010,30 @@ class TestVeracodeUtils(TestCase):
         # that is an int
         self.assertFalse(utils.is_valid_attribute(key="build_id", value=7))
 
-    # sandbox validation
-    def test_is_valid_attribute_sandbox(self):
+    # sandbox_id validation
+    def test_is_valid_attribute_sandbox_id(self):
         """
-        Test the sandbox validation in is_valid_attribute
+        Test the sandbox_id validation in is_valid_attribute
         """
-        # Succeed when calling the is_valid_attribute function with a sandbox
-        # that is whole number represented as a string
-        self.assertTrue(utils.is_valid_attribute(key="sandbox", value="54321"))
+        # Succeed when calling the is_valid_attribute function with a
+        # sandbox_id that is whole number represented as a string
+        self.assertTrue(utils.is_valid_attribute(key="sandbox_id", value="54321"))
 
-        # Succeed when calling the is_valid_attribute function with a sandbox
-        # that is None (the default)
-        self.assertTrue(utils.is_valid_attribute(key="sandbox", value=None))
+        # Succeed when calling the is_valid_attribute function with a
+        # sandbox_id that is None (the default)
+        self.assertTrue(utils.is_valid_attribute(key="sandbox_id", value=None))
 
-        # Fail when calling the is_valid_attribute function with a sandbox that
-        # is an int
-        self.assertFalse(utils.is_valid_attribute(key="sandbox", value=54321))
+        # Fail when calling the is_valid_attribute function with a sandbox_id
+        # that is an int
+        self.assertFalse(utils.is_valid_attribute(key="sandbox_id", value=54321))
 
-        # Fail when calling the is_valid_attribute function with a sandbox that
-        # is a string but not a whole number
-        self.assertFalse(utils.is_valid_attribute(key="sandbox", value="success"))
+        # Fail when calling the is_valid_attribute function with a sandbox_id
+        # that is a string but not a whole number
+        self.assertFalse(utils.is_valid_attribute(key="sandbox_id", value="success"))
 
-        # Fail when calling the is_valid_attribute function with a sandbox that
-        # is a float
-        self.assertFalse(utils.is_valid_attribute(key="sandbox", value=543.21))
+        # Fail when calling the is_valid_attribute function with a sandbox_id
+        # that is a float
+        self.assertFalse(utils.is_valid_attribute(key="sandbox_id", value=543.21))
 
     # scan_all_nonfatal_top_level_modules validation
     def test_is_valid_attribute_scan_all_nonfatal_top_level_modules(self):
@@ -1079,6 +1079,32 @@ class TestVeracodeUtils(TestCase):
         # Succeed when calling the is_valid_attribute function with an auto_scan
         # that is an int
         self.assertFalse(utils.is_valid_attribute(key="auto_scan", value=1))
+
+    # sandbox_name validation
+    def test_is_valid_attribute_sandbox_name(self):
+        """
+        Test the sandbox_name validation in is_valid_attribute
+        """
+        # Succeed when calling the is_valid_attribute function with a
+        # sandbox_name that is a valid string
+        self.assertTrue(
+            utils.is_valid_attribute(
+                key="sandbox_name",
+                value="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._~",
+            )
+        )
+
+        # Fail when calling the is_valid_attribute function with a sandbox_name
+        # that is an empty string
+        self.assertFalse(utils.is_valid_attribute(key="sandbox_name", value=""))
+
+        # Succeed when calling the is_valid_attribute function with a
+        # sandbox_name that is an invalid string
+        self.assertFalse(utils.is_valid_attribute(key="sandbox_name", value=";$"))
+
+        # Fail when calling the is_valid_attribute function with a sandbox_name
+        # that is an int
+        self.assertFalse(utils.is_valid_attribute(key="sandbox_name", value=7))
 
     # api_key_id validation
     def test_is_valid_attribute_api_key_id(self):

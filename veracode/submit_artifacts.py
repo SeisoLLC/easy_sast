@@ -12,7 +12,7 @@ from typing import List
 from requests.exceptions import HTTPError, Timeout, RequestException, TooManyRedirects
 
 # custom
-from veracode.api import UploadAPI
+from veracode.api import UploadAPI, SandboxAPI
 from veracode.utils import validate, element_contains_error
 from veracode import constants
 from veracode import __project_name__
@@ -29,9 +29,9 @@ def create_build(*, upload_api: UploadAPI) -> bool:
         endpoint = "createbuild.do"
         params = {"app_id": upload_api.app_id, "version": upload_api.build_id}
 
-        # If a sandbox is specified, add it to the params
-        if isinstance(upload_api.sandbox, str):
-            params["sandbox_id"] = upload_api.sandbox
+        # If a sandbox_id is specified, add it to the params
+        if isinstance(upload_api.sandbox_id, str):
+            params["sandbox_id"] = upload_api.sandbox_id
 
         # Create the build
         response = upload_api.http_post(endpoint=endpoint, params=params)
@@ -62,9 +62,9 @@ def begin_prescan(*, upload_api: UploadAPI) -> bool:
         "auto_scan": upload_api.auto_scan,
     }
 
-    # If a sandbox is specified, add it to the params
-    if isinstance(upload_api.sandbox, str):
-        params["sandbox_id"] = upload_api.sandbox
+    # If a sandbox_id is specified, add it to the params
+    if isinstance(upload_api.sandbox_id, str):
+        params["sandbox_id"] = upload_api.sandbox_id
 
     try:
         response = upload_api.http_post(endpoint=endpoint, params=params)
@@ -125,9 +125,9 @@ def upload_large_file(*, upload_api: UploadAPI, artifact: Path) -> bool:
     params = {"app_id": upload_api.app_id, "filename": filename}
     headers = {"Content-Type": "binary/octet-stream"}
 
-    # If a sandbox is specified, add it to the params
-    if isinstance(upload_api.sandbox, str):
-        params["sandbox_id"] = upload_api.sandbox
+    # If a sandbox_id is specified, add it to the params
+    if isinstance(upload_api.sandbox_id, str):
+        params["sandbox_id"] = upload_api.sandbox_id
 
     try:
         with open(artifact, "rb") as f:
@@ -145,18 +145,164 @@ def upload_large_file(*, upload_api: UploadAPI, artifact: Path) -> bool:
 
 
 @validate
-def submit_artifacts(*, upload_api: UploadAPI) -> bool:
+def get_sandbox_id(*, sandbox_api: SandboxAPI) -> str:
+    """
+    Query for and return the sandbox_id
+    """
+    try:
+        endpoint = "getsandboxlist.do"
+        params = {"app_id": sandbox_api.app_id}
+
+        sandbox_api.http_get(endpoint=endpoint, params=params)
+        # TODO: Parse and find the sandbox_id, similar to other funcs
+        return "12345"
+    except (
+        HTTPError,
+        ConnectionError,
+        Timeout,
+        TooManyRedirects,
+        RequestException,
+        RuntimeError,
+    ):
+        raise RuntimeError
+
+
+@validate
+def create_sandbox(*, sandbox_api: SandboxAPI) -> str:
+    """
+    Create a sandbox and return the sandbox_id
+    """
+    try:
+        endpoint = "createsandbox.do"
+        params = {
+            "app_id": sandbox_api.app_id,
+            "sandbox_name": sandbox_api.sandbox_name,
+        }
+
+        sandbox_api.http_post(endpoint=endpoint, params=params)
+        # TODO: Validate a good response then parse for and return the sandbox_id
+        return "12345"
+    except (
+        HTTPError,
+        ConnectionError,
+        Timeout,
+        TooManyRedirects,
+        RequestException,
+        RuntimeError,
+    ):
+        raise RuntimeError
+
+
+@validate
+def cancel_build(*, upload_api: UploadAPI) -> bool:
+    """
+    Cancel an application build
+    """
+    try:
+        endpoint = "deletebuild.do"
+        params = {"app_id": upload_api.app_id}
+
+        # If a sandbox_id is specified, add it to the params
+        if isinstance(upload_api.sandbox_id, str):
+            params["sandbox_id"] = upload_api.sandbox_id
+
+        # TODO: Is this really a GET?  I would have thought DELETE or POST
+        # https://help.veracode.com/reader/LMv_dtSHyb7iIxAQznC~9w/rERUQewXKGx2D_zaoi6wGw
+        upload_api.http_get(endpoint=endpoint, params=params)
+        # TODO: Validate a good response then return True if all good
+        return True
+    except (
+        HTTPError,
+        ConnectionError,
+        Timeout,
+        TooManyRedirects,
+        RequestException,
+        RuntimeError,
+    ):
+        return False
+
+
+@validate
+def setup_scan_prereqs(*, upload_api: UploadAPI) -> bool:
+    """
+    Setup the scan environment prereqs
+    """
+    if create_build(upload_api=upload_api):
+        LOG.debug("Successfully created an application build")
+        return True
+
+    # Application build creation was unsuccessful.  If this is a policy
+    # scan, error out
+    if not isinstance(upload_api.sandbox_id, str):
+        LOG.error("Failed create an application build")
+        return False
+
+    # Application build creation was unsuccessful and this is a sandbox
+    # scan, attempt to cancel the existing scan and retry
+    LOG.info(
+        "Failed to create an application build. Attempting to cancel an existing build for app_id %s sandbox %s and retry",
+        upload_api.app_id,
+        upload_api.sandbox_id,
+    )
+    if cancel_build(upload_api=upload_api):
+        LOG.debug(
+            "Retrying the build creation for app_id %s sandbox %s",
+            upload_api.app_id,
+            upload_api.sandbox_id,
+        )
+    else:
+        LOG.error(
+            "Unable to cancel the build for app_id %s sandbox_id %s",
+            upload_api.app_id,
+            upload_api.sandbox_id,
+        )
+        return False
+
+    if create_build(upload_api=upload_api):
+        LOG.info("Successfully created an application build")
+        return True
+
+    LOG.error("Failed to create an application build")
+    return False
+
+
+@validate
+def submit_artifacts(  # pylint: disable=too-many-return-statements, too-many-branches
+    *, upload_api: UploadAPI, sandbox_api: SandboxAPI = None
+) -> bool:
     """
     Submit build artifacts to Veracode for SAST
     """
     artifacts: List[Path] = []
 
-    LOG.info("Attempting to create a build")
-    if create_build(upload_api=upload_api):
-        LOG.info("Successfully called create_build")
-    else:
-        LOG.error("Failed to call create_build")
+    # If we were provided a sandbox_api object, attempt to get the sandbox_id
+    # that maps to the sandbox_name and if it doesn't exist, make one
+    if sandbox_api:
+        try:
+            upload_api.sandbox_id = get_sandbox_id(sandbox_api=sandbox_api)
+        except RuntimeError:
+            LOG.warning(
+                "Unable to get the sandbox_id for sandbox_name %s",
+                sandbox_api.sandbox_name,
+            )
+            return False
+
+        if not upload_api.sandbox_id:
+            try:
+                upload_api.sandbox_id = create_sandbox(sandbox_api=sandbox_api)
+            except RuntimeError:
+                LOG.error(
+                    "Unable to create a sandbox named %s in app_id %s",
+                    sandbox_api.sandbox_name,
+                    sandbox_api.app_id,
+                )
+                return False
+
+    # Setup the scan prereqs
+    if not setup_scan_prereqs(upload_api=upload_api):
+        # Scan prereq setup failed
         return False
+    LOG.info("Successfully setup the scan prerequisites in Veracode")
 
     LOG.info("Beginning pre-upload file filtering")
     for artifact in upload_api.build_dir.iterdir():

@@ -3,8 +3,8 @@
 Constants for easy_sast
 """
 # Supported Sets
-SUPPORTED_APIS = {"results", "upload"}
-SUPPORTED_API_CLASSES = {"ResultsAPI", "UploadAPI"}
+SUPPORTED_APIS = {"results", "upload", "sandbox"}
+SUPPORTED_API_CLASSES = {"ResultsAPI", "UploadAPI", "SandboxAPI"}
 SUPPORTED_WORKFLOWS = {"submit_artifacts", "check_compliance"}
 SUPPORTED_VERBS = {"get", "post"}
 
@@ -16,7 +16,7 @@ API_ATTRIBUTES = {
         "app_id",
         "build_dir",
         "build_id",
-        "sandbox",
+        "sandbox_id",
         "scan_all_nonfatal_top_level_modules",
         "auto_scan",
     },
@@ -27,10 +27,27 @@ API_ATTRIBUTES = {
         "ignore_compliance_status",
         "ignore_compliance_status",
     },
+    "sandbox": {
+        "base_url",
+        "version",
+        "app_id",
+        "build_id",
+        "sandbox_id",
+        "sandbox_name",
+    },
 }
-COMMON_API_ATTRIBUTES = API_ATTRIBUTES["upload"].intersection(API_ATTRIBUTES["results"])
-ONLY_UPLOAD_ATTRIBUTES = API_ATTRIBUTES["upload"].difference(API_ATTRIBUTES["results"])
-ONLY_RESULTS_ATTRIBUTES = API_ATTRIBUTES["results"].difference(API_ATTRIBUTES["upload"])
+COMMON_API_ATTRIBUTES = API_ATTRIBUTES["upload"].intersection(
+    API_ATTRIBUTES["results"], API_ATTRIBUTES["sandbox"]
+)
+ONLY_UPLOAD_ATTRIBUTES = API_ATTRIBUTES["upload"].difference(
+    API_ATTRIBUTES["results"], API_ATTRIBUTES["sandbox"]
+)
+ONLY_RESULTS_ATTRIBUTES = API_ATTRIBUTES["results"].difference(
+    API_ATTRIBUTES["upload"], API_ATTRIBUTES["sandbox"]
+)
+ONLY_SANDBOX_ATTRIBUTES = API_ATTRIBUTES["sandbox"].difference(
+    API_ATTRIBUTES["results"], API_ATTRIBUTES["upload"]
+)
 
 ## Config Options
 REQUIRED_CONFIG_ATTRIBUTES_API = {"app_id"}
@@ -50,7 +67,10 @@ ALLOWED_LOG_LEVELS = {
 
 # Workflow Items
 DEFAULT_WORKFLOW = ["submit_artifacts", "check_compliance"]
-WORKFLOW_TO_API_MAP = {"submit_artifacts": {"upload"}, "check_compliance": {"results"}}
+WORKFLOW_TO_API_MAP = {
+    "submit_artifacts": {"upload", "sandbox"},
+    "check_compliance": {"results"},
+}
 
 # submit_artifacts
 WHITELIST_FILE_SUFFIX_SET = {
