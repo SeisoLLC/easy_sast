@@ -15,7 +15,8 @@ import os
 import yaml
 
 # custom
-from veracode.api import is_valid_attribute, ResultsAPI, UploadAPI
+from veracode.api import ResultsAPI, UploadAPI
+from veracode.utils import is_valid_attribute
 from veracode import constants
 from veracode import __version__, __project_name__
 

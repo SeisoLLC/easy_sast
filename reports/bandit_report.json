@@ -1,6 +1,6 @@
 {
   "errors": [],
-  "generated_at": "2020-01-16T13:02:34Z",
+  "generated_at": "2020-01-18T00:47:12Z",
   "metrics": {
     "./main.py": {
       "CONFIDENCE.HIGH": 0.0,
@@ -11,7 +11,7 @@
       "SEVERITY.LOW": 0.0,
       "SEVERITY.MEDIUM": 0.0,
       "SEVERITY.UNDEFINED": 0.0,
-      "loc": 60,
+      "loc": 61,
       "nosec": 0
     },
     "./tests/__init__.py": {
@@ -38,7 +38,7 @@
       "loc": 629,
       "nosec": 3
     },
-    "./tests/test_api_classes.py": {
+    "./tests/test_api.py": {
       "CONFIDENCE.HIGH": 0.0,
       "CONFIDENCE.LOW": 0.0,
       "CONFIDENCE.MEDIUM": 0.0,
@@ -49,18 +49,6 @@
       "SEVERITY.UNDEFINED": 0.0,
       "loc": 479,
       "nosec": 1
-    },
-    "./tests/test_api_functions.py": {
-      "CONFIDENCE.HIGH": 0.0,
-      "CONFIDENCE.LOW": 0.0,
-      "CONFIDENCE.MEDIUM": 0.0,
-      "CONFIDENCE.UNDEFINED": 0.0,
-      "SEVERITY.HIGH": 0.0,
-      "SEVERITY.LOW": 0.0,
-      "SEVERITY.MEDIUM": 0.0,
-      "SEVERITY.UNDEFINED": 0.0,
-      "loc": 1017,
-      "nosec": 0
     },
     "./tests/test_check_compliance.py": {
       "CONFIDENCE.HIGH": 0.0,
@@ -110,6 +98,18 @@
       "loc": 239,
       "nosec": 0
     },
+    "./tests/test_utils.py": {
+      "CONFIDENCE.HIGH": 0.0,
+      "CONFIDENCE.LOW": 0.0,
+      "CONFIDENCE.MEDIUM": 0.0,
+      "CONFIDENCE.UNDEFINED": 0.0,
+      "SEVERITY.HIGH": 0.0,
+      "SEVERITY.LOW": 0.0,
+      "SEVERITY.MEDIUM": 0.0,
+      "SEVERITY.UNDEFINED": 0.0,
+      "loc": 1027,
+      "nosec": 0
+    },
     "./veracode/__init__.py": {
       "CONFIDENCE.HIGH": 0.0,
       "CONFIDENCE.LOW": 0.0,
@@ -131,8 +131,8 @@
       "SEVERITY.LOW": 0.0,
       "SEVERITY.MEDIUM": 0.0,
       "SEVERITY.UNDEFINED": 0.0,
-      "loc": 593,
-      "nosec": 1
+      "loc": 301,
+      "nosec": 0
     },
     "./veracode/check_compliance.py": {
       "CONFIDENCE.HIGH": 0.0,
@@ -143,7 +143,7 @@
       "SEVERITY.LOW": 0.0,
       "SEVERITY.MEDIUM": 0.0,
       "SEVERITY.UNDEFINED": 0.0,
-      "loc": 95,
+      "loc": 96,
       "nosec": 1
     },
     "./veracode/config.py": {
@@ -155,7 +155,7 @@
       "SEVERITY.LOW": 0.0,
       "SEVERITY.MEDIUM": 0.0,
       "SEVERITY.UNDEFINED": 0.0,
-      "loc": 325,
+      "loc": 326,
       "nosec": 0
     },
     "./veracode/constants.py": {
@@ -179,8 +179,20 @@
       "SEVERITY.LOW": 0.0,
       "SEVERITY.MEDIUM": 0.0,
       "SEVERITY.UNDEFINED": 0.0,
-      "loc": 139,
+      "loc": 140,
       "nosec": 0
+    },
+    "./veracode/utils.py": {
+      "CONFIDENCE.HIGH": 0.0,
+      "CONFIDENCE.LOW": 0.0,
+      "CONFIDENCE.MEDIUM": 0.0,
+      "CONFIDENCE.UNDEFINED": 0.0,
+      "SEVERITY.HIGH": 0.0,
+      "SEVERITY.LOW": 0.0,
+      "SEVERITY.MEDIUM": 0.0,
+      "SEVERITY.UNDEFINED": 0.0,
+      "loc": 304,
+      "nosec": 1
     },
     "_totals": {
       "CONFIDENCE.HIGH": 0.0,
@@ -191,7 +203,7 @@
       "SEVERITY.LOW": 0.0,
       "SEVERITY.MEDIUM": 0.0,
       "SEVERITY.UNDEFINED": 0.0,
-      "loc": 4661,
+      "loc": 4687,
       "nosec": 6
     }
   },
