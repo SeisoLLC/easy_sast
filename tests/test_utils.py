@@ -419,9 +419,14 @@ class TestVeracodeUtils(TestCase):
             + "/"
             + endpoint
         )
+        response = utils.http_request(verb="get", url=url)
 
-        self.assertRaises(
-            RuntimeError, utils.http_request, verb="get", url=url,
+        self.assertEqual(
+            [response.tag, response.attrib],
+            [
+                test_constants.VERACODE_ERROR_RESPONSE_XML["Element"].tag,
+                test_constants.VERACODE_ERROR_RESPONSE_XML["Element"].attrib,
+            ],
         )
 
     # http_request post 200
@@ -738,14 +743,16 @@ class TestVeracodeUtils(TestCase):
         ]
         mock_element_contains_error.return_value = True
 
-        self.assertRaises(
-            RuntimeError,
-            utils.http_request,
-            verb="post",
-            url=url,
-            data=data,
-            params=params,
-            headers=headers,
+        response = utils.http_request(
+            verb="post", url=url, data=data, params=params, headers=headers,
+        )
+
+        self.assertEqual(
+            [response.tag, response.attrib],
+            [
+                test_constants.VERACODE_ERROR_RESPONSE_XML["Element"].tag,
+                test_constants.VERACODE_ERROR_RESPONSE_XML["Element"].attrib,
+            ],
         )
 
     # http_request unsupported verb valueerror
