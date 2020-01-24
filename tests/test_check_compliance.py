@@ -181,17 +181,29 @@ class TestVeracodeCheckCompliance(TestCase):
                 "Element"
             ],
         ):
-            results_api = ResultsAPI(app_id="1337")
-            output = check_compliance.get_latest_completed_build(
-                results_api=results_api
-            )
-            expected = ElementTree.fromstring(
-                b'<ns0:application xmlns:ns0="https://analysiscenter.veracode.com/schema/2.0/applicationbuilds" app_name="app name" app_id="1337" industry_vertical="Manufacturing" assurance_level="Very High" business_criticality="Very High" origin="Not Specified" modified_date="2019-08-13T14:00:10-04:00" cots="false" business_unit="Not Specified" tags="">\n      <ns0:customfield name="Custom 1" value="" />\n      <ns0:customfield name="Custom 2" value="" />\n      <ns0:customfield name="Custom 3" value="" />\n      <ns0:customfield name="Custom 4" value="" />\n      <ns0:customfield name="Custom 5" value="" />\n      <ns0:customfield name="Custom 6" value="" />\n      <ns0:customfield name="Custom 7" value="" />\n      <ns0:customfield name="Custom 8" value="" />\n      <ns0:customfield name="Custom 9" value="" />\n      <ns0:customfield name="Custom 10" value="" />\n      <ns0:build version="2019-10 Testing" build_id="1234321" submitter="Jon Zeolla" platform="Not Specified" lifecycle_stage="Deployed (In production and actively developed)" results_ready="true" policy_name="Veracode Recommended Medium" policy_version="1" policy_compliance_status="Pass" rules_status="Pass" grace_period_expired="false" scan_overdue="false">\n         <ns0:analysis_unit analysis_type="Static" published_date="2019-10-13T16:20:30-04:00" published_date_sec="1570998030" status="Results Ready" />\n      </ns0:build>\n   </ns0:application>\n'
-            )
+            with patch(
+                "veracode.check_compliance.element_contains_error", return_value=False
+            ):
+                results_api = ResultsAPI(app_id="1337")
+                output = check_compliance.get_latest_completed_build(
+                    results_api=results_api
+                )
+                expected = ElementTree.fromstring(
+                    b'<ns0:application xmlns:ns0="https://analysiscenter.veracode.com/schema/2.0/applicationbuilds" app_name="app name" app_id="1337" industry_vertical="Manufacturing" assurance_level="Very High" business_criticality="Very High" origin="Not Specified" modified_date="2019-08-13T14:00:10-04:00" cots="false" business_unit="Not Specified" tags="">\n      <ns0:customfield name="Custom 1" value="" />\n      <ns0:customfield name="Custom 2" value="" />\n      <ns0:customfield name="Custom 3" value="" />\n      <ns0:customfield name="Custom 4" value="" />\n      <ns0:customfield name="Custom 5" value="" />\n      <ns0:customfield name="Custom 6" value="" />\n      <ns0:customfield name="Custom 7" value="" />\n      <ns0:customfield name="Custom 8" value="" />\n      <ns0:customfield name="Custom 9" value="" />\n      <ns0:customfield name="Custom 10" value="" />\n      <ns0:build version="2019-10 Testing" build_id="1234321" submitter="Jon Zeolla" platform="Not Specified" lifecycle_stage="Deployed (In production and actively developed)" results_ready="true" policy_name="Veracode Recommended Medium" policy_version="1" policy_compliance_status="Pass" rules_status="Pass" grace_period_expired="false" scan_overdue="false">\n         <ns0:analysis_unit analysis_type="Static" published_date="2019-10-13T16:20:30-04:00" published_date_sec="1570998030" status="Results Ready" />\n      </ns0:build>\n   </ns0:application>\n'
+                )
 
-            self.assertEqual(
-                [output.tag, output.attrib], [expected.tag, expected.attrib]
-            )
+                self.assertEqual(
+                    [output.tag, output.attrib], [expected.tag, expected.attrib]
+                )
+
+            # However, return False when the element_contains_error function
+            # returns True
+            with patch(
+                "veracode.check_compliance.element_contains_error", return_value=True
+            ):
+                self.assertFalse(
+                    check_compliance.get_latest_completed_build(results_api=results_api)
+                )
 
         # Return False when calling the get_latest_completed_build function
         # with a valid results_api and the http_get method returns an
@@ -203,11 +215,14 @@ class TestVeracodeCheckCompliance(TestCase):
                 "Element"
             ],
         ):
-            results_api = ResultsAPI(app_id="31337")
-            output = check_compliance.get_latest_completed_build(
-                results_api=results_api
-            )
-            self.assertFalse(output)
+            with patch(
+                "veracode.check_compliance.element_contains_error", return_value=False
+            ):
+                results_api = ResultsAPI(app_id="31337")
+                output = check_compliance.get_latest_completed_build(
+                    results_api=results_api
+                )
+                self.assertFalse(output)
 
         # Return False when calling the get_latest_completed_build function
         # with a valid results_api and the http_get method raises one of a
@@ -219,10 +234,12 @@ class TestVeracodeCheckCompliance(TestCase):
             Timeout,
             TooManyRedirects,
             RequestException,
-            RuntimeError,
         ]:
-            with patch.object(ResultsAPI, "http_get", side_effect=err):
-                output = check_compliance.get_latest_completed_build(
-                    results_api=results_api
-                )
-                self.assertFalse(output)
+            with patch(
+                "veracode.check_compliance.element_contains_error", return_value=False
+            ):
+                with patch.object(ResultsAPI, "http_get", side_effect=err):
+                    output = check_compliance.get_latest_completed_build(
+                        results_api=results_api
+                    )
+                    self.assertFalse(output)

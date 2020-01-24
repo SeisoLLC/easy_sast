@@ -13,7 +13,7 @@ from requests.exceptions import HTTPError, Timeout, RequestException, TooManyRed
 
 # custom
 from veracode.api import UploadAPI
-from veracode.utils import validate
+from veracode.utils import validate, element_contains_error
 from veracode import constants
 from veracode import __project_name__
 
@@ -34,7 +34,10 @@ def create_build(*, upload_api: UploadAPI) -> bool:
             params["sandbox_id"] = upload_api.sandbox
 
         # Create the build
-        upload_api.http_post(endpoint=endpoint, params=params)
+        response = upload_api.http_post(endpoint=endpoint, params=params)
+        if element_contains_error(parsed_xml=response):
+            LOG.error("Veracode returned an error when attempting to call %s", endpoint)
+            return False
         return True
     except (
         HTTPError,
@@ -42,9 +45,8 @@ def create_build(*, upload_api: UploadAPI) -> bool:
         Timeout,
         TooManyRedirects,
         RequestException,
-        RuntimeError,
     ):
-        LOG.error("The Veracode API post to the %s endpoint failed", endpoint)
+        LOG.error("Exception encountered when calling the Veracode API")
         return False
 
 
@@ -65,7 +67,10 @@ def begin_prescan(*, upload_api: UploadAPI) -> bool:
         params["sandbox_id"] = upload_api.sandbox
 
     try:
-        upload_api.http_post(endpoint=endpoint, params=params)
+        response = upload_api.http_post(endpoint=endpoint, params=params)
+        if element_contains_error(parsed_xml=response):
+            LOG.error("Veracode returned an error when attempting to call %s", endpoint)
+            return False
         return True
     except (
         HTTPError,
@@ -73,9 +78,8 @@ def begin_prescan(*, upload_api: UploadAPI) -> bool:
         Timeout,
         TooManyRedirects,
         RequestException,
-        RuntimeError,
     ):
-        LOG.error("The Veracode API post to the %s endpoint failed", endpoint)
+        LOG.error("Exception encountered when calling the Veracode API")
         return False
 
 
