@@ -35,40 +35,59 @@ class TestSubmitArtifacts(TestCase):
         """
         Test the create_build function
         """
-        # Succeed when calling the create_build function and the api call gets
-        # a valid response
+        # Test the create_build function when the api call gets a valid response
         with patch.object(
             UploadAPI,
             "http_post",
             return_value=test_constants.VALID_UPLOAD_API_CREATEBUILD_RESPONSE_XML[
-                "bytes"
+                "Element"
             ],
         ):
-            # Policy scan
-            upload_api = UploadAPI(app_id=test_constants.VALID_UPLOAD_API["app_id"])
-            self.assertTrue(submit_artifacts.create_build(upload_api=upload_api))
+            with patch(
+                "veracode.submit_artifacts.element_contains_error", return_value=False
+            ):
+                # Policy scan, no error in response body
+                upload_api = UploadAPI(app_id=test_constants.VALID_UPLOAD_API["app_id"])
+                self.assertTrue(submit_artifacts.create_build(upload_api=upload_api))
 
-            # Sandbox scan
-            upload_api = UploadAPI(app_id=test_constants.VALID_UPLOAD_API["app_id"])
-            upload_api.sandbox = "12345"
-            self.assertTrue(submit_artifacts.create_build(upload_api=upload_api))
+                # Sandbox scan, no error in response body
+                upload_api = UploadAPI(app_id=test_constants.VALID_UPLOAD_API["app_id"])
+                upload_api.sandbox = "12345"
+                self.assertTrue(submit_artifacts.create_build(upload_api=upload_api))
+
+            # Fail when the create_build function gets a response containing an
+            # error in the response body
+            with patch(
+                "veracode.submit_artifacts.element_contains_error", return_value=True
+            ):
+                # Policy scan, response body contains error
+                upload_api = UploadAPI(app_id=test_constants.VALID_UPLOAD_API["app_id"])
+                self.assertFalse(submit_artifacts.create_build(upload_api=upload_api))
+
+                # Sandbox scan, response body contains error
+                upload_api = UploadAPI(app_id=test_constants.VALID_UPLOAD_API["app_id"])
+                upload_api.sandbox = "12345"
+                self.assertFalse(submit_artifacts.create_build(upload_api=upload_api))
 
         # Fail when calling the create_build function and the api call gets a
         # mocked error message response and a mocked side effect of HTTPError
         with patch.object(
             UploadAPI,
             "http_post",
-            return_value=test_constants.VERACODE_ERROR_RESPONSE_XML["bytes"],
+            return_value=test_constants.VERACODE_ERROR_RESPONSE_XML["Element"],
             side_effect=HTTPError(),
         ):
-            # Policy scan
-            upload_api = UploadAPI(app_id=test_constants.VALID_UPLOAD_API["app_id"])
-            self.assertFalse(submit_artifacts.create_build(upload_api=upload_api))
+            with patch(
+                "veracode.submit_artifacts.element_contains_error", return_value=False
+            ):
+                # Policy scan, no error in response body
+                upload_api = UploadAPI(app_id=test_constants.VALID_UPLOAD_API["app_id"])
+                self.assertFalse(submit_artifacts.create_build(upload_api=upload_api))
 
-            # Sandbox scan
-            upload_api = UploadAPI(app_id=test_constants.VALID_UPLOAD_API["app_id"])
-            upload_api.sandbox = "12345"
-            self.assertFalse(submit_artifacts.create_build(upload_api=upload_api))
+                # Sandbox scan, no error in response body
+                upload_api = UploadAPI(app_id=test_constants.VALID_UPLOAD_API["app_id"])
+                upload_api.sandbox = "12345"
+                self.assertFalse(submit_artifacts.create_build(upload_api=upload_api))
 
     def test_begin_prescan(self):
         """
@@ -80,29 +99,49 @@ class TestSubmitArtifacts(TestCase):
             UploadAPI,
             "http_post",
             return_value=test_constants.VALID_UPLOAD_API_BEGINPRESCAN_RESPONSE_XML[
-                "bytes"
+                "Element"
             ],
         ):
-            # Policy scan
-            upload_api = UploadAPI(app_id=test_constants.VALID_UPLOAD_API["app_id"])
-            self.assertTrue(submit_artifacts.begin_prescan(upload_api=upload_api))
+            with patch(
+                "veracode.submit_artifacts.element_contains_error", return_value=False
+            ):
+                # Policy scan
+                upload_api = UploadAPI(app_id=test_constants.VALID_UPLOAD_API["app_id"])
+                self.assertTrue(submit_artifacts.begin_prescan(upload_api=upload_api))
 
-            # Sandbox scan
-            upload_api = UploadAPI(app_id=test_constants.VALID_UPLOAD_API["app_id"])
-            upload_api.sandbox = "12345"
-            self.assertTrue(submit_artifacts.begin_prescan(upload_api=upload_api))
+                # Sandbox scan
+                upload_api = UploadAPI(app_id=test_constants.VALID_UPLOAD_API["app_id"])
+                upload_api.sandbox = "12345"
+                self.assertTrue(submit_artifacts.begin_prescan(upload_api=upload_api))
+
+            # Fail when the begin_prescan function gets a response containing an
+            # error in the response body
+            with patch(
+                "veracode.submit_artifacts.element_contains_error", return_value=True
+            ):
+                # Policy scan
+                upload_api = UploadAPI(app_id=test_constants.VALID_UPLOAD_API["app_id"])
+                self.assertFalse(submit_artifacts.begin_prescan(upload_api=upload_api))
+
+                # Sandbox scan
+                upload_api = UploadAPI(app_id=test_constants.VALID_UPLOAD_API["app_id"])
+                upload_api.sandbox = "12345"
+                self.assertFalse(submit_artifacts.begin_prescan(upload_api=upload_api))
 
         # Fail when calling the begin_prescan function and the api call gets a
         # mocked side effect of HTTPError
         with patch.object(UploadAPI, "http_post", side_effect=HTTPError()):
-            # Policy scan
-            upload_api = UploadAPI(app_id="31337")
-            self.assertFalse(submit_artifacts.begin_prescan(upload_api=upload_api))
+            with patch(
+                "veracode.submit_artifacts.element_contains_error", return_value=False
+            ):
+                # Policy scan
+                upload_api = UploadAPI(app_id="31337")
+                self.assertFalse(submit_artifacts.begin_prescan(upload_api=upload_api))
 
-            # Sandbox scan
-            upload_api = UploadAPI(app_id="31337")
-            upload_api.sandbox = "12345"
-            self.assertFalse(submit_artifacts.begin_prescan(upload_api=upload_api))
+                # Sandbox scan
+                upload_api = UploadAPI(app_id="31337")
+                upload_api.sandbox = "12345"
+                self.assertFalse(submit_artifacts.begin_prescan(upload_api=upload_api))
 
     def test_filter_file_file_is_in_whitelist(self):
         """Test the filter_file function with a valid file suffix"""
@@ -116,10 +155,12 @@ class TestSubmitArtifacts(TestCase):
             invalid_artifact = Path("/path/" + filename)
             self.assertFalse(submit_artifacts.filter_file(artifact=invalid_artifact))
 
-    def test_upload_large_file(self):
+    @patch("veracode.submit_artifacts.element_contains_error")
+    def test_upload_large_file(self, mock_element_contains_error):
         """
         Test the upload_large_file function
         """
+        mock_element_contains_error.return_value = False
         # Succeed when calling the upload_large_file function and the api call
         # gets a valid response
         with patch.object(

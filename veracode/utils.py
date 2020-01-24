@@ -146,10 +146,6 @@ def http_request(  # pylint: disable=too-many-statements
     # Parse the XML response
     parsed_xml = parse_xml(content=response.content)
 
-    if element_contains_error(parsed_xml=parsed_xml):
-        LOG.error("The Veracode API responded with an error message")
-        raise RuntimeError
-
     return parsed_xml
 
 

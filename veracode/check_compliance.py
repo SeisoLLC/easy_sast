@@ -15,7 +15,7 @@ from requests.exceptions import HTTPError, Timeout, RequestException, TooManyRed
 
 # custom
 from veracode.api import ResultsAPI
-from veracode.utils import validate
+from veracode.utils import validate, element_contains_error
 from veracode import __project_name__
 
 LOG = logging.getLogger(__project_name__ + "." + __name__)
@@ -29,18 +29,21 @@ def get_latest_completed_build(
     Get the latest completed build build_id for a given app_id
     https://help.veracode.com/reader/LMv_dtSHyb7iIxAQznC~9w/Q8E6r4JDAN1lykB08oGDSA
     """
+    endpoint = "getappbuilds.do"
     params = {"only_latest": only_latest}
     try:
-        appbuilds = results_api.http_get(endpoint="getappbuilds.do", params=params)
+        appbuilds = results_api.http_get(endpoint=endpoint, params=params)
+        if element_contains_error(parsed_xml=appbuilds):
+            LOG.error("Veracode returned an error when attempting to call %s", endpoint)
+            return False
     except (
         HTTPError,
         ConnectionError,
         Timeout,
         TooManyRedirects,
         RequestException,
-        RuntimeError,
     ):
-        LOG.error("Failed to retrieve the application builds from Veracode")
+        LOG.error("Exception encountered when calling the Veracode API")
         return False
 
     # Filter on the provided app_id
