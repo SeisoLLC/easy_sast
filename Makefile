@@ -79,7 +79,7 @@ requirements: requirements-to-freeze.txt $(VENDOR)/requirements-to-freeze.txt
 
 hook_commit-msg:
 	@$(PYTHON) -c 'print("Linting the latest git commit message...")'
-	@$(DOCKER) run --rm -v $$(pwd):/usr/src/app/ --entrypoint cat $(IMAGE_NAME):latest-test_unit $1 | gitlint
+	@$(DOCKER) run --rm -v $$(pwd)/:/usr/src/app/ --entrypoint python $(IMAGE_NAME):latest-test_unit -m gitlint.cli -c title-max-length.line-length=64 --msg-filename ".git/COMMIT_EDITMSG"
 
 shell:
 	@$(DOCKER) run -it --entrypoint /bin/sh easy_sast:latest
