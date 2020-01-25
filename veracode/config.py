@@ -287,7 +287,7 @@ def create_arg_parser() -> ArgumentParser:
     parser.add_argument(
         "--config-file",
         type=lambda p: Path(p).absolute(),
-        default=Path("config.yml").absolute(),
+        default=Path("easy_sast.yml").absolute(),
         help="specify a config file",
     )
     parser.add_argument(

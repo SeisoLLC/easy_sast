@@ -531,7 +531,7 @@ INVALID_CONFIG_CLEAN = {
 }
 
 SIMPLE_CONFIG_FILE = {}
-SIMPLE_CONFIG_FILE["name"] = "config.yml"
+SIMPLE_CONFIG_FILE["name"] = "easy_sast.yml"
 SIMPLE_CONFIG_FILE["Path"] = Path("/path/" + str(SIMPLE_CONFIG_FILE["name"]))
 SIMPLE_CONFIG_FILE[
     "string"
@@ -540,7 +540,7 @@ loglevel: "WARNING"'''
 SIMPLE_CONFIG_FILE["bytes"] = bytes(SIMPLE_CONFIG_FILE["string"], "utf-8")
 
 INVALID_CONFIG_FILES = [
-    Path("./config.yml.gz"),
+    Path("./easy_sast.yml.gz"),
     Path("./config.txt.yml"),
     Path("./thing.notyml"),
     Path("./not_a_config.pdb"),
@@ -675,7 +675,7 @@ CLEAN_ENV_CONFIG = {
     "api_key_secret": "f7bb8c01bce05290ac8939f1d27d90ab84d2e05bb4671ca2f88d609d07afa723265348d708bdd0a1707a499528f6aa5c83133f4c5aca06a528d30b61fd4b6b28",
 }
 CLEAN_ARGS_CONFIG = {
-    "config_file": Path("/easy_sast/config.yml"),
+    "config_file": Path("/easy_sast/easy_sast.yml"),
     "apis": {
         "results": {"ignore_compliance_status": False},
         "upload": {"scan_all_nonfatal_top_level_modules": True, "auto_scan": True},
@@ -739,5 +739,5 @@ CLEAN_EFFECTIVE_CONFIG = {
     },
     "api_key_id": "95e637f1a25d453cdfdc30a338287ba8",
     "api_key_secret": "f7bb8c01bce05290ac8939f1d27d90ab84d2e05bb4671ca2f88d609d07afa723265348d708bdd0a1707a499528f6aa5c83133f4c5aca06a528d30b61fd4b6b28",
-    "config_file": Path("/easy_sast/config.yml"),
+    "config_file": Path("/easy_sast/easy_sast.yml"),
 }
