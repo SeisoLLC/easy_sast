@@ -189,19 +189,19 @@ class TestVeracodeConfig(CLITestCase):
         self.assertRaises(ValueError, config.get_file_config, config_file=1)
         self.assertRaises(ValueError, config.get_file_config, config_file=1.2)
         self.assertRaises(
-            ValueError, config.get_file_config, config_file="/path/config.yml"
+            ValueError, config.get_file_config, config_file="/path/easy_sast.yml"
         )
         self.assertRaises(ValueError, config.get_file_config, config_file=None)
         self.assertRaises(
-            ValueError, config.get_file_config, config_file=["/path/", "config.yml"]
+            ValueError, config.get_file_config, config_file=["/path/", "easy_sast.yml"]
         )
         self.assertRaises(
             ValueError,
             config.get_file_config,
-            config_file={"Path": "/path/config.yml"},
+            config_file={"Path": "/path/easy_sast.yml"},
         )
         self.assertRaises(
-            ValueError, config.get_file_config, config_file=set("config.yml")
+            ValueError, config.get_file_config, config_file=set("easy_sast.yml")
         )
 
     ## parse_file_config tests
@@ -607,15 +607,15 @@ class TestVeracodeConfig(CLITestCase):
         # Succeed when calling the create_arg_parser function and pass only
         # --config-file as an argument
         output = self.parser.parse_args(
-            ["--config-file=" + str(Path("./config.yml").absolute())]
+            ["--config-file=" + str(Path("./easy_sast.yml").absolute())]
         )
-        self.assertEqual(output.config_file, Path("./config.yml").absolute())
+        self.assertEqual(output.config_file, Path("./easy_sast.yml").absolute())
 
         # Succeed and return the default config file when calling the
         # create_arg_parser function without passing --config-file as an
         # argument
         output = self.parser.parse_args(["--verbose"])
-        self.assertEqual(output.config_file, Path("./config.yml").absolute())
+        self.assertEqual(output.config_file, Path("./easy_sast.yml").absolute())
 
         # Succeed when calling the create_arg_parser function and pass only
         # --disable-auto-scan as an argument
@@ -713,7 +713,7 @@ class TestVeracodeConfig(CLITestCase):
         # valid config
         mock_is_valid_attribute.return_value = True
         configuration = copy.deepcopy(test_constants.VALID_CLEAN_FILE_CONFIG["dict"])
-        configuration["config_file"] = Path("./config.yml").absolute()
+        configuration["config_file"] = Path("./easy_sast.yml").absolute()
         self.assertTrue(config.is_valid_non_api_config(config=configuration))
 
         # Return False after calling the is_valid_api_config function with a
@@ -727,7 +727,7 @@ class TestVeracodeConfig(CLITestCase):
         # config that contains an invalid config attribute
         mock_is_valid_attribute.return_value = False
         configuration = copy.deepcopy(test_constants.VALID_CLEAN_FILE_CONFIG["dict"])
-        configuration["config_file"] = Path("./config.yml").absolute()
+        configuration["config_file"] = Path("./easy_sast.yml").absolute()
         self.assertFalse(config.is_valid_non_api_config(config=configuration))
 
     ## is_valid_api_config tests
@@ -807,7 +807,7 @@ class TestVeracodeConfig(CLITestCase):
             "apis": {"upload": {}, "results": {}},
             "api_key_id": "95e637f1a25d453cdfdc30a338287ba8",
             "api_key_secret": "f7bb8c01bce05290ac8939f1d27d90ab84d2e05bb4671ca2f88d609d07afa723265348d708bdd0a1707a499528f6aa5c83133f4c5aca06a528d30b61fd4b6b28",
-            "config_file": Path("/easy_sast/config.yml"),
+            "config_file": Path("/easy_sast/easy_sast.yml"),
         }
         self.assertEqual(config.get_config(), expected)
 
