@@ -127,7 +127,7 @@
     <p id="t73" class="pln"><span class="n"><a href="#t73">73</a></span><span class="t"><span class="str">    """</span>&nbsp;</span><span class="r"></span></p>
     <p id="t74" class="run"><span class="n"><a href="#t74">74</a></span><span class="t">    <span class="key">try</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
     <p id="t75" class="run"><span class="n"><a href="#t75">75</a></span><span class="t">        <span class="nam">element</span> <span class="op">=</span> <span class="nam">ElementTree</span><span class="op">.</span><span class="nam">fromstring</span><span class="op">(</span><span class="nam">content</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
-    <p id="t76" class="run"><span class="n"><a href="#t76">76</a></span><span class="t">        <span class="nam">LOG</span><span class="op">.</span><span class="nam">info</span><span class="op">(</span><span class="str">"parse_xml successful"</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
+    <p id="t76" class="run"><span class="n"><a href="#t76">76</a></span><span class="t">        <span class="nam">LOG</span><span class="op">.</span><span class="nam">debug</span><span class="op">(</span><span class="str">"parse_xml successful"</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p id="t77" class="run"><span class="n"><a href="#t77">77</a></span><span class="t">    <span class="key">except</span> <span class="nam">InsecureElementTree</span><span class="op">.</span><span class="nam">ParseError</span> <span class="key">as</span> <span class="nam">parse_err</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
     <p id="t78" class="run"><span class="n"><a href="#t78">78</a></span><span class="t">        <span class="nam">LOG</span><span class="op">.</span><span class="nam">error</span><span class="op">(</span><span class="str">"Failed to parse the XML response, untrustworthy endpoint"</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p id="t79" class="run"><span class="n"><a href="#t79">79</a></span><span class="t">        <span class="key">raise</span> <span class="nam">parse_err</span>&nbsp;</span><span class="r"></span></p>
@@ -436,7 +436,7 @@
     <div class="content">
         <p>
             <a class="nav" href="index.html">&#xab; index</a> &nbsp; &nbsp; <a class="nav" href="https://coverage.readthedocs.io">coverage.py v5.0.3</a>,
-            created at 2020-01-24 18:40
+            created at 2020-01-25 14:51
         </p>
     </div>
 </div>

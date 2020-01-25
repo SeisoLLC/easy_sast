@@ -73,7 +73,7 @@ def parse_xml(*, content: bytes):
     """
     try:
         element = ElementTree.fromstring(content)
-        LOG.info("parse_xml successful")
+        LOG.debug("parse_xml successful")
     except InsecureElementTree.ParseError as parse_err:
         LOG.error("Failed to parse the XML response, untrustworthy endpoint")
         raise parse_err

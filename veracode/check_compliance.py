@@ -122,4 +122,5 @@ def check_compliance(*, results_api: ResultsAPI) -> bool:
         return False
 
     # App was in compliance
+    LOG.info("App ID %s is in compliance", results_api.app_id)
     return True
