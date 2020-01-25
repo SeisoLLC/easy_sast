@@ -88,8 +88,9 @@ def filter_file(*, artifact: Path) -> bool:
     Filter file upload artifacts
     https://help.veracode.com/reader/4EKhlLSMHm5jC8P8j3XccQ/YP2ecJQmr9vE7~AkYNZJlg
 
-    Would prefer an API to call to pull accepted suffix(es) dynamically, but I
-    couldn't find one """
+    Would prefer an API to call to pull the Veracode supported suffix(es)
+    dynamically, but that doesn't seem to exist
+    """
     allowed = False
 
     if artifact.suffix in constants.WHITELIST_FILE_SUFFIX_SET:
