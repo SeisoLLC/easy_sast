@@ -1090,7 +1090,7 @@ class TestVeracodeUtils(TestCase):
         self.assertTrue(
             utils.is_valid_attribute(
                 key="sandbox_name",
-                value="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._~",
+                value=r"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789`~!@#$%^&*()_+=-[]\|}{;:,./? ",
             )
         )
 
@@ -1105,6 +1105,10 @@ class TestVeracodeUtils(TestCase):
         # Fail when calling the is_valid_attribute function with a sandbox_name
         # that is an int
         self.assertFalse(utils.is_valid_attribute(key="sandbox_name", value=7))
+
+        # Fail when calling the is_valid_attribute function with a sandbox_name
+        # that contains invalid characters
+        self.assertFalse(utils.is_valid_attribute(key="sandbox_name", value="<test>"))
 
     # api_key_id validation
     def test_is_valid_attribute_api_key_id(self):
@@ -1465,7 +1469,15 @@ class TestVeracodeUtils(TestCase):
 
         # Succeed when calling the is_valid_netloc function with a valid
         # port in the netloc
+        self.assertTrue(utils.is_valid_netloc(netloc="example.com:7"))
+        self.assertTrue(utils.is_valid_netloc(netloc="example.com:32"))
         self.assertTrue(utils.is_valid_netloc(netloc="example.com:443"))
+        self.assertTrue(utils.is_valid_netloc(netloc="example.com:1234"))
+        self.assertTrue(utils.is_valid_netloc(netloc="example.com:54321"))
+        self.assertTrue(utils.is_valid_netloc(netloc="example.com:61423"))
+        self.assertTrue(utils.is_valid_netloc(netloc="example.com:65243"))
+        self.assertTrue(utils.is_valid_netloc(netloc="example.com:65512"))
+        self.assertTrue(utils.is_valid_netloc(netloc="example.com:65535"))
 
         # Fail when calling the is_valid_netloc function with a legal netloc,
         # containing no subdomains, but a user/pass specified in the url

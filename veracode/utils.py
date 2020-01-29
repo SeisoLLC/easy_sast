@@ -256,10 +256,8 @@ def is_valid_attribute(  # pylint: disable=too-many-branches, too-many-statement
         if not isinstance(value, str):
             is_valid = False
             LOG.error("sandbox_name must be a string")
-        # Limiting to unreserved characters as defined in
-        # https://tools.ietf.org/html/rfc3986#section-2.3
-        # with the addition of a /
-        elif not re.fullmatch("[a-zA-Z0-9-._~/]+", value):
+        # Roughly the Veracode Sandbox allowed characters, excluding \
+        elif not re.fullmatch(r"[a-zA-Z0-9`~!@#$%^&*()_+=\-\[\]|}{;:,./? ]+", value):
             is_valid = False
             LOG.error("An invalid sandbox_name was provided")
     elif key == "api_key_id":
@@ -382,7 +380,7 @@ def is_valid_netloc(*, netloc: str) -> bool:
         return False
 
     pattern = re.compile(
-        r"(?:[a-z0-9](?:[a-z0-9-_]{0,61}[a-z0-9])?\.)+[a-z0-9][a-z0-9-_]{0,61}[a-z0-9]((:[0-9]{1,4}|:[1-5][0-9]{4}|:6[0-4][0-9]{3}|:65[0-4][0-9]{2}|:655[0-2][0-9]|:655  3[0-5])?)"
+        r"(?:[a-z0-9](?:[a-z0-9-_]{0,61}[a-z0-9])?\.)+[a-z0-9][a-z0-9-_]{0,61}[a-z0-9]((:[0-9]{1,4}|:[1-5][0-9]{4}|:6[0-4][0-9]{3}|:65[0-4][0-9]{2}|:655[0-2][0-9]|:6553[0-5])?)"
     )
 
     if pattern.fullmatch(netloc):

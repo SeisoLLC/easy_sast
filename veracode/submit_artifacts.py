@@ -6,7 +6,7 @@ A python module to submit artifacts to an app in Veracode via their XML Upload A
 # built-ins
 import logging
 from pathlib import Path
-from typing import List
+from typing import List, Union
 
 # third party
 from requests.exceptions import HTTPError, Timeout, RequestException, TooManyRedirects
@@ -145,7 +145,7 @@ def upload_large_file(*, upload_api: UploadAPI, artifact: Path) -> bool:
 
 
 @validate
-def get_sandbox_id(*, sandbox_api: SandboxAPI) -> str:
+def get_sandbox_id(*, sandbox_api: SandboxAPI) -> Union[str, None]:
     """
     Query for and return the sandbox_id
     """
@@ -153,9 +153,25 @@ def get_sandbox_id(*, sandbox_api: SandboxAPI) -> str:
         endpoint = "getsandboxlist.do"
         params = {"app_id": sandbox_api.app_id}
 
-        sandbox_api.http_get(endpoint=endpoint, params=params)
-        # TODO: Parse and find the sandbox_id, similar to other funcs
-        return "12345"
+        sandboxes = sandbox_api.http_get(endpoint=endpoint, params=params)
+
+        if element_contains_error(parsed_xml=sandboxes):
+            LOG.error("Veracode returned an error when attempting to call %s", endpoint)
+            raise RuntimeError
+
+        for sandbox in sandboxes:
+            if sandbox_api.sandbox_name == sandbox.attrib["sandbox_name"]:
+                # Returns the first sandbox_name match as duplicates are not
+                # allowed by Veracode
+                return sandbox.attrib["sandbox_id"]
+
+        # No sandbox_id exists with the provided sandbox_name
+        LOG.info(
+            "A sandbox named %s does not exist in application id %s",
+            sandbox_api.sandbox_name,
+            sandbox_api.app_id,
+        )
+        return None
     except (
         HTTPError,
         ConnectionError,
@@ -179,9 +195,15 @@ def create_sandbox(*, sandbox_api: SandboxAPI) -> str:
             "sandbox_name": sandbox_api.sandbox_name,
         }
 
-        sandbox_api.http_post(endpoint=endpoint, params=params)
-        # TODO: Validate a good response then parse for and return the sandbox_id
-        return "12345"
+        response = sandbox_api.http_post(endpoint=endpoint, params=params)
+
+        if element_contains_error(parsed_xml=response):
+            LOG.error("Veracode returned an error when attempting to call %s", endpoint)
+            raise RuntimeError
+
+        # TODO: Extract and return the sandbox_id (Couldn't finish due to maintenance window)
+
+        raise RuntimeError
     except (
         HTTPError,
         ConnectionError,
@@ -208,8 +230,23 @@ def cancel_build(*, upload_api: UploadAPI) -> bool:
 
         # TODO: Is this really a GET?  I would have thought DELETE or POST
         # https://help.veracode.com/reader/LMv_dtSHyb7iIxAQznC~9w/rERUQewXKGx2D_zaoi6wGw
-        upload_api.http_get(endpoint=endpoint, params=params)
-        # TODO: Validate a good response then return True if all good
+        response = upload_api.http_get(endpoint=endpoint, params=params)
+
+        if element_contains_error(parsed_xml=response):
+            LOG.error("Veracode returned an error when attempting to call %s", endpoint)
+            return False
+
+        if isinstance(upload_api.sandbox_id, str):
+            LOG.info(
+                "Successfully cancelled the build in sandbox id %s of application id %s",
+                upload_api.sandbox_id,
+                upload_api.app_id,
+            )
+            return True
+
+        LOG.info(
+            "Successfully cancelled the build application id %s", upload_api.app_id
+        )
         return True
     except (
         HTTPError,

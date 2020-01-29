@@ -436,6 +436,9 @@ def apply_config(
     elif isinstance(api, UploadAPI):
         for key, value in config["apis"]["upload"].items():
             setattr(api, key, value)
+    elif isinstance(api, SandboxAPI):
+        for key, value in config["apis"]["sandbox"].items():
+            setattr(api, key, value)
     else:
         LOG.error("api argument is not a supported type (%s)", type(api))
         raise TypeError
