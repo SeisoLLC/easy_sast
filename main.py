@@ -62,8 +62,6 @@ def main() -> None:
                 ),
                 config=config,
             )
-        else:
-            sandbox_api = None
     except TypeError:
         log.error("Unable to create valid API objects")
         sys.exit(1)
@@ -74,7 +72,13 @@ def main() -> None:
             configure_environment(
                 api_key_id=config["api_key_id"], api_key_secret=config["api_key_secret"]
             )
-            if submit_artifacts(upload_api=upload_api, sandbox_api=sandbox_api):
+            # Sandboxes are optional
+            try:
+                success = submit_artifacts(upload_api=upload_api, sandbox_api=sandbox_api)
+            except NameError:
+                success = submit_artifacts(upload_api=upload_api)
+
+            if success:
                 log.info("Successfully submit build artifacts for scanning")
             else:
                 log.error("Failed to submit build artifacts for scanning")

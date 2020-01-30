@@ -1090,7 +1090,7 @@ class TestVeracodeUtils(TestCase):
         self.assertTrue(
             utils.is_valid_attribute(
                 key="sandbox_name",
-                value=r"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789`~!@#$%^&*()_+=-[]\|}{;:,./? ",
+                value=r"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789`~!@#$%^&*()_+=-[]|}{;:,./? ",
             )
         )
 
@@ -1098,9 +1098,9 @@ class TestVeracodeUtils(TestCase):
         # that is an empty string
         self.assertFalse(utils.is_valid_attribute(key="sandbox_name", value=""))
 
-        # Succeed when calling the is_valid_attribute function with a
-        # sandbox_name that is an invalid string
-        self.assertFalse(utils.is_valid_attribute(key="sandbox_name", value=";$"))
+        # Fail when calling the is_valid_attribute function with a sandbox_name
+        # that is an invalid string
+        self.assertFalse(utils.is_valid_attribute(key="sandbox_name", value=r"a\b\c"))
 
         # Fail when calling the is_valid_attribute function with a sandbox_name
         # that is an int

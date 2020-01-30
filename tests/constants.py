@@ -473,7 +473,7 @@ INVALID_SANDBOX_API_BUILD_ID["build_id"] = "invalid(build_id)"
 
 INVALID_SANDBOX_API_SANDBOX_NAME = {}
 INVALID_SANDBOX_API_SANDBOX_NAME.update(VALID_SANDBOX_API)
-INVALID_SANDBOX_API_SANDBOX_NAME["sandbox_name"] = "invalid[sandbox_name]"
+INVALID_SANDBOX_API_SANDBOX_NAME["sandbox_name"] = r"invalid\sandbox_name"
 
 
 INVALID_SANDBOX_API_INCORRECT_VERSION_VALUES: Dict[
@@ -649,7 +649,18 @@ apis:
     build_id: "2037-03-13_03-14-15"
     scan_all_nonfatal_top_level_modules: True
     auto_scan: True
-loglevel: "WARNING"
+  sandbox:
+    base_url: "https://analysiscenter.veracode.com/api/"
+    version: {
+              "createsandbox.do": "5.0",
+              "getsandboxlist.do": "5.0",
+              "promotesandbox.do": "5.0",
+              "updatesandbox.do": "5.0",
+              "deletesandbox.do": "5.0"
+             }
+    app_id: "31337"
+    sandbox_name: "fb/jonzeolla/name-of-branch"
+loglevel: "warning"
 workflow:
   - "submit_artifacts"
   - "check_compliance"'''
@@ -665,7 +676,7 @@ VALID_CLEAN_FILE_CONFIG_NORMALIZED.update(VALID_CLEAN_FILE_CONFIG)
 CLEAN_DEFAULT_CONFIG = {
     "workflow": ["submit_artifacts", "check_compliance"],
     "loglevel": "WARNING",
-    "apis": {"upload": {}, "results": {}},
+    "apis": {"upload": {}, "results": {}, "sandbox": {}},
 }
 CLEAN_FILE_CONFIG = {
     "apis": {
@@ -713,6 +724,18 @@ CLEAN_FILE_CONFIG = {
             "scan_all_nonfatal_top_level_modules": True,
             "auto_scan": True,
         },
+        "sandbox": {
+            "base_url": "https://analysiscenter.veracode.com/api/",
+            "version": {
+                "createsandbox.do": "5.0",
+                "getsandboxlist.do": "5.0",
+                "promotesandbox.do": "5.0",
+                "updatesandbox.do": "5.0",
+                "deletesandbox.do": "5.0"
+            },
+            "app_id": "31337",
+            "sandbox_name": "easy_sast/fb/jonzeolla/testing"
+        },
     },
     "loglevel": "WARNING",
     "workflow": ["submit_artifacts", "check_compliance"],
@@ -726,6 +749,7 @@ CLEAN_ARGS_CONFIG = {
     "apis": {
         "results": {"ignore_compliance_status": False},
         "upload": {"scan_all_nonfatal_top_level_modules": True, "auto_scan": True},
+        "sandbox": {"sandbox_name": "easy_sast/fb/jonzeolla/testing"},
     },
 }
 
@@ -739,6 +763,18 @@ CLEAN_EFFECTIVE_CONFIG = {
     "workflow": ["submit_artifacts", "check_compliance"],
     "loglevel": "WARNING",
     "apis": {
+        "sandbox": {
+            "base_url": "https://analysiscenter.veracode.com/api/",
+            "version": {
+                "createsandbox.do": "5.0",
+                "getsandboxlist.do": "5.0",
+                "promotesandbox.do": "5.0",
+                "updatesandbox.do": "5.0",
+                "deletesandbox.do": "5.0",
+            },
+            "app_id": "31337",
+            "sandbox_name": "easy_sast/fb/jonzeolla/testing",
+        },
         "upload": {
             "base_url": "https://analysiscenter.veracode.com/api/",
             "version": {

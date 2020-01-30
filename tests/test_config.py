@@ -16,7 +16,7 @@ from argparse import ArgumentParser, Namespace
 from tests import constants as test_constants
 from veracode import config
 from veracode.__init__ import __version__ as veracode_version
-from veracode.api import ResultsAPI, UploadAPI
+from veracode.api import ResultsAPI, UploadAPI, SandboxAPI
 
 # Setup a logger
 logging.getLogger()
@@ -356,6 +356,10 @@ class TestVeracodeConfig(CLITestCase):
             "loglevel": "WARNING",
             "workflow": ["submit_artifacts", "check_compliance"],
             "apis": {
+                "sandbox": {
+                    "app_id": "31337",
+                    "base_url": "https://analysiscenter.veracode.com/api/",
+                },
                 "results": {
                     "app_id": "31337",
                     "base_url": "https://analysiscenter.veracode.com/api/",
@@ -388,6 +392,10 @@ class TestVeracodeConfig(CLITestCase):
             "loglevel": "INFO",
             "workflow": ["submit_artifacts", "check_compliance"],
             "apis": {
+                "sandbox": {
+                    "app_id": "31337",
+                    "base_url": "https://analysiscenter.veracode.com/api/",
+                },
                 "results": {
                     "app_id": "31337",
                     "base_url": "https://analysiscenter.veracode.com/api/",
@@ -419,6 +427,10 @@ class TestVeracodeConfig(CLITestCase):
         after = {
             "workflow": ["submit_artifacts", "check_compliance"],
             "apis": {
+                "sandbox": {
+                    "app_id": "31337",
+                    "base_url": "https://analysiscenter.veracode.com/api/",
+                },
                 "results": {
                     "app_id": "31337",
                     "base_url": "https://analysiscenter.veracode.com/api/",
@@ -490,6 +502,7 @@ class TestVeracodeConfig(CLITestCase):
                     "auto_scan": True,
                     "build_dir": Path("/usr/local/bin/"),
                 },
+                "sandbox": {"sandbox_name": "easy_sast/fb/jonzeolla/testing"},
             },
         }
         mock_normalize_config.return_value = parsed
@@ -503,6 +516,7 @@ class TestVeracodeConfig(CLITestCase):
                 disable_scan_nonfatal_modules=not test_constants.VALID_UPLOAD_API[
                     "scan_all_nonfatal_top_level_modules"
                 ],
+                sandbox_name=test_constants.VALID_SANDBOX_API["sandbox_name"],
                 loglevel=logging.WARNING,
                 ignore_compliance_status=True,
                 api_key_id=test_constants.VALID_UPLOAD_API["api_key_id"],
@@ -598,6 +612,11 @@ class TestVeracodeConfig(CLITestCase):
             ["--build-id=" + test_constants.VALID_UPLOAD_API["build_id"]]
         )
         self.assertEqual(output.build_id, test_constants.VALID_UPLOAD_API["build_id"])
+
+        # Succeed when calling the create_arg_parser function and pass only
+        # --sandbox-name as an argument
+        output = self.parser.parse_args(["--sandbox-name=easy_sast/fb/jonzeolla/testing"])
+        self.assertEqual(output.sandbox_name, "easy_sast/fb/jonzeolla/testing")
 
         # Succeed when calling the create_arg_parser function and do not pass
         # --build-id as an argument
@@ -794,7 +813,7 @@ class TestVeracodeConfig(CLITestCase):
         mock_is_valid_non_api_config.return_value = True
         mock_is_valid_api_config.return_value = True
         mock_get_env_config.return_value = test_constants.CLEAN_ENV_CONFIG
-        file_config = copy.deepcopy(test_constants.CLEAN_FILE_CONFIG)
+        file_config = copy.deepcopy(test_constants.VALID_CLEAN_FILE_CONFIG["dict"])
         del file_config["apis"]
         mock_get_file_config.return_value = file_config
         args_config = copy.deepcopy(test_constants.CLEAN_ARGS_CONFIG)
@@ -803,8 +822,8 @@ class TestVeracodeConfig(CLITestCase):
         mock_get_default_config.return_value = test_constants.CLEAN_DEFAULT_CONFIG
         expected = {
             "workflow": ["submit_artifacts", "check_compliance"],
-            "loglevel": "WARNING",
-            "apis": {"upload": {}, "results": {}},
+            "loglevel": "warning",
+            "apis": {"upload": {}, "results": {}, "sandbox": {}},
             "api_key_id": "95e637f1a25d453cdfdc30a338287ba8",
             "api_key_secret": "f7bb8c01bce05290ac8939f1d27d90ab84d2e05bb4671ca2f88d609d07afa723265348d708bdd0a1707a499528f6aa5c83133f4c5aca06a528d30b61fd4b6b28",
             "config_file": Path("/easy_sast/easy_sast.yml"),
@@ -816,7 +835,7 @@ class TestVeracodeConfig(CLITestCase):
         mock_is_valid_non_api_config.return_value = False
         mock_is_valid_api_config.return_value = True
         mock_get_env_config.return_value = test_constants.CLEAN_ENV_CONFIG
-        mock_get_file_config.return_value = test_constants.CLEAN_FILE_CONFIG
+        mock_get_file_config.return_value = test_constants.VALID_CLEAN_FILE_CONFIG["dict"]
         mock_get_args_config.return_value = test_constants.CLEAN_ARGS_CONFIG
         mock_get_default_config.return_value = test_constants.CLEAN_DEFAULT_CONFIG
         self.assertRaises(ValueError, config.get_config)
@@ -826,7 +845,7 @@ class TestVeracodeConfig(CLITestCase):
         mock_is_valid_non_api_config.return_value = True
         mock_is_valid_api_config.return_value = False
         mock_get_env_config.return_value = test_constants.CLEAN_ENV_CONFIG
-        mock_get_file_config.return_value = test_constants.CLEAN_FILE_CONFIG
+        mock_get_file_config.return_value = test_constants.VALID_CLEAN_FILE_CONFIG["dict"]
         mock_get_args_config.return_value = test_constants.CLEAN_ARGS_CONFIG
         mock_get_default_config.return_value = test_constants.CLEAN_DEFAULT_CONFIG
         self.assertRaises(ValueError, config.get_config)
@@ -837,7 +856,7 @@ class TestVeracodeConfig(CLITestCase):
         mock_is_valid_non_api_config.return_value = False
         mock_is_valid_api_config.return_value = False
         mock_get_env_config.return_value = test_constants.CLEAN_ENV_CONFIG
-        mock_get_file_config.return_value = test_constants.CLEAN_FILE_CONFIG
+        mock_get_file_config.return_value = test_constants.VALID_CLEAN_FILE_CONFIG["dict"]
         mock_get_args_config.return_value = test_constants.CLEAN_ARGS_CONFIG
         mock_get_default_config.return_value = test_constants.CLEAN_DEFAULT_CONFIG
         self.assertRaises(ValueError, config.get_config)
@@ -861,11 +880,19 @@ class TestVeracodeConfig(CLITestCase):
         applied_results_api = config.apply_config(api=results_api, config=configuration)
         self.assertEqual(applied_results_api, results_api)
 
-        # Ensure calling the apply_config with different does not result in an
-        # object with the same version string (which is unique per-API)
+        # Succeed when calling the apply_config function with a valid
+        # Sandbox API object and config
+        sandbox_api = SandboxAPI(app_id="31337", sandbox_name="easy_sast/fb/jonzeolla/testing")
+        applied_sandbox_api = config.apply_config(api=sandbox_api, config=configuration)
+        self.assertEqual(applied_sandbox_api, sandbox_api)
+
+        # Ensure calling the apply_config function with different `app_id`s
+        # does not result in an object with the same version string (which is
+        # unique per-API)
         upload_api = UploadAPI(app_id="31337")
         applied_upload_api = config.apply_config(api=upload_api, config=configuration)
-        results_api = ResultsAPI(app_id="31337")
+        # Note: This must be different than the above app_id
+        results_api = ResultsAPI(app_id="1337")
         applied_results_api = config.apply_config(api=results_api, config=configuration)
         self.assertNotEqual(applied_results_api.version, applied_upload_api.version)
 

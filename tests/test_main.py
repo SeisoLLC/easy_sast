@@ -92,7 +92,7 @@ class TestMain(TestCase):
         mock_get_config,
     ):
         """
-        Test the main happy path with defaults
+        Test main with an unknown config step
         """
         # For the linter, this is unused
         mock_apply_config.return_value = None
@@ -294,3 +294,44 @@ class TestMain(TestCase):
         with self.assertRaises(SystemExit) as contextmanager:
             main.main()
         self.assertEqual(contextmanager.exception.code, 1)
+
+    @patch("main.get_config")
+    @patch("main.apply_config", side_effect=return_unmodified_api_object)
+    @patch("main.submit_artifacts")
+    @patch("main.check_compliance")
+    def test_veracode_happy_path(
+        self,
+        mock_check_compliance,
+        mock_submit_artifacts,
+        mock_apply_config,
+        mock_get_config,
+    ):
+        """
+        Test main with an effective config lacking a sandbox_name
+        """
+        # For the linter, this is unused
+        mock_apply_config.return_value = None
+
+        # Actual test
+        mock_check_compliance.return_value = True
+        mock_submit_artifacts.return_value = True
+        config = copy.deepcopy(test_constants.CLEAN_EFFECTIVE_CONFIG)
+        del config["apis"]["sandbox"]["sandbox_name"]
+        mock_get_config.return_value = config
+
+        with patch(
+            "argparse.ArgumentParser.parse_args",
+            return_value=Namespace(
+                app_id=test_constants.VALID_UPLOAD_API["app_id"],
+                build_dir=test_constants.VALID_UPLOAD_API["build_dir"],
+                build_id=test_constants.VALID_UPLOAD_API["build_id"],
+                disable_auto_scan=not test_constants.VALID_UPLOAD_API["auto_scan"],
+                disable_scan_nonfatal_modules=not test_constants.VALID_UPLOAD_API[
+                    "scan_all_nonfatal_top_level_modules"
+                ],
+                loglevel=logging.WARNING,
+                api_key_id=test_constants.VALID_UPLOAD_API["api_key_id"],
+                api_key_secret=test_constants.VALID_UPLOAD_API["api_key_secret"],
+            ),
+        ):
+            self.assertIsNone(main.main())

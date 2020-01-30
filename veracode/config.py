@@ -255,6 +255,8 @@ def get_args_config() -> Dict:
             args_config["apis"]["upload"][key] = parsed_args[key]
         elif key in constants.ONLY_RESULTS_ATTRIBUTES:
             args_config["apis"]["results"][key] = parsed_args[key]
+        elif key in constants.ONLY_SANDBOX_ATTRIBUTES:
+            args_config["apis"]["sandbox"][key] = parsed_args[key]
         else:
             # Put in top level
             args_config[key] = parsed_args[key]

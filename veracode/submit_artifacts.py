@@ -201,9 +201,13 @@ def create_sandbox(*, sandbox_api: SandboxAPI) -> str:
             LOG.error("Veracode returned an error when attempting to call %s", endpoint)
             raise RuntimeError
 
-        # TODO: Extract and return the sandbox_id (Couldn't finish due to maintenance window)
-
-        raise RuntimeError
+        try:
+            # Because we only make one sandbox at a time, we can use index 0 to
+            # extract and then return the sandbox_id
+            return response[0].attrib['sandbox_id']
+        except (KeyError, IndexError):
+            LOG.error("Unable to extract the sandbox_id from the Veracode response")
+            raise RuntimeError
     except (
         HTTPError,
         ConnectionError,
@@ -228,7 +232,6 @@ def cancel_build(*, upload_api: UploadAPI) -> bool:
         if isinstance(upload_api.sandbox_id, str):
             params["sandbox_id"] = upload_api.sandbox_id
 
-        # TODO: Is this really a GET?  I would have thought DELETE or POST
         # https://help.veracode.com/reader/LMv_dtSHyb7iIxAQznC~9w/rERUQewXKGx2D_zaoi6wGw
         response = upload_api.http_get(endpoint=endpoint, params=params)
 
@@ -264,14 +267,13 @@ def setup_scan_prereqs(*, upload_api: UploadAPI) -> bool:
     """
     Setup the scan environment prereqs
     """
-    if create_build(upload_api=upload_api):
-        LOG.debug("Successfully created an application build")
-        return True
-
-    # Application build creation was unsuccessful.  If this is a policy
-    # scan, error out
+    # Check to see if this is a Policy scan
     if not isinstance(upload_api.sandbox_id, str):
-        LOG.error("Failed create an application build")
+        if create_build(upload_api=upload_api):
+            LOG.debug("Successfully created an application build for app id %s", upload_api.app_id)
+            return True
+
+        LOG.error("Failed create an application build for app id %s", upload_api.app_id)
         return False
 
     # Application build creation was unsuccessful and this is a sandbox
@@ -296,10 +298,10 @@ def setup_scan_prereqs(*, upload_api: UploadAPI) -> bool:
         return False
 
     if create_build(upload_api=upload_api):
-        LOG.info("Successfully created an application build")
+        LOG.info("Successfully created an application build for app id %s", upload_api.app_id)
         return True
 
-    LOG.error("Failed to create an application build")
+    LOG.error("Failed to create an application build for app id %s", upload_api.app_id)
     return False
 
 
