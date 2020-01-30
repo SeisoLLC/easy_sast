@@ -74,7 +74,9 @@ def main() -> None:
             )
             # Sandboxes are optional
             try:
-                success = submit_artifacts(upload_api=upload_api, sandbox_api=sandbox_api)
+                success = submit_artifacts(
+                    upload_api=upload_api, sandbox_api=sandbox_api
+                )
             except NameError:
                 success = submit_artifacts(upload_api=upload_api)
 

@@ -204,7 +204,7 @@ def create_sandbox(*, sandbox_api: SandboxAPI) -> str:
         try:
             # Because we only make one sandbox at a time, we can use index 0 to
             # extract and then return the sandbox_id
-            return response[0].attrib['sandbox_id']
+            return response[0].attrib["sandbox_id"]
         except (KeyError, IndexError):
             LOG.error("Unable to extract the sandbox_id from the Veracode response")
             raise RuntimeError
@@ -270,7 +270,10 @@ def setup_scan_prereqs(*, upload_api: UploadAPI) -> bool:
     # Check to see if this is a Policy scan
     if not isinstance(upload_api.sandbox_id, str):
         if create_build(upload_api=upload_api):
-            LOG.debug("Successfully created an application build for app id %s", upload_api.app_id)
+            LOG.debug(
+                "Successfully created an application build for app id %s",
+                upload_api.app_id,
+            )
             return True
 
         LOG.error("Failed create an application build for app id %s", upload_api.app_id)
@@ -298,7 +301,9 @@ def setup_scan_prereqs(*, upload_api: UploadAPI) -> bool:
         return False
 
     if create_build(upload_api=upload_api):
-        LOG.info("Successfully created an application build for app id %s", upload_api.app_id)
+        LOG.info(
+            "Successfully created an application build for app id %s", upload_api.app_id
+        )
         return True
 
     LOG.error("Failed to create an application build for app id %s", upload_api.app_id)

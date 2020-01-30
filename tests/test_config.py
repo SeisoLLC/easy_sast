@@ -615,7 +615,9 @@ class TestVeracodeConfig(CLITestCase):
 
         # Succeed when calling the create_arg_parser function and pass only
         # --sandbox-name as an argument
-        output = self.parser.parse_args(["--sandbox-name=easy_sast/fb/jonzeolla/testing"])
+        output = self.parser.parse_args(
+            ["--sandbox-name=easy_sast/fb/jonzeolla/testing"]
+        )
         self.assertEqual(output.sandbox_name, "easy_sast/fb/jonzeolla/testing")
 
         # Succeed when calling the create_arg_parser function and do not pass
@@ -835,7 +837,9 @@ class TestVeracodeConfig(CLITestCase):
         mock_is_valid_non_api_config.return_value = False
         mock_is_valid_api_config.return_value = True
         mock_get_env_config.return_value = test_constants.CLEAN_ENV_CONFIG
-        mock_get_file_config.return_value = test_constants.VALID_CLEAN_FILE_CONFIG["dict"]
+        mock_get_file_config.return_value = test_constants.VALID_CLEAN_FILE_CONFIG[
+            "dict"
+        ]
         mock_get_args_config.return_value = test_constants.CLEAN_ARGS_CONFIG
         mock_get_default_config.return_value = test_constants.CLEAN_DEFAULT_CONFIG
         self.assertRaises(ValueError, config.get_config)
@@ -845,7 +849,9 @@ class TestVeracodeConfig(CLITestCase):
         mock_is_valid_non_api_config.return_value = True
         mock_is_valid_api_config.return_value = False
         mock_get_env_config.return_value = test_constants.CLEAN_ENV_CONFIG
-        mock_get_file_config.return_value = test_constants.VALID_CLEAN_FILE_CONFIG["dict"]
+        mock_get_file_config.return_value = test_constants.VALID_CLEAN_FILE_CONFIG[
+            "dict"
+        ]
         mock_get_args_config.return_value = test_constants.CLEAN_ARGS_CONFIG
         mock_get_default_config.return_value = test_constants.CLEAN_DEFAULT_CONFIG
         self.assertRaises(ValueError, config.get_config)
@@ -856,7 +862,9 @@ class TestVeracodeConfig(CLITestCase):
         mock_is_valid_non_api_config.return_value = False
         mock_is_valid_api_config.return_value = False
         mock_get_env_config.return_value = test_constants.CLEAN_ENV_CONFIG
-        mock_get_file_config.return_value = test_constants.VALID_CLEAN_FILE_CONFIG["dict"]
+        mock_get_file_config.return_value = test_constants.VALID_CLEAN_FILE_CONFIG[
+            "dict"
+        ]
         mock_get_args_config.return_value = test_constants.CLEAN_ARGS_CONFIG
         mock_get_default_config.return_value = test_constants.CLEAN_DEFAULT_CONFIG
         self.assertRaises(ValueError, config.get_config)
@@ -882,7 +890,9 @@ class TestVeracodeConfig(CLITestCase):
 
         # Succeed when calling the apply_config function with a valid
         # Sandbox API object and config
-        sandbox_api = SandboxAPI(app_id="31337", sandbox_name="easy_sast/fb/jonzeolla/testing")
+        sandbox_api = SandboxAPI(
+            app_id="31337", sandbox_name="easy_sast/fb/jonzeolla/testing"
+        )
         applied_sandbox_api = config.apply_config(api=sandbox_api, config=configuration)
         self.assertEqual(applied_sandbox_api, sandbox_api)
 

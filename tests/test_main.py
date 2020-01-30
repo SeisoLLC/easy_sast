@@ -299,7 +299,7 @@ class TestMain(TestCase):
     @patch("main.apply_config", side_effect=return_unmodified_api_object)
     @patch("main.submit_artifacts")
     @patch("main.check_compliance")
-    def test_veracode_happy_path(
+    def test_veracode_main_no_sandbox_name(
         self,
         mock_check_compliance,
         mock_submit_artifacts,

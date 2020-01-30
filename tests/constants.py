@@ -731,10 +731,10 @@ CLEAN_FILE_CONFIG = {
                 "getsandboxlist.do": "5.0",
                 "promotesandbox.do": "5.0",
                 "updatesandbox.do": "5.0",
-                "deletesandbox.do": "5.0"
+                "deletesandbox.do": "5.0",
             },
             "app_id": "31337",
-            "sandbox_name": "easy_sast/fb/jonzeolla/testing"
+            "sandbox_name": "easy_sast/fb/jonzeolla/testing",
         },
     },
     "loglevel": "WARNING",
