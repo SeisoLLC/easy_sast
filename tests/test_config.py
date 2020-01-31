@@ -343,14 +343,17 @@ class TestVeracodeConfig(CLITestCase):
         mock_filter_config.return_value = None
 
         # Succeed when calling the normalize_config function with a
-        # non-normalized config dict, a string loglevel, and a string
-        # build_dir, and return that dict properly normalized
+        # non-normalized config dict, a string loglevel, build_dir, and
+        # sandbox_name, and return that dict properly normalized
         before = {
             "base_url": "https://analysiscenter.veracode.com/api/",
             "app_id": "31337",
             "loglevel": "WARNING",
             "workflow": ["submit_artifacts", "check_compliance"],
-            "apis": {"upload": {"build_dir": "/build/"}},
+            "apis": {
+                "upload": {"build_dir": "/build/"},
+                "sandbox": {"sandbox_name": "easy_sast/fb/jonzeolla/testing"},
+            },
         }
         after = {
             "loglevel": "WARNING",
@@ -359,6 +362,7 @@ class TestVeracodeConfig(CLITestCase):
                 "sandbox": {
                     "app_id": "31337",
                     "base_url": "https://analysiscenter.veracode.com/api/",
+                    "sandbox_name": "easy_sast/fb/jonzeolla/testing",
                 },
                 "results": {
                     "app_id": "31337",
@@ -534,7 +538,6 @@ class TestVeracodeConfig(CLITestCase):
             "api_key_secret": test_constants.VALID_UPLOAD_API["api_key_secret"],
             "loglevel": 30,
             "apis": {
-                "results": {"app_id": "1337"},
                 "upload": {
                     "app_id": "1337",
                     "build_id": "v1.2.3",
@@ -616,9 +619,11 @@ class TestVeracodeConfig(CLITestCase):
         # Succeed when calling the create_arg_parser function and pass only
         # --sandbox-name as an argument
         output = self.parser.parse_args(
-            ["--sandbox-name=easy_sast/fb/jonzeolla/testing"]
+            ["--sandbox-name=" + test_constants.VALID_SANDBOX_API["sandbox_name"]]
         )
-        self.assertEqual(output.sandbox_name, "easy_sast/fb/jonzeolla/testing")
+        self.assertEqual(
+            output.sandbox_name, test_constants.VALID_SANDBOX_API["sandbox_name"]
+        )
 
         # Succeed when calling the create_arg_parser function and do not pass
         # --build-id as an argument

@@ -36,54 +36,48 @@ VALID_RESULTS_API["ignore_compliance_status"] = False
 
 
 VALID_RESULTS_API_DIFFERENT_APP_ID = {}
-VALID_RESULTS_API_DIFFERENT_APP_ID.update(VALID_RESULTS_API)
+VALID_RESULTS_API_DIFFERENT_APP_ID = copy.deepcopy(VALID_RESULTS_API)
 VALID_RESULTS_API_DIFFERENT_APP_ID["app_id"] = "31337"
 
 
 INVALID_RESULTS_API_MISSING_VERSION_KEY = {}
-INVALID_RESULTS_API_MISSING_VERSION_KEY.update(VALID_RESULTS_API)
+INVALID_RESULTS_API_MISSING_VERSION_KEY = copy.deepcopy(VALID_RESULTS_API)
 del INVALID_RESULTS_API_MISSING_VERSION_KEY["version"]
 
 
 INVALID_RESULTS_API_INCORRECT_APP_ID: Dict[
     str, Union[str, bool, int, Dict[str, str]]
 ] = {}
-INVALID_RESULTS_API_INCORRECT_APP_ID.update(VALID_RESULTS_API)
+INVALID_RESULTS_API_INCORRECT_APP_ID = copy.deepcopy(VALID_RESULTS_API)
 INVALID_RESULTS_API_INCORRECT_APP_ID["app_id"] = 1337
 
 
 INVALID_RESULTS_API_INCORRECT_VERSION_VALUES: Dict[
     str, Union[str, bool, Union[Dict[str, str], Dict[str, float]]]
 ] = {}
-INVALID_RESULTS_API_INCORRECT_VERSION_VALUES.update(VALID_RESULTS_API)
-INVALID_RESULTS_API_INCORRECT_VERSION_VALUES["version"] = {
-    "detailedreport.do": 5.0,
-    "detailedreportpdf.do": 4.0,
-    "getaccountcustomfieldlist.do": 5.0,
-    "getappbuilds.do": 4.0,
-    "getcallstacks.do": 5.0,
-    "summaryreport.do": 4.0,
-    "summaryreportpdf.do": 4.0,
-    "thirdpartyreportpdf.do": 4.0,
-}
+INVALID_RESULTS_API_INCORRECT_VERSION_VALUES = copy.deepcopy(VALID_RESULTS_API)
+for value in VALID_RESULTS_API["version"]:
+    INVALID_RESULTS_API_INCORRECT_VERSION_VALUES["version"][value] = float(
+        VALID_RESULTS_API["version"][value]
+    )
 
 
 INVALID_RESULTS_API_MISSING_DOMAIN = {}
-INVALID_RESULTS_API_MISSING_DOMAIN.update(VALID_RESULTS_API)
+INVALID_RESULTS_API_MISSING_DOMAIN = copy.deepcopy(VALID_RESULTS_API)
 INVALID_RESULTS_API_MISSING_DOMAIN["base_url"] = "https:///api/"
 
 INVALID_RESULTS_API_INCORRECT_COMPLIANCE_STATUS = {}
-INVALID_RESULTS_API_INCORRECT_COMPLIANCE_STATUS.update(VALID_RESULTS_API)
+INVALID_RESULTS_API_INCORRECT_COMPLIANCE_STATUS = copy.deepcopy(VALID_RESULTS_API)
 INVALID_RESULTS_API_INCORRECT_COMPLIANCE_STATUS["ignore_compliance_status"] = "True"
 
 INVALID_RESULTS_API_INVALID_PORT = {}
-INVALID_RESULTS_API_INVALID_PORT.update(VALID_RESULTS_API)
+INVALID_RESULTS_API_INVALID_PORT = copy.deepcopy(VALID_RESULTS_API)
 INVALID_RESULTS_API_INVALID_PORT[
     "base_url"
 ] = "https://analysiscenter.veracode.com:65536/api/"
 
 VALID_RESULTS_API_WITH_PORT_IN_URL = {}
-VALID_RESULTS_API_WITH_PORT_IN_URL.update(VALID_RESULTS_API)
+VALID_RESULTS_API_WITH_PORT_IN_URL = copy.deepcopy(VALID_RESULTS_API)
 VALID_RESULTS_API_WITH_PORT_IN_URL[
     "base_url"
 ] = "https://analysiscenter.veracode.com:443/api/"
@@ -267,61 +261,44 @@ VALID_UPLOAD_API["api_key_secret"] = secrets.token_hex(64)  # nosec
 
 
 INVALID_UPLOAD_API_MISSING_BUILD_DIR = {}
-INVALID_UPLOAD_API_MISSING_BUILD_DIR.update(VALID_UPLOAD_API)
+INVALID_UPLOAD_API_MISSING_BUILD_DIR = copy.deepcopy(VALID_UPLOAD_API)
 del INVALID_UPLOAD_API_MISSING_BUILD_DIR["build_dir"]
 
 
 INVALID_UPLOAD_API_BUILD_DIR = {}
-INVALID_UPLOAD_API_BUILD_DIR.update(VALID_UPLOAD_API)
+INVALID_UPLOAD_API_BUILD_DIR = copy.deepcopy(VALID_UPLOAD_API)
 INVALID_UPLOAD_API_BUILD_DIR["build_dir"] = "/usr/local/bin/"
 
 
 INVALID_UPLOAD_API_MISSING_DOMAIN = {}
-INVALID_UPLOAD_API_MISSING_DOMAIN.update(VALID_UPLOAD_API)
+INVALID_UPLOAD_API_MISSING_DOMAIN = copy.deepcopy(VALID_UPLOAD_API)
 INVALID_UPLOAD_API_MISSING_DOMAIN["base_url"] = "https:///api/"
 
 
 INVALID_UPLOAD_API_INCORRECT_VERSION_VALUES: Dict[
     str, Union[str, Union[Dict[str, str], Dict[str, float]], Path, bool]
 ] = {}
-INVALID_UPLOAD_API_INCORRECT_VERSION_VALUES.update(VALID_UPLOAD_API)
-INVALID_UPLOAD_API_INCORRECT_VERSION_VALUES["version"] = {
-    "beginprescan.do": 5.0,
-    "beginscan.do": 5.0,
-    "createapp.do": 5.0,
-    "createbuild.do": 5.0,
-    "deleteapp.do": 5.0,
-    "deletebuild.do": 5.0,
-    "getappinfo.do": 5.0,
-    "getapplist.do": 5.0,
-    "getbuildinfo.do": 5.0,
-    "getbuildlist.do": 5.0,
-    "getfilelist.do": 5.0,
-    "getpolicylist.do": 5.0,
-    "getprescanresults.do": 5.0,
-    "getvendorlist.do": 5.0,
-    "removefile.do": 5.0,
-    "updateapp.do": 5.0,
-    "updatebuild.do": 5.0,
-    "uploadfile.do": 5.0,
-    "uploadlargefile.do": 5.0,
-}
+INVALID_UPLOAD_API_INCORRECT_VERSION_VALUES = copy.deepcopy(VALID_UPLOAD_API)
+for value in VALID_UPLOAD_API["version"]:
+    INVALID_UPLOAD_API_INCORRECT_VERSION_VALUES["version"][value] = float(
+        VALID_UPLOAD_API["version"][value]
+    )
 
 
 INVALID_UPLOAD_API_BUILD_ID = {}
-INVALID_UPLOAD_API_BUILD_ID.update(VALID_UPLOAD_API)
+INVALID_UPLOAD_API_BUILD_ID = copy.deepcopy(VALID_UPLOAD_API)
 INVALID_UPLOAD_API_BUILD_ID["build_id"] = "invalid(build_id)"
 
 
 INVALID_UPLOAD_API_SCAN_ALL_NONFATAL_TOP_LEVEL_MODULES = {}
-INVALID_UPLOAD_API_SCAN_ALL_NONFATAL_TOP_LEVEL_MODULES.update(VALID_UPLOAD_API)
+INVALID_UPLOAD_API_SCAN_ALL_NONFATAL_TOP_LEVEL_MODULES = copy.deepcopy(VALID_UPLOAD_API)
 INVALID_UPLOAD_API_SCAN_ALL_NONFATAL_TOP_LEVEL_MODULES[
     "scan_all_nonfatal_top_level_modules"
 ] = "True"
 
 
 INVALID_UPLOAD_API_AUTO_SCAN = {}
-INVALID_UPLOAD_API_AUTO_SCAN.update(VALID_UPLOAD_API)
+INVALID_UPLOAD_API_AUTO_SCAN = copy.deepcopy(VALID_UPLOAD_API)
 INVALID_UPLOAD_API_AUTO_SCAN["auto_scan"] = "False"
 
 # Valid Upload API uploadlargefile.do information
@@ -467,30 +444,27 @@ VALID_SANDBOX_API["api_key_secret"] = secrets.token_hex(64)  # nosec
 
 
 INVALID_SANDBOX_API_BUILD_ID = {}
-INVALID_SANDBOX_API_BUILD_ID.update(VALID_SANDBOX_API)
+INVALID_SANDBOX_API_BUILD_ID = copy.deepcopy(VALID_SANDBOX_API)
 INVALID_SANDBOX_API_BUILD_ID["build_id"] = "invalid(build_id)"
 
 
 INVALID_SANDBOX_API_SANDBOX_NAME = {}
-INVALID_SANDBOX_API_SANDBOX_NAME.update(VALID_SANDBOX_API)
+INVALID_SANDBOX_API_SANDBOX_NAME = copy.deepcopy(VALID_SANDBOX_API)
 INVALID_SANDBOX_API_SANDBOX_NAME["sandbox_name"] = r"invalid\sandbox_name"
 
 
 INVALID_SANDBOX_API_INCORRECT_VERSION_VALUES: Dict[
     str, Union[str, Union[Dict[str, str], Dict[str, float]], Path, bool]
 ] = {}
-INVALID_SANDBOX_API_INCORRECT_VERSION_VALUES.update(VALID_SANDBOX_API)
-INVALID_SANDBOX_API_INCORRECT_VERSION_VALUES["version"] = {
-    "createsandbox.do": 5.0,
-    "getsandboxlist.do": 5.0,
-    "promotesandbox.do": 5.0,
-    "updatesandbox.do": 5.0,
-    "deletesandbox.do": 5.0,
-}
+INVALID_SANDBOX_API_INCORRECT_VERSION_VALUES = copy.deepcopy(VALID_SANDBOX_API)
+for value in VALID_SANDBOX_API["version"]:
+    INVALID_SANDBOX_API_INCORRECT_VERSION_VALUES["version"][value] = float(
+        VALID_SANDBOX_API["version"][value]
+    )
 
 
 INVALID_SANDBOX_API_INCORRECT_DOMAIN = {}
-INVALID_SANDBOX_API_INCORRECT_DOMAIN.update(VALID_RESULTS_API)
+INVALID_SANDBOX_API_INCORRECT_DOMAIN = copy.deepcopy(VALID_RESULTS_API)
 INVALID_SANDBOX_API_INCORRECT_DOMAIN["base_url"] = "https:///api/"
 
 
@@ -542,7 +516,7 @@ VERACODE_ERROR_RESPONSE_XML["Element"] = ElementTree.fromstring(
 XML_API_VALID_RESPONSE_XML_ERROR: Dict[str, bytes] = {}
 XML_API_VALID_RESPONSE_XML_ERROR[
     "bytes"
-] = b'<?xml version="1.0" encoding="UTF-8"?>\n\n<error>Error Message.</error>\n'
+] = b'<?xml version="1.0" encoding="UTF-8"?>\n\n<error>Access denied.</error>\n'
 XML_API_VALID_RESPONSE_XML_ERROR["Element"] = ElementTree.fromstring(
     XML_API_VALID_RESPONSE_XML_ERROR["bytes"]
 )
@@ -671,7 +645,7 @@ VALID_CLEAN_FILE_CONFIG["dict"] = yaml.safe_load(VALID_CLEAN_FILE_CONFIG["bytes"
 # in the future it isn't and we want to update the places where this is used to
 # mock the response to normalized_file_config
 VALID_CLEAN_FILE_CONFIG_NORMALIZED = {}
-VALID_CLEAN_FILE_CONFIG_NORMALIZED.update(VALID_CLEAN_FILE_CONFIG)
+VALID_CLEAN_FILE_CONFIG_NORMALIZED = copy.deepcopy(VALID_CLEAN_FILE_CONFIG)
 
 CLEAN_DEFAULT_CONFIG = {
     "workflow": ["submit_artifacts", "check_compliance"],
