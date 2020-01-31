@@ -361,7 +361,7 @@ class TestVeracodeApiUploadAPI(TestCase):
         """
         upload_api = UploadAPI(app_id=constants.VALID_UPLOAD_API["app_id"])
 
-        # Succeed when getting a the default sandbox_id property
+        # Succeed when getting the default sandbox_id property
         self.assertIsNone(upload_api.sandbox_id)
 
         # Succeed when setting the sandbox_id property to a valid value

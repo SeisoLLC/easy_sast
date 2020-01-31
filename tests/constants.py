@@ -708,7 +708,7 @@ CLEAN_FILE_CONFIG = {
                 "deletesandbox.do": "5.0",
             },
             "app_id": "31337",
-            "sandbox_name": "easy_sast/fb/jonzeolla/testing",
+            "sandbox_name": VALID_SANDBOX_API["sandbox_name"],
         },
     },
     "loglevel": "WARNING",
@@ -723,7 +723,7 @@ CLEAN_ARGS_CONFIG = {
     "apis": {
         "results": {"ignore_compliance_status": False},
         "upload": {"scan_all_nonfatal_top_level_modules": True, "auto_scan": True},
-        "sandbox": {"sandbox_name": "easy_sast/fb/jonzeolla/testing"},
+        "sandbox": {"sandbox_name": VALID_SANDBOX_API["sandbox_name"]},
     },
 }
 
@@ -747,7 +747,7 @@ CLEAN_EFFECTIVE_CONFIG = {
                 "deletesandbox.do": "5.0",
             },
             "app_id": "31337",
-            "sandbox_name": "easy_sast/fb/jonzeolla/testing",
+            "sandbox_name": VALID_SANDBOX_API["sandbox_name"],
         },
         "upload": {
             "base_url": "https://analysiscenter.veracode.com/api/",
