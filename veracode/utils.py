@@ -95,7 +95,7 @@ def http_request(  # pylint: disable=too-many-statements
     *, verb: str, url: str, data: str = None, params: Dict = None, headers: Dict = None,
 ) -> InsecureElementTree.Element:
     """
-    API GET to the Veracode XML APIs
+    Make API requests
     """
     try:
         LOG.debug("Querying the %s endpoint with a %s", url, verb)

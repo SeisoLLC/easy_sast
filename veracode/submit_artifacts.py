@@ -279,6 +279,16 @@ def setup_scan_prereqs(*, upload_api: UploadAPI) -> bool:
         LOG.error("Failed create an application build for app id %s", upload_api.app_id)
         return False
 
+    # This is a sandbox scan
+    if create_build(upload_api=upload_api):
+        LOG.debug(
+            "Successfully created an application build for app id %s sandbox id %s",
+            upload_api.app_id,
+            upload_api.sandbox_id,
+        )
+        return True
+
+
     # Application build creation was unsuccessful and this is a sandbox
     # scan, attempt to cancel the existing scan and retry
     LOG.info(
