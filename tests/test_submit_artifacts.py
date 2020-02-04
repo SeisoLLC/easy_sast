@@ -444,7 +444,7 @@ class TestSubmitArtifacts(TestCase):
     @patch("pathlib.Path.iterdir")
     @patch("veracode.submit_artifacts.create_sandbox")
     @patch("veracode.submit_artifacts.get_sandbox_id")
-    def test_submit_artifacts(  # pylint: disable=too-many-arguments
+    def test_submit_artifacts(  # pylint: disable=too-many-arguments, too-many-statements
         self,
         mock_get_sandbox_id,
         mock_create_sandbox,
@@ -474,29 +474,43 @@ class TestSubmitArtifacts(TestCase):
         ## Testing with sandbox_api set
         # Return True if sandbox_api is set, the sandbox was already created,
         # and everything else follows the Happy Path
-        mock_get_sandbox_id.return_value = test_constants.VALID_SANDBOX_API["sandbox_id"]
+        mock_get_sandbox_id.return_value = test_constants.VALID_SANDBOX_API[
+            "sandbox_id"
+        ]
         mock_create_sandbox.return_value = None  # Unused
         mock_setup_scan_prereqs.return_value = True
         mock_iterdir.return_value = iterdir_generator_valid()
         mock_filter_file.return_value = True
         mock_upload_large_file.return_value = True
         mock_begin_prescan.return_value = True
-        self.assertTrue(submit_artifacts.submit_artifacts(upload_api=upload_api, sandbox_api=sandbox_api))
+        self.assertTrue(
+            submit_artifacts.submit_artifacts(
+                upload_api=upload_api, sandbox_api=sandbox_api
+            )
+        )
 
         # Return True if sandbox_api is set, the sandbox wasn't yet created in
         # Veracode, and everything else follows the Happy Path
         mock_get_sandbox_id.return_value = None
-        mock_create_sandbox.return_value = test_constants.VALID_SANDBOX_API["sandbox_id"]
+        mock_create_sandbox.return_value = test_constants.VALID_SANDBOX_API[
+            "sandbox_id"
+        ]
         mock_setup_scan_prereqs.return_value = True
         mock_iterdir.return_value = iterdir_generator_valid()
         mock_filter_file.return_value = True
         mock_upload_large_file.return_value = True
         mock_begin_prescan.return_value = True
-        self.assertTrue(submit_artifacts.submit_artifacts(upload_api=upload_api, sandbox_api=sandbox_api))
+        self.assertTrue(
+            submit_artifacts.submit_artifacts(
+                upload_api=upload_api, sandbox_api=sandbox_api
+            )
+        )
 
         # Return False if sandbox_api is set, and get_sandbox_id raises a
         # RuntimeError
-        with patch("veracode.submit_artifacts.get_sandbox_id", side_effect=RuntimeError):
+        with patch(
+            "veracode.submit_artifacts.get_sandbox_id", side_effect=RuntimeError
+        ):
             mock_get_sandbox_id.return_value = None
             mock_create_sandbox.return_value = None  # Unused
             mock_setup_scan_prereqs.return_value = True  # Unused
@@ -504,11 +518,17 @@ class TestSubmitArtifacts(TestCase):
             mock_filter_file.return_value = True  # Unused
             mock_upload_large_file.return_value = True  # Unused
             mock_begin_prescan.return_value = True  # Unused
-            self.assertFalse(submit_artifacts.submit_artifacts(upload_api=upload_api, sandbox_api=sandbox_api))
+            self.assertFalse(
+                submit_artifacts.submit_artifacts(
+                    upload_api=upload_api, sandbox_api=sandbox_api
+                )
+            )
 
         # Return False if sandbox_api is set, get_sandbox_id returns None, but
         # create_sandbox raises a RuntimeError
-        with patch("veracode.submit_artifacts.create_sandbox", side_effect=RuntimeError):
+        with patch(
+            "veracode.submit_artifacts.create_sandbox", side_effect=RuntimeError
+        ):
             mock_get_sandbox_id.return_value = None
             mock_create_sandbox.return_value = None
             mock_setup_scan_prereqs.return_value = True  # Unused
@@ -516,7 +536,11 @@ class TestSubmitArtifacts(TestCase):
             mock_filter_file.return_value = True  # Unused
             mock_upload_large_file.return_value = True  # Unused
             mock_begin_prescan.return_value = True  # Unused
-            self.assertFalse(submit_artifacts.submit_artifacts(upload_api=upload_api, sandbox_api=sandbox_api))
+            self.assertFalse(
+                submit_artifacts.submit_artifacts(
+                    upload_api=upload_api, sandbox_api=sandbox_api
+                )
+            )
 
         ## Testing without sandbox_api set
         # Return True if sandbox_api isn't set and everything follows the Happy
