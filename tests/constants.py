@@ -35,26 +35,18 @@ VALID_RESULTS_API["api_key_secret"] = secrets.token_hex(64)  # nosec
 VALID_RESULTS_API["ignore_compliance_status"] = False
 
 
-VALID_RESULTS_API_DIFFERENT_APP_ID = {}
 VALID_RESULTS_API_DIFFERENT_APP_ID = copy.deepcopy(VALID_RESULTS_API)
 VALID_RESULTS_API_DIFFERENT_APP_ID["app_id"] = "31337"
 
 
-INVALID_RESULTS_API_MISSING_VERSION_KEY = {}
 INVALID_RESULTS_API_MISSING_VERSION_KEY = copy.deepcopy(VALID_RESULTS_API)
 del INVALID_RESULTS_API_MISSING_VERSION_KEY["version"]
 
 
-INVALID_RESULTS_API_INCORRECT_APP_ID: Dict[
-    str, Union[str, bool, int, Dict[str, str]]
-] = {}
 INVALID_RESULTS_API_INCORRECT_APP_ID = copy.deepcopy(VALID_RESULTS_API)
 INVALID_RESULTS_API_INCORRECT_APP_ID["app_id"] = 1337
 
 
-INVALID_RESULTS_API_INCORRECT_VERSION_VALUES: Dict[
-    str, Union[str, bool, Union[Dict[str, str], Dict[str, float]]]
-] = {}
 INVALID_RESULTS_API_INCORRECT_VERSION_VALUES = copy.deepcopy(VALID_RESULTS_API)
 for value in VALID_RESULTS_API["version"]:
     INVALID_RESULTS_API_INCORRECT_VERSION_VALUES["version"][value] = float(
@@ -62,21 +54,17 @@ for value in VALID_RESULTS_API["version"]:
     )
 
 
-INVALID_RESULTS_API_MISSING_DOMAIN = {}
 INVALID_RESULTS_API_MISSING_DOMAIN = copy.deepcopy(VALID_RESULTS_API)
 INVALID_RESULTS_API_MISSING_DOMAIN["base_url"] = "https:///api/"
 
-INVALID_RESULTS_API_INCORRECT_COMPLIANCE_STATUS = {}
 INVALID_RESULTS_API_INCORRECT_COMPLIANCE_STATUS = copy.deepcopy(VALID_RESULTS_API)
 INVALID_RESULTS_API_INCORRECT_COMPLIANCE_STATUS["ignore_compliance_status"] = "True"
 
-INVALID_RESULTS_API_INVALID_PORT = {}
 INVALID_RESULTS_API_INVALID_PORT = copy.deepcopy(VALID_RESULTS_API)
 INVALID_RESULTS_API_INVALID_PORT[
     "base_url"
 ] = "https://analysiscenter.veracode.com:65536/api/"
 
-VALID_RESULTS_API_WITH_PORT_IN_URL = {}
 VALID_RESULTS_API_WITH_PORT_IN_URL = copy.deepcopy(VALID_RESULTS_API)
 VALID_RESULTS_API_WITH_PORT_IN_URL[
     "base_url"
@@ -260,24 +248,18 @@ VALID_UPLOAD_API["api_key_id"] = secrets.token_hex(16)
 VALID_UPLOAD_API["api_key_secret"] = secrets.token_hex(64)  # nosec
 
 
-INVALID_UPLOAD_API_MISSING_BUILD_DIR = {}
 INVALID_UPLOAD_API_MISSING_BUILD_DIR = copy.deepcopy(VALID_UPLOAD_API)
 del INVALID_UPLOAD_API_MISSING_BUILD_DIR["build_dir"]
 
 
-INVALID_UPLOAD_API_BUILD_DIR = {}
 INVALID_UPLOAD_API_BUILD_DIR = copy.deepcopy(VALID_UPLOAD_API)
 INVALID_UPLOAD_API_BUILD_DIR["build_dir"] = "/usr/local/bin/"
 
 
-INVALID_UPLOAD_API_MISSING_DOMAIN = {}
 INVALID_UPLOAD_API_MISSING_DOMAIN = copy.deepcopy(VALID_UPLOAD_API)
 INVALID_UPLOAD_API_MISSING_DOMAIN["base_url"] = "https:///api/"
 
 
-INVALID_UPLOAD_API_INCORRECT_VERSION_VALUES: Dict[
-    str, Union[str, Union[Dict[str, str], Dict[str, float]], Path, bool]
-] = {}
 INVALID_UPLOAD_API_INCORRECT_VERSION_VALUES = copy.deepcopy(VALID_UPLOAD_API)
 for value in VALID_UPLOAD_API["version"]:
     INVALID_UPLOAD_API_INCORRECT_VERSION_VALUES["version"][value] = float(
@@ -285,19 +267,16 @@ for value in VALID_UPLOAD_API["version"]:
     )
 
 
-INVALID_UPLOAD_API_BUILD_ID = {}
 INVALID_UPLOAD_API_BUILD_ID = copy.deepcopy(VALID_UPLOAD_API)
 INVALID_UPLOAD_API_BUILD_ID["build_id"] = "invalid(build_id)"
 
 
-INVALID_UPLOAD_API_SCAN_ALL_NONFATAL_TOP_LEVEL_MODULES = {}
 INVALID_UPLOAD_API_SCAN_ALL_NONFATAL_TOP_LEVEL_MODULES = copy.deepcopy(VALID_UPLOAD_API)
 INVALID_UPLOAD_API_SCAN_ALL_NONFATAL_TOP_LEVEL_MODULES[
     "scan_all_nonfatal_top_level_modules"
 ] = "True"
 
 
-INVALID_UPLOAD_API_AUTO_SCAN = {}
 INVALID_UPLOAD_API_AUTO_SCAN = copy.deepcopy(VALID_UPLOAD_API)
 INVALID_UPLOAD_API_AUTO_SCAN["auto_scan"] = "False"
 
@@ -425,6 +404,31 @@ VALID_UPLOAD_API_GETAPPINFO_RESPONSE_XML["Element"] = ElementTree.fromstring(
     VALID_UPLOAD_API_GETAPPINFO_RESPONSE_XML["bytes"]
 )
 
+# Valid Upload API getappinfo.do information
+# https://help.veracode.com/reader/LMv_dtSHyb7iIxAQznC~9w/rERUQewXKGx2D_zaoi6wGw
+VALID_UPLOAD_API_DELETEBUILD_RESPONSE_XML = {}
+# Unfortunately, this varies slightly from the Veracode-provided example
+# because (1) the xml library cannot parse the XML using a XSD file, and (2)
+# the placeholders Veracode provided in its documentation result in invalid XML
+# regardless.
+VALID_UPLOAD_API_DELETEBUILD_RESPONSE_XML[
+    "string"
+] = """<?xml version="1.0" encoding="UTF-8"?>
+
+<buildlist xmlns:xsi="http&#x3a;&#x2f;&#x2f;www.w3.org&#x2f;2001&#x2f;XMLSchema-instance"
+      xmlns="https&#x3a;&#x2f;&#x2f;analysiscenter.veracode.com&#x2f;schema&#x2f;2.0&#x2f;buildlist"
+      xsi:schemaLocation="https&#x3a;&#x2f;&#x2f;analysiscenter.veracode.com&#x2f;schema&#x2f;2.0&#x2f;buildlist
+      https&#x3a;&#x2f;&#x2f;analysiscenter.veracode.com&#x2f;resource&#x2f;2.0&#x2f;buildlist.xsd" buildlist_version="1.3"
+      account_id="12345" app_id="54321" app_name="Application Name">
+</buildlist>"""
+VALID_UPLOAD_API_DELETEBUILD_RESPONSE_XML["bytes"] = bytes(
+    VALID_UPLOAD_API_DELETEBUILD_RESPONSE_XML["string"], "utf-8"
+)
+VALID_UPLOAD_API_DELETEBUILD_RESPONSE_XML["Element"] = ElementTree.fromstring(
+    VALID_UPLOAD_API_DELETEBUILD_RESPONSE_XML["bytes"]
+)
+
+
 ## Sample Sandbox API environmental information
 VALID_SANDBOX_API: Dict[str, Union[str, Dict[str, str], Path, bool]] = {}
 VALID_SANDBOX_API["base_url"] = "https://analysiscenter.veracode.com/api/"
@@ -443,27 +447,120 @@ VALID_SANDBOX_API["api_key_id"] = secrets.token_hex(16)
 VALID_SANDBOX_API["api_key_secret"] = secrets.token_hex(64)  # nosec
 
 
-INVALID_SANDBOX_API_BUILD_ID = {}
 INVALID_SANDBOX_API_BUILD_ID = copy.deepcopy(VALID_SANDBOX_API)
 INVALID_SANDBOX_API_BUILD_ID["build_id"] = "invalid(build_id)"
 
 
-INVALID_SANDBOX_API_SANDBOX_NAME = {}
 INVALID_SANDBOX_API_SANDBOX_NAME = copy.deepcopy(VALID_SANDBOX_API)
 INVALID_SANDBOX_API_SANDBOX_NAME["sandbox_name"] = r"invalid\sandbox_name"
 
 
-INVALID_SANDBOX_API_INCORRECT_VERSION_VALUES: Dict[
-    str, Union[str, Union[Dict[str, str], Dict[str, float]], Path, bool]
-] = {}
 INVALID_SANDBOX_API_INCORRECT_VERSION_VALUES = copy.deepcopy(VALID_SANDBOX_API)
 for value in VALID_SANDBOX_API["version"]:
     INVALID_SANDBOX_API_INCORRECT_VERSION_VALUES["version"][value] = float(
         VALID_SANDBOX_API["version"][value]
     )
 
+# Valid Sandbox API information
+# https://help.veracode.com/reader/LMv_dtSHyb7iIxAQznC~9w/twPT73YBy_iQvrsGEZamhQ
+VALID_SANDBOX_GETSANDBOXLIST_API_RESPONSE_XML = {}
+# Unfortunately, this varies slightly from the Veracode-provided example
+# because (1) the xml library cannot parse the XML using a XSD file, and (2)
+# the placeholders Veracode provided in its documentation result in invalid XML
+# regardless.
+VALID_SANDBOX_GETSANDBOXLIST_API_RESPONSE_XML[
+    "string"
+] = """<?xml version="1.0" encoding="UTF-8"?>
 
-INVALID_SANDBOX_API_INCORRECT_DOMAIN = {}
+<sandboxlist xmlns:xsi="http&#x3a;&#x2f;&#x2f;www.w3.org&#x2f;2001&#x2f;XMLSchema-instance"
+      xmlns="https&#x3a;&#x2f;&#x2f;analysiscenter.veracode.com&#x2f;schema&#x2f;4.0&#x2f;sandboxlist"
+      xsi:schemaLocation="https&#x3a;&#x2f;&#x2f;analysiscenter.veracode.com&#x2f;schema&#x2f;4.0&#x2f;sandboxlist
+      https&#x3a;&#x2f;&#x2f;analysiscenter.veracode.com&#x2f;resource&#x2f;4.0&#x2f;sandboxlist.xsd"
+      sandboxlist_version="1.0" account_id="12345" app_id="31337">
+   <sandbox sandbox_id="111111111" sandbox_name="Project Security" owner="jon.zeolla@seisollc.com"
+         last_modified="2019-09-17T14&#x3a;08&#x3a;35-04&#x3a;00">
+      <customfield name="Custom 1" value=""/>
+      <customfield name="Custom 2" value=""/>
+      <customfield name="Custom 3" value=""/>
+      <customfield name="Custom 4" value=""/>
+      <customfield name="Custom 5" value=""/>
+   </sandbox>
+   <sandbox sandbox_id="22222222" sandbox_name="Project Refactor" owner="jon.zeolla@seisollc.com"
+         last_modified="2019-09-17T14&#x3a;04&#x3a;13-04&#x3a;00">
+      <customfield name="Custom 1" value=""/>
+      <customfield name="Custom 2" value=""/>
+      <customfield name="Custom 3" value=""/>
+      <customfield name="Custom 4" value=""/>
+      <customfield name="Custom 5" value=""/>
+   </sandbox>
+</sandboxlist>"""
+VALID_SANDBOX_GETSANDBOXLIST_API_RESPONSE_XML["bytes"] = bytes(
+    VALID_SANDBOX_GETSANDBOXLIST_API_RESPONSE_XML["string"], "utf-8"
+)
+VALID_SANDBOX_GETSANDBOXLIST_API_RESPONSE_XML["Element"] = ElementTree.fromstring(
+    VALID_SANDBOX_GETSANDBOXLIST_API_RESPONSE_XML["bytes"]
+)
+
+
+# Valid Sandbox API information
+# https://help.veracode.com/reader/LMv_dtSHyb7iIxAQznC~9w/jp8rPey8I5WsuWz7bY2SZg
+VALID_SANDBOX_CREATESANDBOX_API_RESPONSE_XML = {}
+# Unfortunately, this varies slightly from the Veracode-provided example
+# because (1) the xml library cannot parse the XML using a XSD file, and (2)
+# the placeholders Veracode provided in its documentation result in invalid XML
+# regardless.
+VALID_SANDBOX_CREATESANDBOX_API_RESPONSE_XML[
+    "string"
+] = """<?xml version="1.0" encoding="UTF-8"?>
+
+<sandboxinfo xmlns:xsi="http&#x3a;&#x2f;&#x2f;www.w3.org&#x2f;2001&#x2f;XMLSchema-instance"
+      xmlns="https&#x3a;&#x2f;&#x2f;analysiscenter.veracode.com&#x2f;schema&#x2f;4.0&#x2f;sandboxinfo"
+      xsi:schemaLocation="https&#x3a;&#x2f;&#x2f;analysiscenter.veracode.com&#x2f;schema&#x2f;4.0&#x2f;sandboxinfo
+      https&#x3a;&#x2f;&#x2f;analysiscenter.veracode.com&#x2f;resource&#x2f;4.0&#x2f;sandboxinfo.xsd" sandboxinfo_version="1.2"
+      account_id="12345" app_id="31337">
+   <sandbox sandbox_id="1111111" sandbox_name="Project Security" sandbox_status="sandbox" owner="jon.zeolla@seisollc.com"
+         modified_date="2019-09-17T14&#x3a;08&#x3a;35-04&#x3a;00" created_date="2019-09-17T14&#x3a;08&#x3a;35-04&#x3a;00">
+      <customfield name="Custom 1" value=""/>
+      <customfield name="Custom 2" value=""/>
+      <customfield name="Custom 3" value=""/>
+      <customfield name="Custom 4" value=""/>
+      <customfield name="Custom 5" value=""/>
+   </sandbox>
+</sandboxinfo>"""
+VALID_SANDBOX_CREATESANDBOX_API_RESPONSE_XML["bytes"] = bytes(
+    VALID_SANDBOX_CREATESANDBOX_API_RESPONSE_XML["string"], "utf-8"
+)
+VALID_SANDBOX_CREATESANDBOX_API_RESPONSE_XML["Element"] = ElementTree.fromstring(
+    VALID_SANDBOX_CREATESANDBOX_API_RESPONSE_XML["bytes"]
+)
+
+
+# Invalid Sandbox API information
+# https://help.veracode.com/reader/LMv_dtSHyb7iIxAQznC~9w/jp8rPey8I5WsuWz7bY2SZg
+INVALID_SANDBOX_CREATESANDBOX_API_RESPONSE_XML_NO_SANDBOX = {}
+# Unfortunately, this varies slightly from the Veracode-provided example
+# because (1) the xml library cannot parse the XML using a XSD file, and (2)
+# the placeholders Veracode provided in its documentation result in invalid XML
+# regardless.
+INVALID_SANDBOX_CREATESANDBOX_API_RESPONSE_XML_NO_SANDBOX[
+    "string"
+] = """<?xml version="1.0" encoding="UTF-8"?>
+
+<sandboxinfo xmlns:xsi="http&#x3a;&#x2f;&#x2f;www.w3.org&#x2f;2001&#x2f;XMLSchema-instance"
+      xmlns="https&#x3a;&#x2f;&#x2f;analysiscenter.veracode.com&#x2f;schema&#x2f;4.0&#x2f;sandboxinfo"
+      xsi:schemaLocation="https&#x3a;&#x2f;&#x2f;analysiscenter.veracode.com&#x2f;schema&#x2f;4.0&#x2f;sandboxinfo
+      https&#x3a;&#x2f;&#x2f;analysiscenter.veracode.com&#x2f;resource&#x2f;4.0&#x2f;sandboxinfo.xsd" sandboxinfo_version="1.2"
+      account_id="12345" app_id="31337">
+</sandboxinfo>"""
+INVALID_SANDBOX_CREATESANDBOX_API_RESPONSE_XML_NO_SANDBOX["bytes"] = bytes(
+    INVALID_SANDBOX_CREATESANDBOX_API_RESPONSE_XML_NO_SANDBOX["string"], "utf-8"
+)
+INVALID_SANDBOX_CREATESANDBOX_API_RESPONSE_XML_NO_SANDBOX[
+    "Element"
+] = ElementTree.fromstring(
+    INVALID_SANDBOX_CREATESANDBOX_API_RESPONSE_XML_NO_SANDBOX["bytes"]
+)
+
 INVALID_SANDBOX_API_INCORRECT_DOMAIN = copy.deepcopy(VALID_RESULTS_API)
 INVALID_SANDBOX_API_INCORRECT_DOMAIN["base_url"] = "https:///api/"
 
@@ -644,7 +741,6 @@ VALID_CLEAN_FILE_CONFIG["dict"] = yaml.safe_load(VALID_CLEAN_FILE_CONFIG["bytes"
 # VALID_CLEAN_FILE_CONFIG is already normalized, but separating it here in case
 # in the future it isn't and we want to update the places where this is used to
 # mock the response to normalized_file_config
-VALID_CLEAN_FILE_CONFIG_NORMALIZED = {}
 VALID_CLEAN_FILE_CONFIG_NORMALIZED = copy.deepcopy(VALID_CLEAN_FILE_CONFIG)
 
 CLEAN_DEFAULT_CONFIG = {

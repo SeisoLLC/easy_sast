@@ -288,7 +288,6 @@ def setup_scan_prereqs(*, upload_api: UploadAPI) -> bool:
         )
         return True
 
-
     # Application build creation was unsuccessful and this is a sandbox
     # scan, attempt to cancel the existing scan and retry
     LOG.info(

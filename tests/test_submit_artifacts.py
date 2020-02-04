@@ -16,7 +16,7 @@ from requests.exceptions import HTTPError
 # custom
 from tests import constants as test_constants
 from veracode import submit_artifacts
-from veracode.api import UploadAPI
+from veracode.api import UploadAPI, SandboxAPI
 
 # Setup a logger
 logging.getLogger()
@@ -240,113 +240,335 @@ class TestSubmitArtifacts(TestCase):
                     artifact=valid_artifact,
                 )
 
-    @patch("pathlib.Path.iterdir")
-    @patch("requests.post")
-    def test_submit_artifacts_happy_path(self, mock_post, mock_iterdir):
-        """Test the submit_artifacts function happy path"""
-        upload_api = UploadAPI(app_id=test_constants.VALID_UPLOAD_API["app_id"])
-        mock_post.return_value.content = test_constants.VALID_UPLOAD_API_UPLOADLARGEFILE_RESPONSE_XML[
-            "bytes"
-        ]
-        mock_post.return_value.status_code = 200
-        mock_post.return_value.raise_for_status.side_effect = HTTPError()
+    def test_get_sandbox_id(self):
+        """
+        Test the get_sandbox_id function
+        """
+        # Succeed when calling the get_sandbox_id function and the api call
+        # gets a valid response
+        with patch.object(
+            SandboxAPI,
+            "http_get",
+            return_value=test_constants.VALID_SANDBOX_GETSANDBOXLIST_API_RESPONSE_XML[
+                "Element"
+            ],
+        ):
+            sandbox_api = SandboxAPI(app_id="31337", sandbox_name="Project Security")
+            with patch(
+                "veracode.submit_artifacts.element_contains_error", return_value=False
+            ):
+                self.assertEqual(
+                    submit_artifacts.get_sandbox_id(sandbox_api=sandbox_api),
+                    "111111111",
+                )
 
-        def iterdir_generator():
+            # Raise a RuntimeError when element_contains_error returns True
+            with patch(
+                "veracode.submit_artifacts.element_contains_error", return_value=True
+            ):
+                self.assertRaises(
+                    RuntimeError,
+                    submit_artifacts.get_sandbox_id,
+                    sandbox_api=sandbox_api,
+                )
+
+        # Return None when calling the get_sandbox_id function and the api call
+        # gets a valid response, but does not contain the requested
+        # sandbox_name
+        with patch.object(
+            SandboxAPI,
+            "http_get",
+            return_value=test_constants.VALID_SANDBOX_GETSANDBOXLIST_API_RESPONSE_XML[
+                "Element"
+            ],
+        ):
+            sandbox_api = SandboxAPI(
+                app_id="31337", sandbox_name="Unknown Sandbox Name"
+            )
+            with patch(
+                "veracode.submit_artifacts.element_contains_error", return_value=False
+            ):
+                self.assertIsNone(
+                    submit_artifacts.get_sandbox_id(sandbox_api=sandbox_api)
+                )
+
+    def test_create_sandbox(self):
+        """
+        Test the create_sandbox function
+        """
+        # Succeed when calling the create_sandbox function and the api call
+        # gets a valid response
+        with patch.object(
+            SandboxAPI,
+            "http_post",
+            return_value=test_constants.VALID_SANDBOX_CREATESANDBOX_API_RESPONSE_XML[
+                "Element"
+            ],
+        ):
+            sandbox_api = SandboxAPI(app_id="31337", sandbox_name="Project Security")
+            with patch(
+                "veracode.submit_artifacts.element_contains_error", return_value=False
+            ):
+                self.assertEqual(
+                    submit_artifacts.create_sandbox(sandbox_api=sandbox_api), "1111111"
+                )
+
+            # Raise a RuntimeError when element_contains_error returns True
+            with patch(
+                "veracode.submit_artifacts.element_contains_error", return_value=True
+            ):
+                self.assertRaises(
+                    RuntimeError,
+                    submit_artifacts.create_sandbox,
+                    sandbox_api=sandbox_api,
+                )
+
+        # Raise a RuntimeError when calling the create_sandbox function and the
+        # api call gets a response, but does not contain the requested
+        # sandbox_name
+        with patch.object(
+            SandboxAPI,
+            "http_post",
+            return_value=test_constants.INVALID_SANDBOX_CREATESANDBOX_API_RESPONSE_XML_NO_SANDBOX[
+                "Element"
+            ],
+        ):
+            sandbox_api = SandboxAPI(app_id="31337", sandbox_name="Project Security")
+            with patch(
+                "veracode.submit_artifacts.element_contains_error", return_value=False
+            ):
+                self.assertRaises(
+                    RuntimeError,
+                    submit_artifacts.create_sandbox,
+                    sandbox_api=sandbox_api,
+                )
+
+    def test_cancel_build(self):
+        """
+        Test the cancel_build function
+        """
+        # Succeed when calling the cancel_build function and the api call gets
+        # a valid response
+        with patch.object(
+            UploadAPI,
+            "http_get",
+            return_value=test_constants.VALID_UPLOAD_API_DELETEBUILD_RESPONSE_XML[
+                "Element"
+            ],
+        ):
+            # Policy scan
+            upload_api = UploadAPI(app_id="31337")
+            with patch(
+                "veracode.submit_artifacts.element_contains_error", return_value=False
+            ):
+                self.assertTrue(submit_artifacts.cancel_build(upload_api=upload_api))
+
+            # Sandbox scan
+            upload_api.sandbox_id = "12345"
+            with patch(
+                "veracode.submit_artifacts.element_contains_error", return_value=False
+            ):
+                self.assertTrue(submit_artifacts.cancel_build(upload_api=upload_api))
+
+            # Return False when element_contains_error returns True
+            with patch(
+                "veracode.submit_artifacts.element_contains_error", return_value=True
+            ):
+                self.assertFalse(submit_artifacts.cancel_build(upload_api=upload_api))
+
+        # Return False when calling the cancel_build function and the api call
+        # raises a ConnectionError
+        with patch.object(
+            UploadAPI,
+            "http_get",
+            return_value=test_constants.VALID_UPLOAD_API_DELETEBUILD_RESPONSE_XML[
+                "Element"
+            ],
+            side_effect=ConnectionError,
+        ):
+            upload_api = UploadAPI(app_id="31337")
+            with patch(
+                "veracode.submit_artifacts.element_contains_error", return_value=False
+            ):
+                self.assertFalse(submit_artifacts.cancel_build(upload_api=upload_api))
+
+    def test_setup_scan_prereqs(self):
+        """
+        Test the setup_scan_prereqs function
+        """
+        upload_api = UploadAPI(app_id=test_constants.VALID_UPLOAD_API["app_id"])
+        ## Policy Scan
+        # Successful create build
+        with patch("veracode.submit_artifacts.create_build", return_value=True):
+            self.assertTrue(submit_artifacts.setup_scan_prereqs(upload_api=upload_api))
+
+        # Unsuccessful create build
+        with patch("veracode.submit_artifacts.create_build", return_value=False):
+            self.assertFalse(submit_artifacts.setup_scan_prereqs(upload_api=upload_api))
+
+        ## Sandbox Scan
+        upload_api.sandbox_id = "12345"
+        # Successful create build
+        with patch("veracode.submit_artifacts.create_build", return_value=True):
+            self.assertTrue(submit_artifacts.setup_scan_prereqs(upload_api=upload_api))
+
+        # Unsuccessful create build
+        with patch("veracode.submit_artifacts.create_build", return_value=False):
+            # create_build returns False, cancel_build returns True, but
+            # create_build again returns False, return False
+            with patch("veracode.submit_artifacts.cancel_build", return_value=True):
+                self.assertFalse(
+                    submit_artifacts.setup_scan_prereqs(upload_api=upload_api)
+                )
+
+            # create_build returns False, cancel_build returns False, return
+            # False
+            with patch("veracode.submit_artifacts.cancel_build", return_value=False):
+                self.assertFalse(
+                    submit_artifacts.setup_scan_prereqs(upload_api=upload_api)
+                )
+
+        # Initially fail create_build, then succeed
+        with patch("veracode.submit_artifacts.create_build", side_effect=[False, True]):
+            # create_build returns False, cancel_build returns True, and
+            # create_build True, return True
+            with patch("veracode.submit_artifacts.cancel_build", return_value=True):
+                self.assertTrue(
+                    submit_artifacts.setup_scan_prereqs(upload_api=upload_api)
+                )
+
+    @patch("veracode.submit_artifacts.begin_prescan")
+    @patch("veracode.submit_artifacts.upload_large_file")
+    @patch("veracode.submit_artifacts.filter_file")
+    @patch("veracode.submit_artifacts.setup_scan_prereqs")
+    @patch("pathlib.Path.iterdir")
+    @patch("veracode.submit_artifacts.create_sandbox")
+    @patch("veracode.submit_artifacts.get_sandbox_id")
+    def test_submit_artifacts(  # pylint: disable=too-many-arguments
+        self,
+        mock_get_sandbox_id,
+        mock_create_sandbox,
+        mock_iterdir,
+        mock_setup_scan_prereqs,
+        mock_filter_file,
+        mock_upload_large_file,
+        mock_begin_prescan,
+    ):
+        """
+        Test the submit_artifacts function
+        """
+        upload_api = UploadAPI(app_id=test_constants.VALID_UPLOAD_API["app_id"])
+        sandbox_api = SandboxAPI(
+            app_id=test_constants.VALID_SANDBOX_API["app_id"],
+            sandbox_name=test_constants.VALID_SANDBOX_API["sandbox_name"],
+        )
+
+        def iterdir_generator_valid():
             f = test_constants.VALID_FILE["Path"]
             yield f
 
-        mock_iterdir.return_value = iterdir_generator()
-
-        with patch(
-            "veracode.submit_artifacts.open",
-            new=mock_open(read_data=test_constants.VALID_FILE["bytes"]),
-        ):
-            self.assertTrue(submit_artifacts.submit_artifacts(upload_api=upload_api))
-
-    @patch("veracode.submit_artifacts.create_build")
-    def test_submit_artifacts_fail_at_create_build(self, mock_create_build):
-        """Test the submit_artifacts function when create_build returns False"""
-        upload_api = UploadAPI(app_id=test_constants.VALID_UPLOAD_API["app_id"])
-        mock_create_build.return_value = False
-
-        self.assertFalse(submit_artifacts.submit_artifacts(upload_api=upload_api))
-
-    @patch("pathlib.Path.iterdir")
-    @patch("requests.post")
-    def test_submit_artifacts_no_files_to_upload(self, mock_post, mock_iterdir):
-        """
-        Test the submit_artifacts function when filter_file returns False for
-        all artifacts
-        """
-        upload_api = UploadAPI(app_id=test_constants.VALID_UPLOAD_API["app_id"])
-        mock_post.return_value.content = test_constants.VALID_UPLOAD_API_UPLOADLARGEFILE_RESPONSE_XML[
-            "bytes"
-        ]
-        mock_post.return_value.status_code = 200
-        mock_post.return_value.raise_for_status.side_effect = HTTPError()
-
-        def iterdir_generator():
+        def iterdir_generator_invalid():
             f = test_constants.INVALID_FILE["Path"]
             yield f
 
-        mock_iterdir.return_value = iterdir_generator()
+        ## Testing with sandbox_api set
+        # Return True if sandbox_api is set, the sandbox was already created,
+        # and everything else follows the Happy Path
+        mock_get_sandbox_id.return_value = test_constants.VALID_SANDBOX_API["sandbox_id"]
+        mock_create_sandbox.return_value = None  # Unused
+        mock_setup_scan_prereqs.return_value = True
+        mock_iterdir.return_value = iterdir_generator_valid()
+        mock_filter_file.return_value = True
+        mock_upload_large_file.return_value = True
+        mock_begin_prescan.return_value = True
+        self.assertTrue(submit_artifacts.submit_artifacts(upload_api=upload_api, sandbox_api=sandbox_api))
 
-        with patch(
-            "veracode.submit_artifacts.open",
-            new=mock_open(read_data=test_constants.INVALID_FILE["bytes"]),
-        ):
-            self.assertFalse(submit_artifacts.submit_artifacts(upload_api=upload_api))
+        # Return True if sandbox_api is set, the sandbox wasn't yet created in
+        # Veracode, and everything else follows the Happy Path
+        mock_get_sandbox_id.return_value = None
+        mock_create_sandbox.return_value = test_constants.VALID_SANDBOX_API["sandbox_id"]
+        mock_setup_scan_prereqs.return_value = True
+        mock_iterdir.return_value = iterdir_generator_valid()
+        mock_filter_file.return_value = True
+        mock_upload_large_file.return_value = True
+        mock_begin_prescan.return_value = True
+        self.assertTrue(submit_artifacts.submit_artifacts(upload_api=upload_api, sandbox_api=sandbox_api))
 
-    @patch("veracode.submit_artifacts.upload_large_file")
-    @patch("pathlib.Path.iterdir")
-    @patch("requests.post")
-    def test_submit_artifacts_fail_at_upload_large_file(
-        self, mock_post, mock_iterdir, mock_upload_large_file
-    ):
-        """Test the submit_artifacts function when upload_large_file returns False"""
-        upload_api = UploadAPI(app_id=test_constants.VALID_UPLOAD_API["app_id"])
-        mock_post.return_value.content = test_constants.VALID_UPLOAD_API_UPLOADLARGEFILE_RESPONSE_XML[
-            "bytes"
-        ]
-        mock_post.return_value.status_code = 200
-        mock_post.return_value.raise_for_status.side_effect = HTTPError()
+        # Return False if sandbox_api is set, and get_sandbox_id raises a
+        # RuntimeError
+        with patch("veracode.submit_artifacts.get_sandbox_id", side_effect=RuntimeError):
+            mock_get_sandbox_id.return_value = None
+            mock_create_sandbox.return_value = None  # Unused
+            mock_setup_scan_prereqs.return_value = True  # Unused
+            mock_iterdir.return_value = iterdir_generator_valid()  # Unused
+            mock_filter_file.return_value = True  # Unused
+            mock_upload_large_file.return_value = True  # Unused
+            mock_begin_prescan.return_value = True  # Unused
+            self.assertFalse(submit_artifacts.submit_artifacts(upload_api=upload_api, sandbox_api=sandbox_api))
+
+        # Return False if sandbox_api is set, get_sandbox_id returns None, but
+        # create_sandbox raises a RuntimeError
+        with patch("veracode.submit_artifacts.create_sandbox", side_effect=RuntimeError):
+            mock_get_sandbox_id.return_value = None
+            mock_create_sandbox.return_value = None
+            mock_setup_scan_prereqs.return_value = True  # Unused
+            mock_iterdir.return_value = iterdir_generator_valid()  # Unused
+            mock_filter_file.return_value = True  # Unused
+            mock_upload_large_file.return_value = True  # Unused
+            mock_begin_prescan.return_value = True  # Unused
+            self.assertFalse(submit_artifacts.submit_artifacts(upload_api=upload_api, sandbox_api=sandbox_api))
+
+        ## Testing without sandbox_api set
+        # Return True if sandbox_api isn't set and everything follows the Happy
+        # Path
+        mock_get_sandbox_id.return_value = None  # Unused
+        mock_create_sandbox.return_value = None  # Unused
+        mock_setup_scan_prereqs.return_value = True
+        mock_iterdir.return_value = iterdir_generator_valid()
+        mock_filter_file.return_value = True
+        mock_upload_large_file.return_value = True
+        mock_begin_prescan.return_value = True
+        self.assertTrue(submit_artifacts.submit_artifacts(upload_api=upload_api))
+
+        # Return False if setup_scan_prereqs returns False
+        mock_get_sandbox_id.return_value = None  # Unused
+        mock_create_sandbox.return_value = None  # Unused
+        mock_setup_scan_prereqs.return_value = False
+        mock_iterdir.return_value = iterdir_generator_valid()
+        mock_filter_file.return_value = True
+        mock_upload_large_file.return_value = True
+        mock_begin_prescan.return_value = True
+        self.assertFalse(submit_artifacts.submit_artifacts(upload_api=upload_api))
+
+        # Return False if filter_file always returns False, meaning artifacts
+        # is empty
+        mock_get_sandbox_id.return_value = None  # Unused
+        mock_create_sandbox.return_value = None  # Unused
+        mock_setup_scan_prereqs.return_value = True
+        mock_iterdir.return_value = iterdir_generator_invalid()
+        mock_filter_file.return_value = False
+        mock_upload_large_file.return_value = True
+        mock_begin_prescan.return_value = True
+        self.assertFalse(submit_artifacts.submit_artifacts(upload_api=upload_api))
+
+        # Return False if upload_large_file always returns False, meaning
+        # something is wrong with the file upload
+        mock_get_sandbox_id.return_value = None  # Unused
+        mock_create_sandbox.return_value = None  # Unused
+        mock_setup_scan_prereqs.return_value = True
+        mock_iterdir.return_value = iterdir_generator_valid()
+        mock_filter_file.return_value = True
         mock_upload_large_file.return_value = False
+        mock_begin_prescan.return_value = True
+        self.assertFalse(submit_artifacts.submit_artifacts(upload_api=upload_api))
 
-        def iterdir_generator():
-            f = test_constants.VALID_FILE["Path"]
-            yield f
-
-        mock_iterdir.return_value = iterdir_generator()
-
-        with patch(
-            "veracode.submit_artifacts.open",
-            new=mock_open(read_data=test_constants.VALID_FILE["bytes"]),
-        ):
-            self.assertFalse(submit_artifacts.submit_artifacts(upload_api=upload_api))
-
-    @patch("veracode.submit_artifacts.begin_prescan")
-    @patch("pathlib.Path.iterdir")
-    @patch("requests.post")
-    def test_submit_artifacts_fail_at_begin_prescan(
-        self, mock_post, mock_iterdir, mock_begin_prescan
-    ):
-        """Test the submit_artifacts function when begin_prescan returns False"""
-        upload_api = UploadAPI(app_id=test_constants.VALID_UPLOAD_API["app_id"])
-        mock_post.return_value.content = test_constants.VALID_UPLOAD_API_UPLOADLARGEFILE_RESPONSE_XML[
-            "bytes"
-        ]
-        mock_post.return_value.status_code = 200
-        mock_post.return_value.raise_for_status.side_effect = HTTPError()
+        # Return False if begin_prescan returns False, meaning the prescan was
+        # unable to be started
+        mock_get_sandbox_id.return_value = None  # Unused
+        mock_create_sandbox.return_value = None  # Unused
+        mock_setup_scan_prereqs.return_value = True
+        mock_iterdir.return_value = iterdir_generator_valid()
+        mock_filter_file.return_value = True
+        mock_upload_large_file.return_value = True
         mock_begin_prescan.return_value = False
-
-        def iterdir_generator():
-            f = test_constants.VALID_FILE["Path"]
-            yield f
-
-        mock_iterdir.return_value = iterdir_generator()
-
-        with patch(
-            "veracode.submit_artifacts.open",
-            new=mock_open(read_data=test_constants.VALID_FILE["bytes"]),
-        ):
-            self.assertFalse(submit_artifacts.submit_artifacts(upload_api=upload_api))
+        self.assertFalse(submit_artifacts.submit_artifacts(upload_api=upload_api))
