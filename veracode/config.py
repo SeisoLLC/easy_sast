@@ -15,7 +15,7 @@ import os
 import yaml
 
 # custom
-from veracode.api import ResultsAPI, UploadAPI
+from veracode.api import ResultsAPI, UploadAPI, SandboxAPI
 from veracode.utils import is_valid_attribute
 from veracode import constants
 from veracode import __version__, __project_name__
@@ -255,6 +255,8 @@ def get_args_config() -> Dict:
             args_config["apis"]["upload"][key] = parsed_args[key]
         elif key in constants.ONLY_RESULTS_ATTRIBUTES:
             args_config["apis"]["results"][key] = parsed_args[key]
+        elif key in constants.ONLY_SANDBOX_ATTRIBUTES:
+            args_config["apis"]["sandbox"][key] = parsed_args[key]
         else:
             # Put in top level
             args_config[key] = parsed_args[key]
@@ -303,9 +305,7 @@ def create_arg_parser() -> ArgumentParser:
         action="store_true",
         help="ignore (but still check) the compliance status",
     )
-    parser.add_argument(
-        "--sandbox", type=str, help="application sandbox as provided by Veracode"
-    )
+    parser.add_argument("--sandbox-name", type=str, help="application sandbox name")
     parser.add_argument("--version", action="version", version=__version__)
     parser.add_argument(
         "--workflow", nargs="+", help="specify the workflow steps to enable and order"
@@ -425,8 +425,8 @@ def get_config() -> Dict:
 
 
 def apply_config(
-    *, api: Union[ResultsAPI, UploadAPI], config: dict
-) -> Union[ResultsAPI, UploadAPI]:
+    *, api: Union[ResultsAPI, UploadAPI, SandboxAPI], config: dict
+) -> Union[ResultsAPI, UploadAPI, SandboxAPI]:
     """
     Apply a provided config dict to a provided object
     """
@@ -437,6 +437,9 @@ def apply_config(
             setattr(api, key, value)
     elif isinstance(api, UploadAPI):
         for key, value in config["apis"]["upload"].items():
+            setattr(api, key, value)
+    elif isinstance(api, SandboxAPI):
+        for key, value in config["apis"]["sandbox"].items():
             setattr(api, key, value)
     else:
         LOG.error("api argument is not a supported type (%s)", type(api))

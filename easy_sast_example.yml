@@ -40,9 +40,19 @@ apis:
     app_id: "31337"
     build_dir: "/build/"
     build_id: "2037-03-13_03-14-15"
-    sandbox: "54321"
     scan_all_nonfatal_top_level_modules: True
     auto_scan: True
+  sandbox:
+    base_url: "https://analysiscenter.veracode.com/api/"
+    version: {
+              "createsandbox.do": "5.0",
+              "getsandboxlist.do": "5.0",
+              "promotesandbox.do": "5.0",
+              "updatesandbox.do": "5.0",
+              "deletesandbox.do": "5.0"
+             }
+    app_id: "31337"
+    sandbox_name: "fb/jonzeolla/name-of-branch"
 loglevel: "warning"
 workflow:
   - "submit_artifacts"

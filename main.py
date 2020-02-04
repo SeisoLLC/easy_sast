@@ -12,7 +12,7 @@ import json
 # custom
 from veracode.check_compliance import check_compliance
 from veracode.submit_artifacts import submit_artifacts
-from veracode.api import ResultsAPI, UploadAPI
+from veracode.api import ResultsAPI, UploadAPI, SandboxAPI
 from veracode.utils import configure_environment
 from veracode.config import get_config, apply_config
 from veracode import __project_name__
@@ -54,6 +54,14 @@ def main() -> None:
         upload_api = apply_config(
             api=UploadAPI(app_id=config["apis"]["upload"]["app_id"]), config=config
         )
+        if "sandbox_name" in config["apis"]["sandbox"]:
+            sandbox_api = apply_config(
+                api=SandboxAPI(
+                    app_id=config["apis"]["sandbox"]["app_id"],
+                    sandbox_name=config["apis"]["sandbox"]["sandbox_name"],
+                ),
+                config=config,
+            )
     except TypeError:
         log.error("Unable to create valid API objects")
         sys.exit(1)
@@ -64,7 +72,15 @@ def main() -> None:
             configure_environment(
                 api_key_id=config["api_key_id"], api_key_secret=config["api_key_secret"]
             )
-            if submit_artifacts(upload_api=upload_api):
+            # Sandboxes are optional
+            try:
+                success = submit_artifacts(
+                    upload_api=upload_api, sandbox_api=sandbox_api
+                )
+            except NameError:
+                success = submit_artifacts(upload_api=upload_api)
+
+            if success:
                 log.info("Successfully submit build artifacts for scanning")
             else:
                 log.error("Failed to submit build artifacts for scanning")

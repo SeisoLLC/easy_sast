@@ -15,7 +15,7 @@ from xml.etree import (  # nosec (Used only when TYPE_CHECKING)
 
 # custom
 from tests import constants
-from veracode.api import ResultsAPI, UploadAPI, VeracodeXMLAPI
+from veracode.api import ResultsAPI, UploadAPI, SandboxAPI, VeracodeXMLAPI
 
 # Setup a logger
 logging.getLogger()
@@ -164,14 +164,6 @@ class TestVeracodeApiVeracodeXMLAPI(TestCase):
         mock_is_valid_attribute.return_value = True
 
         # Succeed when calling the _validate method, given that the attributes
-        # are valid
-        self.assertTrue(
-            veracode_xml_api._validate(key="key", value="patched to be valid")
-        )  # pylint: disable=protected-access
-
-        # Fail when attempting to delete the _validate method, because the
-        # deleter is intentionally missing
-        self.assertRaises(AttributeError, delattr, veracode_xml_api, "_validate")
 
 
 class TestVeracodeApiUploadAPI(TestCase):
@@ -362,36 +354,37 @@ class TestVeracodeApiUploadAPI(TestCase):
         # deleter is intentionally missing
         self.assertRaises(AttributeError, delattr, upload_api, "build_id")
 
-    ## UploadAPI sandbox property
-    def test_upload_api_sandbox(self):
+    ## UploadAPI sandbox_id property
+    def test_upload_api_sandbox_id(self):
         """
-        Test the UploadAPI sandbox property
+        Test the UploadAPI sandbox_id property
         """
         upload_api = UploadAPI(app_id=constants.VALID_UPLOAD_API["app_id"])
 
-        # Succeed when getting a the default sandbox property
-        self.assertIsNone(upload_api.sandbox)
+        # Succeed when getting the default sandbox_id property
+        self.assertIsNone(upload_api.sandbox_id)
 
-        # Succeed when setting the sandbox property to a valid value
-        self.assertIsNone(setattr(upload_api, "sandbox", None))
-        self.assertIsNone(setattr(upload_api, "sandbox", "12489"))
+        # Succeed when setting the sandbox_id property to a valid value
+        self.assertIsNone(setattr(upload_api, "sandbox_id", None))
+        self.assertIsNone(setattr(upload_api, "sandbox_id", "12489"))
 
         # Succeed when getting a valid app_id property
-        self.assertIsInstance(upload_api.sandbox, str)
+        self.assertIsInstance(upload_api.sandbox_id, str)
 
-        # Fail when attempting to set the sandbox property to an invalid value
+        # Fail when attempting to set the sandbox_id property to an invalid
+        # value
         self.assertRaises(
-            ValueError, setattr, upload_api, "sandbox", 12489,
+            ValueError, setattr, upload_api, "sandbox_id", 12489,
         )
 
-        # Fail when attempting to get the sandbox property when it contains an
-        # invalid value
-        upload_api._sandbox = 12489  # pylint: disable=protected-access
-        self.assertRaises(ValueError, getattr, upload_api, "sandbox")
+        # Fail when attempting to get the sandbox_id property when it contains
+        # an invalid value
+        upload_api._sandbox_id = 12489  # pylint: disable=protected-access
+        self.assertRaises(ValueError, getattr, upload_api, "sandbox_id")
 
-        # Fail when attempting to delete the sandbox property, because the
+        # Fail when attempting to delete the sandbox_id property, because the
         # deleter is intentionally missing
-        self.assertRaises(AttributeError, delattr, upload_api, "sandbox")
+        self.assertRaises(AttributeError, delattr, upload_api, "sandbox_id")
 
     ## UploadAPI scan_all_nonfatal_top_level_modules property
     def test_upload_api_scan_all_nonfatal_top_level_modules(self):
@@ -814,3 +807,244 @@ class TestVeracodeApiResultsAPI(TestCase):
         # Fail when attempting to delete the _validate method, because the
         # deleter is intentionally missing
         self.assertRaises(AttributeError, delattr, results_api, "_validate")
+
+
+class TestVeracodeApiSandboxAPI(TestCase):
+    """
+    Test api.py's SandboxAPI class
+    """
+
+    ## SandboxAPI version property
+    def test_sandbox_api_version(self):
+        """
+        Test the SandboxAPI version property
+        """
+        sandbox_api = SandboxAPI(
+            app_id=constants.VALID_SANDBOX_API["app_id"],
+            sandbox_name=constants.VALID_SANDBOX_API["sandbox_name"],
+        )
+
+        # Succeed when getting a valid version property
+        self.assertIsInstance(sandbox_api.version, dict)
+
+        # Succeed when setting the version property to a valid value
+        self.assertIsNone(
+            setattr(sandbox_api, "version", constants.VALID_SANDBOX_API["version"])
+        )
+
+        # Fail when attempting to set the version property to an invalid value
+        self.assertRaises(
+            ValueError,
+            setattr,
+            sandbox_api,
+            "version",
+            constants.INVALID_SANDBOX_API_INCORRECT_VERSION_VALUES["version"],
+        )
+
+        # Fail when attempting to get the version property when it contains an
+        # invalid value
+        sandbox_api._version = constants.INVALID_SANDBOX_API_INCORRECT_VERSION_VALUES[  # pylint: disable=protected-access
+            "version"
+        ]
+        self.assertRaises(ValueError, getattr, sandbox_api, "version")
+
+        # Fail when attempting to delete the version property, because the
+        # deleter is intentionally missing
+        self.assertRaises(AttributeError, delattr, sandbox_api, "version")
+
+    ## SandboxAPI app_id property
+    def test_sandbox_api_app_id(self):
+        """
+        Test the SandboxAPI app_id property
+        """
+        # Fail when attempting to create an SandboxAPI object when the app_id
+        # property wasn't provided to the constructor
+        self.assertRaises(TypeError, SandboxAPI)
+
+        # Succeed when creating an SandboxAPI object when the app_id property is
+        # properly provided to the constructor
+        sandbox_api = SandboxAPI(
+            app_id=constants.VALID_SANDBOX_API["app_id"],
+            sandbox_name=constants.VALID_SANDBOX_API["sandbox_name"],
+        )
+        self.assertIsInstance(getattr(sandbox_api, "app_id"), str)
+
+        # Succeed when setting the app_id property to a valid value
+        self.assertIsNone(
+            setattr(sandbox_api, "app_id", constants.VALID_SANDBOX_API["app_id"])
+        )
+
+        # Succeed when getting a valid app_id property
+        self.assertIsInstance(sandbox_api.app_id, str)
+
+        # Fail when attempting to set the app_id property to an invalid value
+        self.assertRaises(
+            ValueError,
+            setattr,
+            sandbox_api,
+            "app_id",
+            constants.INVALID_RESULTS_API_INCORRECT_APP_ID["app_id"],
+        )
+
+        # Fail when attempting to get the app_id property when it contains an
+        # invalid value
+        sandbox_api._app_id = constants.INVALID_RESULTS_API_INCORRECT_APP_ID[  # pylint: disable=protected-access
+            "app_id"
+        ]
+        self.assertRaises(ValueError, getattr, sandbox_api, "app_id")
+
+        # Fail when attempting to delete the app_id property, because the
+        # deleter is intentionally missing
+        self.assertRaises(AttributeError, delattr, sandbox_api, "app_id")
+
+    ## SandboxAPI base_url property
+    def test_sandbox_api_base_url(self):
+        """
+        Test the SandboxAPI base_url property
+        """
+        sandbox_api = SandboxAPI(
+            app_id=constants.VALID_SANDBOX_API["app_id"],
+            sandbox_name=constants.VALID_SANDBOX_API["sandbox_name"],
+        )
+
+        # Succeed when getting a valid base_url property
+        self.assertIsInstance(sandbox_api.base_url, str)
+
+        # Succeed when setting the base_url property to a valid value
+        self.assertIsNone(
+            setattr(sandbox_api, "base_url", constants.VALID_SANDBOX_API["base_url"])
+        )
+
+        # Fail when attempting to set the base_url property to an invalid value
+        self.assertRaises(
+            ValueError,
+            setattr,
+            sandbox_api,
+            "base_url",
+            constants.INVALID_SANDBOX_API_INCORRECT_DOMAIN["base_url"],
+        )
+
+        # Fail when attempting to get the base_url property when it contains an
+        # invalid value
+        sandbox_api._base_url = constants.INVALID_SANDBOX_API_INCORRECT_DOMAIN[  # pylint: disable=protected-access
+            "base_url"
+        ]
+        self.assertRaises(ValueError, getattr, sandbox_api, "base_url")
+
+        # Fail when attempting to delete the base_url property, because the
+        # deleter is intentionally missing
+        self.assertRaises(AttributeError, delattr, sandbox_api, "base_url")
+
+    ## SandboxAPI build_id property
+    def test_sandbox_api_build_id(self):
+        """
+        Test the SandboxAPI build_id property
+        """
+        sandbox_api = SandboxAPI(
+            app_id=constants.VALID_SANDBOX_API["app_id"],
+            sandbox_name=constants.VALID_SANDBOX_API["sandbox_name"],
+        )
+
+        # Succeed when getting a valid build_id property
+        self.assertIsInstance(sandbox_api.build_id, str)
+
+        # Succeed when setting the build_id property to a valid value
+        self.assertIsNone(
+            setattr(sandbox_api, "build_id", constants.VALID_SANDBOX_API["build_id"])
+        )
+
+        # Fail when attempting to set the build_id property to an invalid value
+        self.assertRaises(
+            ValueError,
+            setattr,
+            sandbox_api,
+            "build_id",
+            constants.INVALID_SANDBOX_API_BUILD_ID["build_id"],
+        )
+
+        # Fail when attempting to get the build_id property when it contains an
+        # invalid value
+        sandbox_api._build_id = constants.INVALID_SANDBOX_API_BUILD_ID[  # pylint: disable=protected-access
+            "build_id"
+        ]
+        self.assertRaises(ValueError, getattr, sandbox_api, "build_id")
+
+        # Fail when attempting to delete the build_id property, because the
+        # deleter is intentionally missing
+        self.assertRaises(AttributeError, delattr, sandbox_api, "build_id")
+
+    ## SandboxAPI sandbox_id property
+    def test_sandbox_api_sandbox_id(self):
+        """
+        Test the SandboxAPI sandbox_id property
+        """
+        sandbox_api = SandboxAPI(
+            app_id=constants.VALID_SANDBOX_API["app_id"],
+            sandbox_name=constants.VALID_SANDBOX_API["sandbox_name"],
+        )
+
+        # Succeed when getting a the default sandbox_id property
+        self.assertIsNone(sandbox_api.sandbox_id)
+
+        # Succeed when setting the sandbox_id property to a valid value
+        self.assertIsNone(setattr(sandbox_api, "sandbox_id", None))
+        self.assertIsNone(setattr(sandbox_api, "sandbox_id", "12489"))
+
+        # Succeed when getting a valid app_id property
+        self.assertIsInstance(sandbox_api.sandbox_id, str)
+
+        # Fail when attempting to set the sandbox_id property to an invalid
+        # value
+        self.assertRaises(
+            ValueError, setattr, sandbox_api, "sandbox_id", 12489,
+        )
+
+        # Fail when attempting to get the sandbox_id property when it contains
+        # an invalid value
+        sandbox_api._sandbox_id = 12489  # pylint: disable=protected-access
+        self.assertRaises(ValueError, getattr, sandbox_api, "sandbox_id")
+
+        # Fail when attempting to delete the sandbox_id property, because the
+        # deleter is intentionally missing
+        self.assertRaises(AttributeError, delattr, sandbox_api, "sandbox_id")
+
+    ## SandboxAPI sandbox_name property
+    def test_sandbox_api_sandbox_name(self):
+        """
+        Test the SandboxAPI sandbox_name property
+        """
+        sandbox_api = SandboxAPI(
+            app_id=constants.VALID_SANDBOX_API["app_id"],
+            sandbox_name=constants.VALID_SANDBOX_API["sandbox_name"],
+        )
+
+        # Succeed when getting a valid sandbox_name property
+        self.assertIsInstance(sandbox_api.sandbox_name, str)
+
+        # Succeed when setting the sandbox_name property to a valid value
+        self.assertIsNone(
+            setattr(
+                sandbox_api, "sandbox_name", constants.VALID_SANDBOX_API["sandbox_name"]
+            )
+        )
+
+        # Fail when attempting to set the sandbox_name property to an invalid
+        # value
+        self.assertRaises(
+            ValueError,
+            setattr,
+            sandbox_api,
+            "sandbox_name",
+            constants.INVALID_SANDBOX_API_SANDBOX_NAME["sandbox_name"],
+        )
+
+        # Fail when attempting to get the sandbox_name property when it
+        # contains an invalid value
+        sandbox_api._sandbox_name = constants.INVALID_SANDBOX_API_SANDBOX_NAME[  # pylint: disable=protected-access
+            "sandbox_name"
+        ]
+        self.assertRaises(ValueError, getattr, sandbox_api, "sandbox_name")
+
+        # Fail when attempting to delete the sandbox_name property, because the
+        # deleter is intentionally missing
+        self.assertRaises(AttributeError, delattr, sandbox_api, "sandbox_name")

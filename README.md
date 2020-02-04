@@ -21,8 +21,8 @@ For advanced usage and more information, see [the wiki](https://github.com/Seiso
 
 ## Features
 This code base was developed in line with the <b>[Rugged Manifesto](https://ruggedsoftware.org)</b>.  As such, it is:
- - <b>Simple to use</b>: It contains intentionally limited dependencies and provides easy-to-use `make` commands for standard use cases.
- - <b>Easily configurable</b>: Practical defaults are in place, but configuration options include a config file, environment variables, and CLI arguments.
+ - <b>Simple to use</b>: With workflow options and configurations that intuitively understand DevOps.
+ - <b>Easily configurable</b>: Practical defaults, and numerous configuration options such as a config file, environment variables, and/or CLI arguments.
  - <b>Clear and understandable code</b>: Regular use of type hints, keyword arguments, and a normalized code style make understanding the code intent easy.
  - <b>Engineered to be robust</b>: Error handling, automated security validation, and pervasive validation.
  - <b>100% tested</b>: 100% code coverage for unit tests on all commits.
@@ -58,7 +58,7 @@ usage: main.py [-h] [--api-key-id API_KEY_ID] [--api-key-secret API_KEY_SECRET]
                [--app-id APP_ID] [--build-dir BUILD_DIR] [--build-id BUILD_ID]
                [--config-file CONFIG_FILE] [--disable-auto-scan]
                [--disable-scan-nonfatal-modules] [--ignore-compliance-status]
-               [--sandbox SANDBOX] [--version]
+               [--sandbox-name SANDBOX_NAME] [--version]
                [--workflow WORKFLOW [WORKFLOW ...]] [--debug | --verbose]
 
 optional arguments:
@@ -72,7 +72,7 @@ optional arguments:
   --disable-auto-scan                 disable auto_scan
   --disable-scan-nonfatal-modules     disable scan_all_nonfatal_top_level_modules
   --ignore-compliance-status          ignore (but still check) the compliance status
-  --sandbox SANDBOX                   application sandbox as provided by Veracode
+  --sandbox-name SANDBOX_NAME         sandbox_name for the Veracode application
   --version                           show program's version number and exit
   --workflow WORKFLOW [WORKFLOW ...]  specify the workflow steps to enable and order
   --debug                             enable debug level logging
@@ -91,6 +91,8 @@ There are numerous ways to pass information into a running docker container.  Fo
      ```bash
      docker run --env-file=example_env_file -v "/path/to/build":/build easy_sast:latest
      ```
+
+Want to learn about more advanced usage, such as optimizing SAST for pull requests?  Check out [the wiki](https://github.com/SeisoLLC/easy_sast/wiki/).
 
 ### Supported Veracode APIs
  - [Upload API](https://help.veracode.com/reader/LMv_dtSHyb7iIxAQznC~9w/G1Nd5yH0QSlT~vPccPhtRQ)

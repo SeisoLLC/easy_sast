@@ -188,9 +188,11 @@ class UploadAPI(VeracodeXMLAPI):  # pylint: disable=too-many-instance-attributes
         }
         self.build_dir = Path("/build").absolute()
         self.build_id = datetime.utcnow().strftime("%F_%H-%M-%S")
-        self.sandbox = None
         self.scan_all_nonfatal_top_level_modules = True
         self.auto_scan = True
+        # sandbox_id is not meant to be set manually. Instead, configure using
+        # the response of a Sandbox API query using the intended sandbox name
+        self.sandbox_id = None
 
     @property
     def build_dir(self):
@@ -243,29 +245,32 @@ class UploadAPI(VeracodeXMLAPI):  # pylint: disable=too-many-instance-attributes
         self._build_id = build_id
 
     @property
-    def sandbox(self):
+    def sandbox_id(self):
         """
-        Create the sandbox property
+        Create the sandbox_id property
         """
-        return self._sandbox  # pragma: no cover
+        return self._sandbox_id  # pragma: no cover
 
-    @sandbox.getter
-    def sandbox(self):
+    @sandbox_id.getter
+    def sandbox_id(self):
         """
-        Create a sandbox getter that validates before returning
+        Create a sandbox_id getter that validates before returning
+
+        This should only be set using the response of a Sandbox API query using
+        the intended sandbox name
         """
         # Validate what was already stored
-        self._validate(key="sandbox", value=self._sandbox)
-        return self._sandbox
+        self._validate(key="sandbox_id", value=self._sandbox_id)
+        return self._sandbox_id
 
-    @sandbox.setter
-    def sandbox(self, sandbox):
+    @sandbox_id.setter
+    def sandbox_id(self, sandbox_id):
         """
-        Create a sandbox setter that validates before setting
+        Create a sandbox_id setter that validates before setting
         """
         # Validate what was provided
-        self._validate(key="sandbox", value=sandbox)
-        self._sandbox = sandbox
+        self._validate(key="sandbox_id", value=sandbox_id)
+        self._sandbox_id = sandbox_id
 
     @property
     def scan_all_nonfatal_top_level_modules(self):
@@ -377,3 +382,108 @@ class ResultsAPI(VeracodeXMLAPI):
         # Validate what was provided
         self._validate(key="ignore_compliance_status", value=ignore_compliance_status)
         self._ignore_compliance_status = ignore_compliance_status
+
+
+class SandboxAPI(VeracodeXMLAPI):
+    """
+    A class to interact with the Sandbox API
+    """
+
+    def __init__(self, *, app_id: str, sandbox_name: str):
+        # Don't forget to call the init of the parent
+        super().__init__()
+
+        ## Use the setter to apply a default to ensure it is valid
+        self.app_id = app_id
+        # version information was pulled from
+        # https://help.veracode.com/reader/LMv_dtSHyb7iIxAQznC~9w/KusbW5J7EG8jEr64JEiBzw
+        self.version = {
+            "createsandbox.do": "5.0",
+            "getsandboxlist.do": "5.0",
+            "promotesandbox.do": "5.0",
+            "updatesandbox.do": "5.0",
+            "deletesandbox.do": "5.0",
+        }
+        self.build_id = datetime.utcnow().strftime("%F_%H-%M-%S")
+        self.sandbox_name = sandbox_name
+        # sandbox_id is not meant to be set manually. Instead, configure using
+        # the response of a Sandbox API query using the intended sandbox name
+        self.sandbox_id = None
+
+    @property
+    def build_id(self):
+        """
+        Create the build_id property
+        """
+        return self._build_id  # pragma: no cover
+
+    @build_id.getter
+    def build_id(self):
+        """
+        Create a build_id getter that validates before returning
+        """
+        # Validate what was already stored
+        self._validate(key="build_id", value=self._build_id)
+        return self._build_id
+
+    @build_id.setter
+    def build_id(self, build_id):
+        """
+        Create a build_id setter that validates before setting
+        """
+        # Validate what was provided
+        self._validate(key="build_id", value=build_id)
+        self._build_id = build_id
+
+    @property
+    def sandbox_id(self):
+        """
+        Create the sandbox_id property
+        """
+        return self._sandbox_id  # pragma: no cover
+
+    @sandbox_id.getter
+    def sandbox_id(self):
+        """
+        Create a sandbox_id getter that validates before returning
+        """
+        # Validate what was already stored
+        self._validate(key="sandbox_id", value=self._sandbox_id)
+        return self._sandbox_id
+
+    @sandbox_id.setter
+    def sandbox_id(self, sandbox_id):
+        """
+        Create a sandbox_id setter that validates before setting
+
+        This should only be set using the response of a Sandbox API query using
+        the intended sandbox name
+        """
+        # Validate what was provided
+        self._validate(key="sandbox_id", value=sandbox_id)
+        self._sandbox_id = sandbox_id
+
+    @property
+    def sandbox_name(self):
+        """
+        Create the sandbox_name property
+        """
+        return self._sandbox_name  # pragma: no cover
+
+    @sandbox_name.getter
+    def sandbox_name(self):
+        """
+        Create a sandbox_name getter that validates before returning
+        """
+        # Validate what was already stored
+        self._validate(key="sandbox_name", value=self._sandbox_name)
+        return self._sandbox_name
+
+    @sandbox_name.setter
+    def sandbox_name(self, sandbox_name):
+        """
+        Create a sandbox_name setter that validates before setting
+        """
+        # Validate what was provided
+        self._validate(key="sandbox_name", value=sandbox_name)
+        self._sandbox_name = sandbox_name
