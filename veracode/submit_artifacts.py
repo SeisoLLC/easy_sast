@@ -148,6 +148,8 @@ def upload_large_file(*, upload_api: UploadAPI, artifact: Path) -> bool:
 def get_sandbox_id(*, sandbox_api: SandboxAPI) -> Union[str, None]:
     """
     Query for and return the sandbox_id
+
+    https://help.veracode.com/reader/LMv_dtSHyb7iIxAQznC~9w/twPT73YBy_iQvrsGEZamhQ
     """
     try:
         endpoint = "getsandboxlist.do"
@@ -187,6 +189,8 @@ def get_sandbox_id(*, sandbox_api: SandboxAPI) -> Union[str, None]:
 def create_sandbox(*, sandbox_api: SandboxAPI) -> str:
     """
     Create a sandbox and return the sandbox_id
+
+    https://help.veracode.com/reader/LMv_dtSHyb7iIxAQznC~9w/jp8rPey8I5WsuWz7bY2SZg
     """
     try:
         endpoint = "createsandbox.do"
@@ -223,6 +227,8 @@ def create_sandbox(*, sandbox_api: SandboxAPI) -> str:
 def cancel_build(*, upload_api: UploadAPI) -> bool:
     """
     Cancel an application build
+
+    https://help.veracode.com/reader/LMv_dtSHyb7iIxAQznC~9w/rERUQewXKGx2D_zaoi6wGw
     """
     try:
         endpoint = "deletebuild.do"
