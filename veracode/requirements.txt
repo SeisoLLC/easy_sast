@@ -3,9 +3,9 @@ chardet==3.0.4
 defusedxml==0.6.0
 docopt==0.6.2
 httpie==2.0.0
-idna==2.8
+idna==2.9
 Pygments==2.5.2
 PyYAML==5.3
-requests==2.22.0
+requests==2.23.0
 urllib3==1.25.8
 veracode-api-signing==19.9.0
