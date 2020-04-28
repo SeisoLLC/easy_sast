@@ -66,7 +66,7 @@ class TestMain(TestCase):
         with patch(
             "argparse.ArgumentParser.parse_args",
             return_value=Namespace(
-                app_id=test_constants.VALID_UPLOAD_API["app_id"],
+                app_name=test_constants.VALID_UPLOAD_API["app_name"],
                 build_dir=test_constants.VALID_UPLOAD_API["build_dir"],
                 build_id=test_constants.VALID_UPLOAD_API["build_id"],
                 disable_auto_scan=not test_constants.VALID_UPLOAD_API["auto_scan"],
@@ -78,7 +78,8 @@ class TestMain(TestCase):
                 api_key_secret=test_constants.VALID_UPLOAD_API["api_key_secret"],
             ),
         ):
-            self.assertIsNone(main.main())
+            with patch("veracode.api.get_app_id", return_value="1337"):
+                self.assertIsNone(main.main())
 
     @patch("main.get_config")
     @patch("main.apply_config", side_effect=return_unmodified_api_object)
@@ -107,7 +108,7 @@ class TestMain(TestCase):
         with patch(
             "argparse.ArgumentParser.parse_args",
             return_value=Namespace(
-                app_id=test_constants.VALID_UPLOAD_API["app_id"],
+                app_name=test_constants.VALID_UPLOAD_API["app_name"],
                 build_dir=test_constants.VALID_UPLOAD_API["build_dir"],
                 build_id=test_constants.VALID_UPLOAD_API["build_id"],
                 disable_auto_scan=not test_constants.VALID_UPLOAD_API["auto_scan"],
@@ -119,7 +120,8 @@ class TestMain(TestCase):
                 api_key_secret=test_constants.VALID_UPLOAD_API["api_key_secret"],
             ),
         ):
-            self.assertIsNone(main.main())
+            with patch("veracode.api.get_app_id", return_value="1337"):
+                self.assertIsNone(main.main())
 
     @patch("main.get_config")
     @patch("main.apply_config", side_effect=return_unmodified_api_object)
@@ -146,7 +148,7 @@ class TestMain(TestCase):
         with patch(
             "argparse.ArgumentParser.parse_args",
             return_value=Namespace(
-                app_id=test_constants.VALID_UPLOAD_API["app_id"],
+                app_name=test_constants.VALID_UPLOAD_API["app_name"],
                 build_dir=test_constants.VALID_UPLOAD_API["build_dir"],
                 build_id=test_constants.VALID_UPLOAD_API["build_id"],
                 disable_auto_scan=not test_constants.VALID_UPLOAD_API["auto_scan"],
@@ -159,8 +161,9 @@ class TestMain(TestCase):
             ),
         ):
             with self.assertRaises(SystemExit) as contextmanager:
-                main.main()
-            self.assertEqual(contextmanager.exception.code, 1)
+                with patch("veracode.api.get_app_id", return_value="1337"):
+                    main.main()
+                self.assertEqual(contextmanager.exception.code, 1)
 
     # pylint: disable=too-many-arguments
     @patch("main.get_config")
@@ -191,7 +194,7 @@ class TestMain(TestCase):
         with patch(
             "argparse.ArgumentParser.parse_args",
             return_value=Namespace(
-                app_id=test_constants.VALID_UPLOAD_API["app_id"],
+                app_name=test_constants.VALID_UPLOAD_API["app_name"],
                 build_dir=test_constants.VALID_UPLOAD_API["build_dir"],
                 build_id=test_constants.VALID_UPLOAD_API["build_id"],
                 disable_auto_scan=not test_constants.VALID_UPLOAD_API["auto_scan"],
@@ -204,7 +207,8 @@ class TestMain(TestCase):
             ),
         ):
             with self.assertRaises(SystemExit) as contextmanager:
-                main.main()
+                with patch("veracode.api.get_app_id", return_value="1337"):
+                    main.main()
             self.assertEqual(contextmanager.exception.code, 1)
 
     @patch("main.get_config")
@@ -234,7 +238,7 @@ class TestMain(TestCase):
         with patch(
             "argparse.ArgumentParser.parse_args",
             return_value=Namespace(
-                app_id=test_constants.VALID_UPLOAD_API["app_id"],
+                app_name=test_constants.VALID_UPLOAD_API["app_name"],
                 build_dir=test_constants.VALID_UPLOAD_API["build_dir"],
                 build_id=test_constants.VALID_UPLOAD_API["build_id"],
                 disable_auto_scan=not test_constants.VALID_UPLOAD_API["auto_scan"],
@@ -246,7 +250,8 @@ class TestMain(TestCase):
                 api_key_secret=test_constants.VALID_UPLOAD_API["api_key_secret"],
             ),
         ):
-            self.assertIsNone(main.main())
+            with patch("veracode.api.get_app_id", return_value="1337"):
+                self.assertIsNone(main.main())
 
     @patch("main.get_config")
     @patch("main.apply_config", side_effect=return_unmodified_api_object)
@@ -265,7 +270,8 @@ class TestMain(TestCase):
         mock_get_config.side_effect = ValueError
 
         with self.assertRaises(SystemExit) as contextmanager:
-            main.main()
+            with patch("veracode.api.get_app_id", return_value="1337"):
+                main.main()
         self.assertEqual(contextmanager.exception.code, 1)
 
     @patch("main.get_config")
@@ -294,7 +300,8 @@ class TestMain(TestCase):
         mock_configure_environment.return_value = True
 
         with self.assertRaises(SystemExit) as contextmanager:
-            main.main()
+            with patch("veracode.api.get_app_id", return_value="1337"):
+                main.main()
         self.assertEqual(contextmanager.exception.code, 1)
 
     @patch("main.get_config")
@@ -324,7 +331,7 @@ class TestMain(TestCase):
         with patch(
             "argparse.ArgumentParser.parse_args",
             return_value=Namespace(
-                app_id=test_constants.VALID_UPLOAD_API["app_id"],
+                app_name=test_constants.VALID_UPLOAD_API["app_name"],
                 build_dir=test_constants.VALID_UPLOAD_API["build_dir"],
                 build_id=test_constants.VALID_UPLOAD_API["build_id"],
                 disable_auto_scan=not test_constants.VALID_UPLOAD_API["auto_scan"],

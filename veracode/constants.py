@@ -13,7 +13,7 @@ API_ATTRIBUTES = {
     "upload": {
         "base_url",
         "version",
-        "app_id",
+        "app_name",
         "build_dir",
         "build_id",
         "sandbox_id",
@@ -23,14 +23,14 @@ API_ATTRIBUTES = {
     "results": {
         "base_url",
         "version",
-        "app_id",
+        "app_name",
         "ignore_compliance_status",
         "ignore_compliance_status",
     },
     "sandbox": {
         "base_url",
         "version",
-        "app_id",
+        "app_name",
         "build_id",
         "sandbox_id",
         "sandbox_name",
@@ -50,7 +50,7 @@ ONLY_SANDBOX_ATTRIBUTES = API_ATTRIBUTES["sandbox"].difference(
 )
 
 ## Config Options
-REQUIRED_CONFIG_ATTRIBUTES_API = {"app_id"}
+REQUIRED_CONFIG_ATTRIBUTES_API = {"app_name"}
 REQUIRED_CONFIG_ATTRIBUTES_TOP = {"loglevel", "workflow", "config_file"}
 # Explicitly does not have api_key_id and api_key_secret to deter storing
 # secrets in config files

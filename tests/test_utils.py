@@ -49,7 +49,10 @@ class TestVeracodeUtils(TestCase):
         ) -> None:
             pass
 
-        results_api = ResultsAPI(app_id=test_constants.VALID_RESULTS_API["app_id"])
+        with patch("veracode.api.get_app_id", return_value="1337"):
+            results_api = ResultsAPI(
+                app_name=test_constants.VALID_RESULTS_API["app_name"]
+            )
 
         # Prereqs to test the validate decorator with a valid UploadAPI
         @utils.validate
@@ -58,7 +61,8 @@ class TestVeracodeUtils(TestCase):
         ) -> None:
             pass
 
-        upload_api = UploadAPI(app_id=test_constants.VALID_UPLOAD_API["app_id"])
+        with patch("veracode.api.get_app_id", return_value="1337"):
+            upload_api = UploadAPI(app_name=test_constants.VALID_UPLOAD_API["app_name"])
 
         # Test the validate decorator with a valid ResultsAPI
         for is_valid_attribute_return_value in [True, False]:
@@ -1409,35 +1413,72 @@ class TestVeracodeUtils(TestCase):
         """
         # Succeed when calling the validate_api function, given a
         # properly configured ResultsAPI object
-        results_api = ResultsAPI(app_id=test_constants.VALID_RESULTS_API["app_id"])
-        self.assertIsNone(utils.validate_api(api=results_api))
+        with patch("veracode.api.get_app_id", return_value="1337"):
+            results_api = ResultsAPI(
+                app_name=test_constants.VALID_RESULTS_API["app_name"]
+            )
+            self.assertIsNone(utils.validate_api(api=results_api))
 
-        # Succeed when calling the validate_api function, given a
-        # properly configured UploadAPI object
-        upload_api = UploadAPI(app_id=test_constants.VALID_UPLOAD_API["app_id"])
-        self.assertIsNone(utils.validate_api(api=upload_api))
+            # Succeed when calling the validate_api function, given a
+            # properly configured UploadAPI object
+            upload_api = UploadAPI(app_name=test_constants.VALID_UPLOAD_API["app_name"])
+            self.assertIsNone(utils.validate_api(api=upload_api))
 
-        # Fail when attempting to call the validate_api function, given
-        # an improperly configured results_api due to an invalid property
-        results_api._app_id = test_constants.INVALID_RESULTS_API_INCORRECT_APP_ID[  # pylint: disable=protected-access
-            "app_id"
-        ]
-        self.assertRaises(
-            ValueError,
-            utils.validate_api,
-            api=results_api,
-        )
+            # Fail when attempting to call the validate_api function, given
+            # an improperly configured results_api due to an invalid property
+            results_api._app_id = test_constants.INVALID_RESULTS_API_INCORRECT_APP_ID[  # pylint: disable=protected-access
+                "app_id"
+            ]
+            self.assertRaises(
+                ValueError,
+                utils.validate_api,
+                api=results_api,
+            )
 
-        # Fail when attempting to call the validate_api function, given
-        # an improperly configured upload_api due to an invalid property
-        upload_api._base_url = test_constants.INVALID_UPLOAD_API_MISSING_DOMAIN[  # pylint: disable=protected-access
-            "base_url"
-        ]
-        self.assertRaises(
-            ValueError,
-            utils.validate_api,
-            api=upload_api,
-        )
+            # Fail when attempting to call the validate_api function, given
+            # an improperly configured upload_api due to an invalid property
+            upload_api._base_url = test_constants.INVALID_UPLOAD_API_MISSING_DOMAIN[  # pylint: disable=protected-access
+                "base_url"
+            ]
+            self.assertRaises(
+                ValueError,
+                utils.validate_api,
+                api=upload_api,
+            )
+
+        with patch("veracode.api.get_app_id", return_value="1337"):
+            results_api = ResultsAPI(
+                app_name=test_constants.VALID_RESULTS_API["app_name"]
+            )
+
+            self.assertIsNone(utils.validate_api(api=results_api))
+
+            # Succeed when calling the validate_api function, given a
+            # properly configured UploadAPI object
+            upload_api = UploadAPI(app_name=test_constants.VALID_UPLOAD_API["app_name"])
+            self.assertIsNone(utils.validate_api(api=upload_api))
+
+            # Fail when attempting to call the validate_api function, given
+            # an improperly configured results_api due to an invalid property
+            results_api._app_id = test_constants.INVALID_RESULTS_API_INCORRECT_APP_ID[  # pylint: disable=protected-access
+                "app_id"
+            ]
+            self.assertRaises(
+                ValueError,
+                utils.validate_api,
+                api=results_api,
+            )
+
+            # Fail when attempting to call the validate_api function, given
+            # an improperly configured upload_api due to an invalid property
+            upload_api._base_url = test_constants.INVALID_UPLOAD_API_MISSING_DOMAIN[  # pylint: disable=protected-access
+                "base_url"
+            ]
+            self.assertRaises(
+                ValueError,
+                utils.validate_api,
+                api=upload_api,
+            )
 
     ## protocol_is_insecure tests
     def test_protocol_is_insecure(self):
@@ -1580,3 +1621,42 @@ class TestVeracodeUtils(TestCase):
         self.assertFalse(
             utils.is_valid_netloc(netloc="user:pass@[2001:db8:0:0:0:0:0:1]:443")
         )
+
+    ## get_app_id tests
+    def test_get_app_id(self):
+        """
+        Test the get_app_id function
+        """
+        app_name = test_constants.VALID_APPLIST_API["app_name"]
+
+        # Succeed when calling the get_app_id function and the api call
+        # gets a valid response
+        with patch(
+            "veracode.utils.http_request",
+            return_value=test_constants.VALID_APPLIST_API_RESPONSE_XML["Element"],
+        ):
+            with patch("veracode.utils.element_contains_error", return_value=False):
+                self.assertEqual(
+                    utils.get_app_id(app_name=app_name),
+                    test_constants.VALID_APPLIST_API["app_id"],
+                )
+
+            # Raise a RuntimeError when element_contains_error returns True
+            with patch("veracode.utils.element_contains_error", return_value=True):
+                self.assertRaises(
+                    RuntimeError,
+                    utils.get_app_id,
+                    app_name=app_name,
+                )
+
+        # Return None when calling the get_app_id function and the api call
+        # gets a valid response, but does not contain the requested
+        # app_id
+        with patch(
+            "veracode.utils.http_request",
+            return_value=test_constants.VALID_APPLIST_API_RESPONSE_XML["Element"],
+        ):
+            with patch(
+                "veracode.submit_artifacts.element_contains_error", return_value=False
+            ):
+                self.assertIsNone(utils.get_app_id(app_name="ImposterApp"))

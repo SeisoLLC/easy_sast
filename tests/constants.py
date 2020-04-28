@@ -32,6 +32,7 @@ VALID_RESULTS_API["version"] = {
     "thirdpartyreportpdf.do": "4.0",
 }
 VALID_RESULTS_API["app_id"] = "1337"
+VALID_RESULTS_API["app_name"] = "TestApp"
 VALID_RESULTS_API["api_key_id"] = secrets.token_hex(16)
 VALID_RESULTS_API["api_key_secret"] = secrets.token_hex(64)  # nosec
 VALID_RESULTS_API["ignore_compliance_status"] = False
@@ -48,6 +49,11 @@ del INVALID_RESULTS_API_MISSING_VERSION_KEY["version"]
 INVALID_RESULTS_API_INCORRECT_APP_ID = copy.deepcopy(VALID_RESULTS_API)
 INVALID_RESULTS_API_INCORRECT_APP_ID["app_id"] = 1337
 
+INVALID_RESULTS_API_INCORRECT_APP_NAME = copy.deepcopy(VALID_RESULTS_API)
+INVALID_RESULTS_API_INCORRECT_APP_NAME["app_name"] = 31337
+
+INVALID_RESULTS_API_INVALID_CHAR_APP_NAME = copy.deepcopy(VALID_RESULTS_API)
+INVALID_RESULTS_API_INVALID_CHAR_APP_NAME["app_name"] = "\\"
 
 INVALID_RESULTS_API_INCORRECT_VERSION_VALUES = copy.deepcopy(VALID_RESULTS_API)
 for value in VALID_RESULTS_API["version"]:
@@ -91,7 +97,7 @@ VALID_RESULTS_API_GETAPPBUILDS_RESPONSE_XML_NO_BUILDS[
          xsi:schemaLocation="https&#x3a;&#x2f;&#x2f;analysiscenter.veracode.com&#x2f;schema&#x2f;2.0&#x2f;applicationbuilds
          https&#x3a;&#x2f;&#x2f;analysiscenter.veracode.com&#x2f;resource&#x2f;2.0&#x2f;applicationbuilds.xsd"
          account_id="00000000001">
-    <application app_name="app name" app_id="1337" industry_vertical="Manufacturing" assurance_level="Very High"
+    <application app_name="TestApp" app_id="1337" industry_vertical="Manufacturing" assurance_level="Very High"
          business_criticality="Very High" origin="Not Specified" modified_date="2019-08-13T14&#x3a;00&#x3a;10-04&#x3a;00"
          cots="false" business_unit="Not Specified" tags="">
       <customfield name="Custom 1" value=""/>
@@ -131,7 +137,7 @@ VALID_RESULTS_API_GETAPPBUILDS_RESPONSE_XML_FAILING_POLICY_COMPLIANCE_STATUS[
          xsi:schemaLocation="https&#x3a;&#x2f;&#x2f;analysiscenter.veracode.com&#x2f;schema&#x2f;2.0&#x2f;applicationbuilds
          https&#x3a;&#x2f;&#x2f;analysiscenter.veracode.com&#x2f;resource&#x2f;2.0&#x2f;applicationbuilds.xsd"
          account_id="00000000001">
-    <application app_name="app name" app_id="1337" industry_vertical="Manufacturing" assurance_level="Very High"
+    <application app_name="TestApp" app_id="1337" industry_vertical="Manufacturing" assurance_level="Very High"
          business_criticality="Very High" origin="Not Specified" modified_date="2019-08-13T14&#x3a;00&#x3a;10-04&#x3a;00"
          cots="false" business_unit="Not Specified" tags="">
       <customfield name="Custom 1" value=""/>
@@ -181,7 +187,7 @@ VALID_RESULTS_API_GETAPPBUILDS_RESPONSE_XML_PASSING_POLICY_COMPLIANCE_STATUS[
          xsi:schemaLocation="https&#x3a;&#x2f;&#x2f;analysiscenter.veracode.com&#x2f;schema&#x2f;2.0&#x2f;applicationbuilds
          https&#x3a;&#x2f;&#x2f;analysiscenter.veracode.com&#x2f;resource&#x2f;2.0&#x2f;applicationbuilds.xsd"
          account_id="00000000001">
-    <application app_name="app name" app_id="1337" industry_vertical="Manufacturing" assurance_level="Very High"
+    <application app_name="TestApp" app_id="1337" industry_vertical="Manufacturing" assurance_level="Very High"
          business_criticality="Very High" origin="Not Specified" modified_date="2019-08-13T14&#x3a;00&#x3a;10-04&#x3a;00"
          cots="false" business_unit="Not Specified" tags="">
       <customfield name="Custom 1" value=""/>
@@ -241,6 +247,7 @@ VALID_UPLOAD_API["version"] = {
     "uploadlargefile.do": "5.0",
 }
 VALID_UPLOAD_API["app_id"] = "1337"
+VALID_UPLOAD_API["app_name"] = "TestApp"
 VALID_UPLOAD_API["build_dir"] = Path("/usr/local/bin/").absolute()
 VALID_UPLOAD_API["build_id"] = "v1.2.3"
 VALID_UPLOAD_API["sandbox_id"] = "321"
@@ -382,7 +389,7 @@ VALID_UPLOAD_API_GETAPPINFO_RESPONSE_XML[
       xsi:schemaLocation="https&#x3a;&#x2f;&#x2f;analysiscenter.veracode.com&#x2f;schema&#x2f;2.0&#x2f;appinfo 
       https&#x3a;&#x2f;&#x2f;analysiscenter.veracode.com&#x2f;resource&#x2f;2.0&#x2f;appinfo.xsd" appinfo_version="1.1" 
       account_id="00000000001">
-   <application app_id="1337" app_name="app name" description="app description" business_criticality="Very High" 
+   <application app_id="1337" app_name="TestApp" description="app description" business_criticality="Very High" 
       policy="Veracode Transitional Very High" policy_updated_date="2019-08-13T14&#x3a;02&#x3a;08-04&#x3a;00" 
       teams="Demo Team" origin="Not Specified" industry_vertical="Other" app_type="Other" deployment_method="Not Specified" 
       is_web_application="false" archer_app_name="archer app name" modified_date="2019-08-15T11&#x3a;27&#x3a;47-04&#x3a;00" 
@@ -421,7 +428,7 @@ VALID_UPLOAD_API_DELETEBUILD_RESPONSE_XML[
       xmlns="https&#x3a;&#x2f;&#x2f;analysiscenter.veracode.com&#x2f;schema&#x2f;2.0&#x2f;buildlist"
       xsi:schemaLocation="https&#x3a;&#x2f;&#x2f;analysiscenter.veracode.com&#x2f;schema&#x2f;2.0&#x2f;buildlist
       https&#x3a;&#x2f;&#x2f;analysiscenter.veracode.com&#x2f;resource&#x2f;2.0&#x2f;buildlist.xsd" buildlist_version="1.3"
-      account_id="12345" app_id="54321" app_name="Application Name">
+      account_id="12345" app_id="54321" app_name="TestApp">
 </buildlist>"""
 VALID_UPLOAD_API_DELETEBUILD_RESPONSE_XML["bytes"] = bytes(
     VALID_UPLOAD_API_DELETEBUILD_RESPONSE_XML["string"], "utf-8"
@@ -644,6 +651,7 @@ VALID_SANDBOX_API["version"] = {
     "deletesandbox.do": "5.0",
 }
 VALID_SANDBOX_API["app_id"] = "1337"
+VALID_SANDBOX_API["app_name"] = "TestApp"
 VALID_SANDBOX_API["build_id"] = "v1.2.3"
 VALID_SANDBOX_API["sandbox_id"] = "321"
 VALID_SANDBOX_API["sandbox_name"] = "fb/jonzeolla/add-sandbox_name"
@@ -768,6 +776,43 @@ INVALID_SANDBOX_CREATESANDBOX_API_RESPONSE_XML_NO_SANDBOX[
 INVALID_SANDBOX_API_INCORRECT_DOMAIN = copy.deepcopy(VALID_RESULTS_API)
 INVALID_SANDBOX_API_INCORRECT_DOMAIN["base_url"] = "https:///api/"
 
+
+# Valid Application List API response
+
+VALID_APPLIST_API: Dict[str, Union[str, Dict[str, str], Path, bool]] = {}
+VALID_APPLIST_API["base_url"] = "https://analysiscenter.veracode.com/api/"
+VALID_APPLIST_API["version"] = {"getapplist.do": "5.0"}
+
+VALID_APPLIST_API["app_id"] = "1337"
+VALID_APPLIST_API["app_name"] = "TestApp"
+VALID_APPLIST_API["build_id"] = "v1.2.3"
+VALID_APPLIST_API["username"] = "TestUser"
+
+# https://help.veracode.com/reader/LMv_dtSHyb7iIxAQznC~9w/kb2SM9net26_L91VploQGw
+VALID_APPLIST_API_RESPONSE_XML = {}
+
+VALID_APPLIST_API_RESPONSE_XML[
+    "string"
+] = """<?xml version="1.0" encoding="UTF-8"?>
+
+<applist xmlns:xsi="http&#x3a;&#x2f;&#x2f;www.w3.org&#x2f;2001&#x2f;XMLSchema-instance" 
+      xmlns="https&#x3a;&#x2f;&#x2f;analysiscenter.veracode.com&#x2f;schema&#x2f;2.0&#x2f;applist" 
+      xsi:schemaLocation="https&#x3a;&#x2f;&#x2f;analysiscenter.veracode.com&#x2f;schema&#x2f;2.0&#x2f;applist 
+      https&#x3a;&#x2f;&#x2f;analysiscenter.veracode.com&#x2f;resource&#x2f;2.0&#x2f;applist.xsd" applist_version="1.2" 
+      account_id="12345">
+   <app app_id="1337" app_name="TestApp" policy_updated_date="2019-08-13T14&#x3a;09&#x3a;11-04&#x3a;00"/>
+   <user login_account_type="user" username="TestUser" create_application_profile="true" create_sandbox="true" 
+      create_new_build="true" create_policy_scan="true" create_sandbox_scan="true" assign_app_to_team="true" 
+      assign_app_to_any_team="true" view_sandbox="true" view_results="true" approve_mitigations="true" 
+      submit_static_scan="true" submit_policy_static_scan="true" submit_sandbox_static_scan="true"/>
+</applist>"""
+
+VALID_APPLIST_API_RESPONSE_XML["bytes"] = bytes(
+    VALID_APPLIST_API_RESPONSE_XML["string"], "utf-8"
+)
+VALID_APPLIST_API_RESPONSE_XML["Element"] = ElementTree.fromstring(
+    VALID_APPLIST_API_RESPONSE_XML["bytes"]
+)
 
 ## Example file info
 VALID_FILE: Dict[str, Union[str, List[str], bytes, Path]] = {}
@@ -894,7 +939,7 @@ apis:
               "summaryreportpdf.do": "4.0",
               "thirdpartyreportpdf.do": "4.0",
              }
-    app_id: "31337"
+    app_name: "TestApp"
     ignore_compliance_status: False
   upload:
     base_url: "https://analysiscenter.veracode.com/api/"
@@ -919,7 +964,7 @@ apis:
               "uploadfile.do": "5.0",
               "uploadlargefile.do": "5.0"
              }
-    app_id: "31337"
+    app_name: "TestApp"
     build_dir: "/build/"
     build_id: "2037-03-13_03-14-15"
     scan_all_nonfatal_top_level_modules: True
@@ -933,7 +978,7 @@ apis:
               "updatesandbox.do": "5.0",
               "deletesandbox.do": "5.0"
              }
-    app_id: "31337"
+    app_name: "TestApp"
     sandbox_name: "fb/jonzeolla/name-of-branch"
 loglevel: "warning"
 workflow:
@@ -966,7 +1011,7 @@ CLEAN_FILE_CONFIG = {
                 "summaryreportpdf.do": "4.0",
                 "thirdpartyreportpdf.do": "4.0",
             },
-            "app_id": "31337",
+            "app_name": "TestApp",
             "ignore_compliance_status": False,
         },
         "upload": {
@@ -992,7 +1037,7 @@ CLEAN_FILE_CONFIG = {
                 "uploadfile.do": "5.0",
                 "uploadlargefile.do": "5.0",
             },
-            "app_id": "31337",
+            "app_name": "TestApp",
             "build_dir": Path("/build/").absolute(),
             "build_id": "2037-03-13_03-14-15",
             "scan_all_nonfatal_top_level_modules": True,
@@ -1007,7 +1052,7 @@ CLEAN_FILE_CONFIG = {
                 "updatesandbox.do": "5.0",
                 "deletesandbox.do": "5.0",
             },
-            "app_id": "31337",
+            "app_name": "TestApp",
             "sandbox_name": VALID_SANDBOX_API["sandbox_name"],
         },
     },
@@ -1046,7 +1091,7 @@ CLEAN_EFFECTIVE_CONFIG = {
                 "updatesandbox.do": "5.0",
                 "deletesandbox.do": "5.0",
             },
-            "app_id": "31337",
+            "app_name": "TestApp",
             "sandbox_name": VALID_SANDBOX_API["sandbox_name"],
         },
         "upload": {
@@ -1072,7 +1117,7 @@ CLEAN_EFFECTIVE_CONFIG = {
                 "uploadfile.do": "5.0",
                 "uploadlargefile.do": "5.0",
             },
-            "app_id": "31337",
+            "app_name": "TestApp",
             "build_dir": Path("/build/").absolute(),
             "build_id": "2037-03-13_03-14-15",
             "scan_all_nonfatal_top_level_modules": True,
@@ -1090,7 +1135,7 @@ CLEAN_EFFECTIVE_CONFIG = {
                 "summaryreportpdf.do": "4.0",
                 "thirdpartyreportpdf.do": "4.0",
             },
-            "app_id": "31337",
+            "app_name": "TestApp",
             "ignore_compliance_status": False,
         },
     },
