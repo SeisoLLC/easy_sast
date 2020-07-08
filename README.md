@@ -46,7 +46,7 @@ In order to integrate with Veracode, you will need to:
     ```
 1. Run the docker container, passing it your API credentials and mounting the directory containing your build artifacts into /build:
     ```bash
-    docker run -e VERACODE_API_KEY_ID=EXAMPLE -e VERACODE_API_KEY_SECRET=EXAMPLE -v "/path/to/build":/build easy_sast:latest
+     docker run --env-file <(env | grep VERACODE_API_KEY_) -v "/path/to/build":/build easy_sast:latest
     ```
 
 Additional details and configuration options are outlined in [usage](#usage) and on the [wiki](https://github.com/SeisoLLC/easy_sast/wiki/).
@@ -54,40 +54,28 @@ Additional details and configuration options are outlined in [usage](#usage) and
 ## Usage
 ### Command-line
 ```bash
-usage: main.py [-h] [--api-key-id API_KEY_ID] [--api-key-secret API_KEY_SECRET]
-               [--app-id APP_ID] [--build-dir BUILD_DIR] [--build-id BUILD_ID]
-               [--config-file CONFIG_FILE] [--disable-auto-scan]
-               [--disable-scan-nonfatal-modules] [--ignore-compliance-status]
-               [--sandbox-name SANDBOX_NAME] [--version]
-               [--workflow WORKFLOW [WORKFLOW ...]] [--debug | --verbose]
+usage: main.py [-h] [--config-file CONFIG_FILE] [--version]
+               [--debug | --verbose]
 
 optional arguments:
   -h, --help                          show this help message and exit
-  --api-key-id API_KEY_ID             veracode api key id
-  --api-key-secret API_KEY_SECRET     veracode api key secret
-  --app-id APP_ID                     application id as provided by Veracode
-  --build-dir BUILD_DIR               a Path containing build artifacts
-  --build-id BUILD_ID                 application build id
   --config-file CONFIG_FILE           specify a config file
-  --disable-auto-scan                 disable auto_scan
-  --disable-scan-nonfatal-modules     disable scan_all_nonfatal_top_level_modules
-  --ignore-compliance-status          ignore (but still check) the compliance status
-  --sandbox-name SANDBOX_NAME         sandbox_name for the Veracode application
   --version                           show program's version number and exit
-  --workflow WORKFLOW [WORKFLOW ...]  specify the workflow steps to enable and order
   --debug                             enable debug level logging
   --verbose                           enable info level logging
 ```
 There are numerous ways to pass information into a running docker container.  For instance:
- 1. Pass environment variables to `docker run` using [`-e`](https://docs.docker.com/engine/reference/run/#env-environment-variables). For example:
+ 1. Pass environment variables to `docker run` using [`--env-file`](https://docs.docker.com/compose/environment-variables/#the-env_file-configuration-option). For example:
      ```bash
-     docker run -e VERACODE_API_KEY_ID=EXAMPLE -v "/path/to/build":/build easy_sast:latest
+     export VERACODE_API_KEY_ID=EXAMPLE
+     export VERACODE_API_KEY_SECRET=EXAMPLE
+     docker run --env-file <(env | grep VERACODE_API_KEY_) -v "/path/to/build":/build easy_sast:latest
      ```
  1. You may also want to pass an argument to the Python in the container by appending your arguments to `docker run`. For example:
      ```bash
-     docker run -e VERACODE_API_KEY_ID=EXAMPLE easy_sast:latest --workflow check_compliance --app-id=31337
+     docker run -e VERACODE_API_KEY_ID=EXAMPLE easy_sast:latest --workflow check_compliance
      ```
- 1. Finally, you can pass your environment variables to `docker run` using an [`env-file`](https://docs.docker.com/engine/reference/commandline/run/#set-environment-variables--e---env---env-file), for example:
+ 1. Finally, you can load environment variables [`from a file`](https://docs.docker.com/engine/reference/commandline/run/#set-environment-variables--e---env---env-file) during `docker run`, for example:
      ```bash
      docker run --env-file=example_env_file -v "/path/to/build":/build easy_sast:latest
      ```
