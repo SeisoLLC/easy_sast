@@ -400,41 +400,187 @@ class TestSubmitArtifacts(TestCase):
         ## Policy Scan
         # Successful create build
         with patch("veracode.submit_artifacts.create_build", return_value=True):
-            self.assertTrue(submit_artifacts.setup_scan_prereqs(upload_api=upload_api))
+            with patch(
+                "veracode.submit_artifacts.is_ready_for_new_build", return_value=True
+            ):
+                self.assertTrue(
+                    submit_artifacts.setup_scan_prereqs(upload_api=upload_api)
+                )
 
         # Unsuccessful create build
         with patch("veracode.submit_artifacts.create_build", return_value=False):
-            self.assertFalse(submit_artifacts.setup_scan_prereqs(upload_api=upload_api))
+            with patch(
+                "veracode.submit_artifacts.is_ready_for_new_build", return_value=True
+            ):
+                self.assertFalse(
+                    submit_artifacts.setup_scan_prereqs(upload_api=upload_api)
+                )
 
         ## Sandbox Scan
         upload_api.sandbox_id = "12345"
         # Successful create build
         with patch("veracode.submit_artifacts.create_build", return_value=True):
-            self.assertTrue(submit_artifacts.setup_scan_prereqs(upload_api=upload_api))
-
-        # Unsuccessful create build
-        with patch("veracode.submit_artifacts.create_build", return_value=False):
-            # create_build returns False, cancel_build returns True, but
-            # create_build again returns False, return False
-            with patch("veracode.submit_artifacts.cancel_build", return_value=True):
-                self.assertFalse(
-                    submit_artifacts.setup_scan_prereqs(upload_api=upload_api)
-                )
-
-            # create_build returns False, cancel_build returns False, return
-            # False
-            with patch("veracode.submit_artifacts.cancel_build", return_value=False):
-                self.assertFalse(
-                    submit_artifacts.setup_scan_prereqs(upload_api=upload_api)
-                )
-
-        # Initially fail create_build, then succeed
-        with patch("veracode.submit_artifacts.create_build", side_effect=[False, True]):
-            # create_build returns False, cancel_build returns True, and
-            # create_build True, return True
-            with patch("veracode.submit_artifacts.cancel_build", return_value=True):
+            with patch(
+                "veracode.submit_artifacts.is_ready_for_new_build", return_value=True
+            ):
                 self.assertTrue(
                     submit_artifacts.setup_scan_prereqs(upload_api=upload_api)
+                )
+
+        # Build in progress, abort new build
+        with patch(
+            "veracode.submit_artifacts.is_ready_for_new_build", return_value=False
+        ):
+            self.assertFalse(submit_artifacts.setup_scan_prereqs(upload_api=upload_api))
+
+        with patch(
+            "veracode.submit_artifacts.is_ready_for_new_build", return_value=True
+        ):
+            # Unsuccessful create build
+            with patch("veracode.submit_artifacts.create_build", return_value=False):
+                # create_build returns False, cancel_build returns True, but
+                # create_build again returns False, return False
+                with patch("veracode.submit_artifacts.cancel_build", return_value=True):
+                    self.assertFalse(
+                        submit_artifacts.setup_scan_prereqs(upload_api=upload_api)
+                    )
+
+                # create_build returns False, cancel_build returns False, return
+                # False
+                with patch(
+                    "veracode.submit_artifacts.cancel_build", return_value=False
+                ):
+                    self.assertFalse(
+                        submit_artifacts.setup_scan_prereqs(upload_api=upload_api)
+                    )
+
+            # Initially fail create_build, then succeed
+            with patch(
+                "veracode.submit_artifacts.create_build", side_effect=[False, True]
+            ):
+                # create_build returns False, cancel_build returns True, and
+                # create_build True, return True
+                with patch("veracode.submit_artifacts.cancel_build", return_value=True):
+                    self.assertTrue(
+                        submit_artifacts.setup_scan_prereqs(upload_api=upload_api)
+                    )
+
+    def test_is_ready_for_new_build(self):
+        """
+        Test the is_ready_for_new_build function
+        """
+        upload_api = UploadAPI(app_id=test_constants.VALID_UPLOAD_API["app_id"])
+        with patch.object(
+            UploadAPI,
+            "http_get",
+            return_value=test_constants.VALID_UPLOAD_API_GETBUILDINFO_RESPONSE_XML[
+                "Element"
+            ],
+        ):
+            # Succeed when results_ready is False and status is "Vendor Reviewing"
+            with patch(
+                "veracode.submit_artifacts.element_contains_error", return_value=False
+            ):
+                self.assertTrue(
+                    submit_artifacts.is_ready_for_new_build(upload_api=upload_api)
+                )
+
+            # Raise a RuntimeError when element_contains_error returns True
+            with patch(
+                "veracode.submit_artifacts.element_contains_error", return_value=True
+            ):
+                self.assertRaises(
+                    RuntimeError,
+                    submit_artifacts.is_ready_for_new_build,
+                    upload_api=upload_api,
+                )
+
+        with patch.object(
+            UploadAPI,
+            "http_get",
+            return_value=test_constants.VALID_UPLOAD_API_GETBUILDINFO_RESPONSE_READY_XML[
+                "Element"
+            ],
+        ):
+            # Succeed when results_ready is True and status is not "Vendor Reviewing"
+            with patch(
+                "veracode.submit_artifacts.element_contains_error", return_value=False
+            ):
+                self.assertTrue(
+                    submit_artifacts.is_ready_for_new_build(upload_api=upload_api)
+                )
+
+        with patch.object(
+            UploadAPI,
+            "http_get",
+            return_value=test_constants.VALID_UPLOAD_API_GETBUILDINFO_IN_PROGRESS_RESPONSE_XML[
+                "Element"
+            ],
+        ):
+            # Fail when results_ready is False and status is not "Vendor Reviewing"
+            with patch(
+                "veracode.submit_artifacts.element_contains_error", return_value=False
+            ):
+                self.assertFalse(
+                    submit_artifacts.is_ready_for_new_build(upload_api=upload_api)
+                )
+
+        # Raise RuntimeError when HTTPError occurs
+        with patch("veracode.api.VeracodeXMLAPI.http_get") as mock_http:
+            with patch(
+                "veracode.submit_artifacts.element_contains_error", return_value=False
+            ):
+                mock_http.side_effect = HTTPError()
+                self.assertRaises(
+                    RuntimeError,
+                    submit_artifacts.is_ready_for_new_build,
+                    upload_api=upload_api,
+                )
+
+        # Raise RuntimeError when HTTPError occurs
+        with patch("veracode.api.VeracodeXMLAPI.http_get") as mock_http:
+            with patch(
+                "veracode.submit_artifacts.element_contains_error", return_value=False
+            ):
+                mock_http.side_effect = HTTPError()
+                self.assertRaises(
+                    RuntimeError,
+                    submit_artifacts.is_ready_for_new_build,
+                    upload_api=upload_api,
+                )
+
+        with patch.object(
+            UploadAPI,
+            "http_get",
+            return_value=test_constants.VALID_UPLOAD_API_GETBUILDINFO_RESULTS_READY_ERROR_IN_RESPONSE_XML[
+                "Element"
+            ],
+        ):
+            # Raise RuntimeError on results_ready missing KeyError
+            with patch(
+                "veracode.submit_artifacts.element_contains_error", return_value=False
+            ):
+                self.assertRaises(
+                    RuntimeError,
+                    submit_artifacts.is_ready_for_new_build,
+                    upload_api=upload_api,
+                )
+
+        with patch.object(
+            UploadAPI,
+            "http_get",
+            return_value=test_constants.VALID_UPLOAD_API_GETBUILDINFO_STATUS_MISSING_IN_RESPONSE_XML[
+                "Element"
+            ],
+        ):
+            # Raise RuntimeError on status missing KeyError
+            with patch(
+                "veracode.submit_artifacts.element_contains_error", return_value=False
+            ):
+                self.assertRaises(
+                    RuntimeError,
+                    submit_artifacts.is_ready_for_new_build,
+                    upload_api=upload_api,
                 )
 
     @patch("veracode.submit_artifacts.begin_prescan")

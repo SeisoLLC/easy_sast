@@ -48,7 +48,7 @@ def get_latest_completed_build(
 
     # Filter on the provided app_id
     for app in appbuilds:
-        if app.attrib["app_id"] == results_api.app_id:
+        if app.get("app_id") == results_api.app_id:
             LOG.debug("Found app_id %s, returning %s", results_api.app_id, app)
             return app
 
@@ -71,7 +71,7 @@ def get_policy_compliance_status(*, results_api: ResultsAPI) -> Union[str, None]
     latest_completed_build = get_latest_completed_build(results_api=results_api)
     if latest_completed_build:
         for build in latest_completed_build.iter(tag=tag):
-            policy_compliance_status = build.attrib["policy_compliance_status"]
+            policy_compliance_status = build.get("policy_compliance_status")
     else:
         LOG.warning("No builds detected for app_id %s", results_api.app_id)
 
