@@ -274,67 +274,23 @@ def setup_scan_prereqs(*, upload_api: UploadAPI) -> bool:
     Setup the scan environment prereqs
     """
 
-    # Check if build is already in progress
     if not is_ready_for_new_build(upload_api=upload_api):
         LOG.info(
-            "Failed to start scan, a build is already in progress for app_id %s",
-            upload_api.app_id,
+            "app_id %s was not ready for a new build", upload_api.app_id,
         )
-    else:
-        # Check to see if this is a Policy scan
-        if not isinstance(upload_api.sandbox_id, str):
-            if create_build(upload_api=upload_api):
-                LOG.debug(
-                    "Successfully created an application build for app id %s",
-                    upload_api.app_id,
-                )
-                return True
 
-            LOG.error(
-                "Failed create an application build for app id %s", upload_api.app_id
-            )
+        if not cancel_build(upload_api=upload_api):
+            LOG.debug("Unable to cancel build for app_id %s", upload_api.app_id)
             return False
 
-        # This is a sandbox scan
-        if create_build(upload_api=upload_api):
-            LOG.debug(
-                "Successfully created an application build for app id %s sandbox id %s",
-                upload_api.app_id,
-                upload_api.sandbox_id,
-            )
-            return True
-
-        # Application build creation was unsuccessful and this is a sandbox
-        # scan, attempt to cancel the existing scan and retry
+    if create_build(upload_api=upload_api):
         LOG.info(
-            "Failed to create an application build. Attempting to cancel an existing build for app_id %s sandbox %s and retry",
+            "Successfully created an application build for app id %s",
             upload_api.app_id,
-            upload_api.sandbox_id,
         )
-        if cancel_build(upload_api=upload_api):
-            LOG.debug(
-                "Retrying the build creation for app_id %s sandbox %s",
-                upload_api.app_id,
-                upload_api.sandbox_id,
-            )
-        else:
-            LOG.error(
-                "Unable to cancel the build for app_id %s sandbox_id %s",
-                upload_api.app_id,
-                upload_api.sandbox_id,
-            )
-            return False
+        return True
 
-        if create_build(upload_api=upload_api):
-            LOG.info(
-                "Successfully created an application build for app id %s",
-                upload_api.app_id,
-            )
-            return True
-
-        LOG.error(
-            "Failed to create an application build for app id %s", upload_api.app_id
-        )
+    LOG.error("Failed to create an application build for app id %s", upload_api.app_id)
 
     return False
 
@@ -407,7 +363,7 @@ def submit_artifacts(  # pylint: disable=too-many-return-statements, too-many-br
 
 
 @validate
-def is_ready_for_new_build(*, upload_api: UploadAPI):
+def is_ready_for_new_build(*, upload_api: UploadAPI) -> bool:
     """
     Return whether a new build can be started
 
@@ -416,6 +372,10 @@ def is_ready_for_new_build(*, upload_api: UploadAPI):
     try:
         endpoint = "getbuildinfo.do"
         params = {"app_id": upload_api.app_id}
+
+        # If a sandbox_id is specified, add it to the params
+        if isinstance(upload_api.sandbox_id, str):
+            params["sandbox_id"] = upload_api.sandbox_id
 
         response = upload_api.http_get(endpoint=endpoint, params=params)
 
