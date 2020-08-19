@@ -362,16 +362,15 @@ def submit_artifacts(  # pylint: disable=too-many-return-statements, too-many-br
     return True
 
 
-# pylint: disable=too-many-branches
 @validate
 def is_ready_for_new_build(*, upload_api: UploadAPI) -> bool:
     """
-    Return whether a new build can be started
+    Return whether a build already exists
 
     https://help.veracode.com/reader/orRWez4I0tnZNaA_i0zn9g/Yjclv0XIfU1v_yqmkt18zA
     """
+
     try:
-        # If this is a sandbox and its ID does not exist, proceed with submitting
         endpoint = "getbuildlist.do"
         params = {"app_id": upload_api.app_id}
 
@@ -386,51 +385,13 @@ def is_ready_for_new_build(*, upload_api: UploadAPI) -> bool:
             raise RuntimeError
 
         try:
-            # If a sandbox_id is already in progress, cancel it
-            sandbox_exists = response[0].get("sandbox_id")
-            if sandbox_exists is not None:
-                pass
+            # If we don't throw, at least one build already exists
+            response[0].get("build_id")
+            return False
+
         except (KeyError, IndexError):
-            # No sandbox exists, no need to cancel existing builds
+            # No existing builds
             return True
-
-        # If the sandbox already exists OR this is a policy scan, see if a build is in-progress
-        endpoint = "getbuildinfo.do"
-        response = upload_api.http_get(endpoint=endpoint, params=params)
-
-        if element_contains_error(parsed_xml=response):
-            LOG.error("Veracode returned an error when attempting to call %s", endpoint)
-            raise RuntimeError
-
-        # Can only start a new build and perform file upload under the following two conditions
-        # https://help.veracode.com/reader/orRWez4I0tnZNaA_i0zn9g/KufwsiK88ub0VsFpNn8KcQ
-        try:
-            results_ready = response[0].get("results_ready")
-            if results_ready == "true":
-                return True
-        except (KeyError, IndexError):
-            LOG.error(
-                "Unable to extract the results_ready attribute from the Veracode response"
-            )
-            raise RuntimeError
-
-        try:
-            status = None
-            # Navigate build -> analysis_unit's elements to find status
-            for elem in response[0].iterfind("*"):
-                for attrib in elem.attrib.items():
-                    if attrib[0] == "status":
-                        status = attrib[1]
-
-            if status == "Vendor Reviewing":
-                return True
-            if status is None:
-                raise KeyError
-        except (KeyError, IndexError):
-            LOG.error(
-                "Unable to extract the status attribute from the Veracode response"
-            )
-            raise RuntimeError
 
     except (
         HTTPError,
@@ -441,5 +402,3 @@ def is_ready_for_new_build(*, upload_api: UploadAPI) -> bool:
         RuntimeError,
     ):
         raise RuntimeError
-
-    return False

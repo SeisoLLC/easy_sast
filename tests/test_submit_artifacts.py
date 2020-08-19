@@ -471,14 +471,15 @@ class TestSubmitArtifacts(TestCase):
         Test the is_ready_for_new_build function
         """
         upload_api = UploadAPI(app_id=test_constants.VALID_UPLOAD_API["app_id"])
+
         with patch.object(
             UploadAPI,
             "http_get",
-            return_value=test_constants.VALID_UPLOAD_API_GETBUILDINFO_RESPONSE_XML[
+            return_value=test_constants.VALID_UPLOAD_API_GETBUILDLIST_MISSING_BUILDID_IN_RESPONSE_XML[
                 "Element"
             ],
         ):
-            # Succeed when results_ready is False and status is "Vendor Reviewing"
+            # Succeed when no existing build IDs are present
             with patch(
                 "veracode.submit_artifacts.element_contains_error", return_value=False
             ):
@@ -496,31 +497,16 @@ class TestSubmitArtifacts(TestCase):
                     upload_api=upload_api,
                 )
 
-        ## Create Sandbox Scan
+        ## Create Sandbox Scan and have existing build ID
         upload_api.sandbox_id = "12345"
         with patch.object(
             UploadAPI,
             "http_get",
-            return_value=test_constants.VALID_UPLOAD_API_GETBUILDINFO_RESPONSE_READY_XML[
+            return_value=test_constants.VALID_UPLOAD_API_GETBUILDLIST_BUILDID_IN_RESPONSE_XML[
                 "Element"
             ],
         ):
-            # Succeed when results_ready is True and status is not "Vendor Reviewing"
-            with patch(
-                "veracode.submit_artifacts.element_contains_error", return_value=False
-            ):
-                self.assertTrue(
-                    submit_artifacts.is_ready_for_new_build(upload_api=upload_api)
-                )
-
-        with patch.object(
-            UploadAPI,
-            "http_get",
-            return_value=test_constants.VALID_UPLOAD_API_GETBUILDINFO_IN_PROGRESS_RESPONSE_XML[
-                "Element"
-            ],
-        ):
-            # Fail when results_ready is False and status is not "Vendor Reviewing"
+            # Fail when build already exists
             with patch(
                 "veracode.submit_artifacts.element_contains_error", return_value=False
             ):
@@ -546,40 +532,6 @@ class TestSubmitArtifacts(TestCase):
                 "veracode.submit_artifacts.element_contains_error", return_value=False
             ):
                 mock_http.side_effect = HTTPError()
-                self.assertRaises(
-                    RuntimeError,
-                    submit_artifacts.is_ready_for_new_build,
-                    upload_api=upload_api,
-                )
-
-        with patch.object(
-            UploadAPI,
-            "http_get",
-            return_value=test_constants.VALID_UPLOAD_API_GETBUILDINFO_RESULTS_READY_ERROR_IN_RESPONSE_XML[
-                "Element"
-            ],
-        ):
-            # Raise RuntimeError on results_ready missing KeyError
-            with patch(
-                "veracode.submit_artifacts.element_contains_error", return_value=False
-            ):
-                self.assertRaises(
-                    RuntimeError,
-                    submit_artifacts.is_ready_for_new_build,
-                    upload_api=upload_api,
-                )
-
-        with patch.object(
-            UploadAPI,
-            "http_get",
-            return_value=test_constants.VALID_UPLOAD_API_GETBUILDINFO_STATUS_MISSING_IN_RESPONSE_XML[
-                "Element"
-            ],
-        ):
-            # Raise RuntimeError on status missing KeyError
-            with patch(
-                "veracode.submit_artifacts.element_contains_error", return_value=False
-            ):
                 self.assertRaises(
                     RuntimeError,
                     submit_artifacts.is_ready_for_new_build,

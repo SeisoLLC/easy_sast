@@ -548,6 +548,59 @@ VALID_UPLOAD_API_GETBUILDINFO_RESULTS_READY_ERROR_IN_RESPONSE_XML[
     VALID_UPLOAD_API_GETBUILDINFO_RESULTS_READY_ERROR_IN_RESPONSE_XML["bytes"]
 )
 
+# Valid Upload API getbuildlist.do information - build ID present
+# https://help.veracode.com/reader/orRWez4I0tnZNaA_i0zn9g/Yjclv0XIfU1v_yqmkt18zA
+VALID_UPLOAD_API_GETBUILDLIST_BUILDID_IN_RESPONSE_XML = {}
+# Unfortunately, this varies slightly from the Veracode-provided example
+# because (1) the xml library cannot parse the XML using a XSD file, and (2)
+# the placeholders Veracode provided in its documentation result in invalid XML
+# regardless.
+VALID_UPLOAD_API_GETBUILDLIST_BUILDID_IN_RESPONSE_XML[
+    "string"
+] = """<?xml version="1.0" encoding="UTF-8"?>
+
+<buildlist xmlns:xsi="http&#x3a;&#x2f;&#x2f;www.w3.org&#x2f;2001&#x2f;XMLSchema-instance"
+      xmlns="https&#x3a;&#x2f;&#x2f;analysiscenter.veracode.com&#x2f;schema&#x2f;2.0&#x2f;buildlist"
+      xsi:schemaLocation="https&#x3a;&#x2f;&#x2f;analysiscenter.veracode.com&#x2f;schema&#x2f;2.0&#x2f;buildlist
+      https&#x3a;&#x2f;&#x2f;analysiscenter.veracode.com&#x2f;resource&#x2f;2.0&#x2f;buildlist.xsd" buildlist_version="1.3"
+      account_id="12345" app_id="54321" sandbox_id="12345" app_name="Application Name">
+      <build build_id="7777"/>
+</buildlist>"""
+VALID_UPLOAD_API_GETBUILDLIST_BUILDID_IN_RESPONSE_XML["bytes"] = bytes(
+    VALID_UPLOAD_API_GETBUILDLIST_BUILDID_IN_RESPONSE_XML["string"], "utf-8"
+)
+VALID_UPLOAD_API_GETBUILDLIST_BUILDID_IN_RESPONSE_XML[
+    "Element"
+] = ElementTree.fromstring(
+    VALID_UPLOAD_API_GETBUILDLIST_BUILDID_IN_RESPONSE_XML["bytes"]
+)
+
+# Valid Upload API getbuildlist.do information - no build ID
+# https://help.veracode.com/reader/orRWez4I0tnZNaA_i0zn9g/Yjclv0XIfU1v_yqmkt18zA
+VALID_UPLOAD_API_GETBUILDLIST_MISSING_BUILDID_IN_RESPONSE_XML = {}
+# Unfortunately, this varies slightly from the Veracode-provided example
+# because (1) the xml library cannot parse the XML using a XSD file, and (2)
+# the placeholders Veracode provided in its documentation result in invalid XML
+# regardless.
+VALID_UPLOAD_API_GETBUILDLIST_MISSING_BUILDID_IN_RESPONSE_XML[
+    "string"
+] = """<?xml version="1.0" encoding="UTF-8"?>
+
+<buildlist xmlns:xsi="http&#x3a;&#x2f;&#x2f;www.w3.org&#x2f;2001&#x2f;XMLSchema-instance"
+      xmlns="https&#x3a;&#x2f;&#x2f;analysiscenter.veracode.com&#x2f;schema&#x2f;2.0&#x2f;buildlist"
+      xsi:schemaLocation="https&#x3a;&#x2f;&#x2f;analysiscenter.veracode.com&#x2f;schema&#x2f;2.0&#x2f;buildlist
+      https&#x3a;&#x2f;&#x2f;analysiscenter.veracode.com&#x2f;resource&#x2f;2.0&#x2f;buildlist.xsd" buildlist_version="1.3"
+      account_id="12345" app_id="54321" sandbox_id="12345" app_name="Application Name">
+</buildlist>"""
+VALID_UPLOAD_API_GETBUILDLIST_MISSING_BUILDID_IN_RESPONSE_XML["bytes"] = bytes(
+    VALID_UPLOAD_API_GETBUILDLIST_MISSING_BUILDID_IN_RESPONSE_XML["string"], "utf-8"
+)
+VALID_UPLOAD_API_GETBUILDLIST_MISSING_BUILDID_IN_RESPONSE_XML[
+    "Element"
+] = ElementTree.fromstring(
+    VALID_UPLOAD_API_GETBUILDLIST_MISSING_BUILDID_IN_RESPONSE_XML["bytes"]
+)
+
 # Valid Upload API getbuildinfo.do information - missing analysis_unit status attribute
 # https://help.veracode.com/reader/orRWez4I0tnZNaA_i0zn9g/Yjclv0XIfU1v_yqmkt18zA
 VALID_UPLOAD_API_GETBUILDINFO_STATUS_MISSING_IN_RESPONSE_XML = {}
