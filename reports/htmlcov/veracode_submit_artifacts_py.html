@@ -328,7 +328,7 @@
     <p id="t274" class="pln"><span class="n"><a href="#t274">274</a></span><span class="t"><span class="str">    Setup the scan environment prereqs</span>&nbsp;</span><span class="r"></span></p>
     <p id="t275" class="pln"><span class="n"><a href="#t275">275</a></span><span class="t"><span class="str">    """</span>&nbsp;</span><span class="r"></span></p>
     <p id="t276" class="pln"><span class="n"><a href="#t276">276</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
-    <p id="t277" class="run"><span class="n"><a href="#t277">277</a></span><span class="t">    <span class="key">if</span> <span class="key">not</span> <span class="nam">check_if_build_exists</span><span class="op">(</span><span class="nam">upload_api</span><span class="op">=</span><span class="nam">upload_api</span><span class="op">)</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
+    <p id="t277" class="run"><span class="n"><a href="#t277">277</a></span><span class="t">    <span class="key">if</span> <span class="key">not</span> <span class="nam">build_exists</span><span class="op">(</span><span class="nam">upload_api</span><span class="op">=</span><span class="nam">upload_api</span><span class="op">)</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
     <p id="t278" class="run"><span class="n"><a href="#t278">278</a></span><span class="t">        <span class="nam">LOG</span><span class="op">.</span><span class="nam">info</span><span class="op">(</span>&nbsp;</span><span class="r"></span></p>
     <p id="t279" class="pln"><span class="n"><a href="#t279">279</a></span><span class="t">            <span class="str">"app_id %s was not ready for a new build"</span><span class="op">,</span> <span class="nam">upload_api</span><span class="op">.</span><span class="nam">app_id</span><span class="op">,</span>&nbsp;</span><span class="r"></span></p>
     <p id="t280" class="pln"><span class="n"><a href="#t280">280</a></span><span class="t">        <span class="op">)</span>&nbsp;</span><span class="r"></span></p>
@@ -417,7 +417,7 @@
     <p id="t363" class="pln"><span class="n"><a href="#t363">363</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p id="t364" class="pln"><span class="n"><a href="#t364">364</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p id="t365" class="run"><span class="n"><a href="#t365">365</a></span><span class="t"><span class="op">@</span><span class="nam">validate</span>&nbsp;</span><span class="r"></span></p>
-    <p id="t366" class="run"><span class="n"><a href="#t366">366</a></span><span class="t"><span class="key">def</span> <span class="nam">check_if_build_exists</span><span class="op">(</span><span class="op">*</span><span class="op">,</span> <span class="nam">upload_api</span><span class="op">:</span> <span class="nam">UploadAPI</span><span class="op">)</span> <span class="op">-></span> <span class="nam">bool</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
+    <p id="t366" class="run"><span class="n"><a href="#t366">366</a></span><span class="t"><span class="key">def</span> <span class="nam">build_exists</span><span class="op">(</span><span class="op">*</span><span class="op">,</span> <span class="nam">upload_api</span><span class="op">:</span> <span class="nam">UploadAPI</span><span class="op">)</span> <span class="op">-></span> <span class="nam">bool</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
     <p id="t367" class="pln"><span class="n"><a href="#t367">367</a></span><span class="t">    <span class="str">"""</span>&nbsp;</span><span class="r"></span></p>
     <p id="t368" class="pln"><span class="n"><a href="#t368">368</a></span><span class="t"><span class="str">    Return whether a build already exists</span>&nbsp;</span><span class="r"></span></p>
     <p id="t369" class="pln"><span class="n"><a href="#t369">369</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
@@ -461,7 +461,7 @@
     <div class="content">
         <p>
             <a class="nav" href="index.html">&#xab; index</a> &nbsp; &nbsp; <a class="nav" href="https://coverage.readthedocs.io">coverage.py v5.2.1</a>,
-            created at 2020-08-26 16:46 +0000
+            created at 2020-08-26 19:14 +0000
         </p>
     </div>
 </div>
