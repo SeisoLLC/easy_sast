@@ -401,7 +401,7 @@ class TestSubmitArtifacts(TestCase):
         # Successful create build
         with patch("veracode.submit_artifacts.create_build", return_value=True):
             with patch(
-                "veracode.submit_artifacts.is_ready_for_new_build", return_value=True
+                "veracode.submit_artifacts.check_if_build_exists", return_value=True
             ):
                 self.assertTrue(
                     submit_artifacts.setup_scan_prereqs(upload_api=upload_api)
@@ -410,7 +410,7 @@ class TestSubmitArtifacts(TestCase):
         # Unsuccessful create build
         with patch("veracode.submit_artifacts.create_build", return_value=False):
             with patch(
-                "veracode.submit_artifacts.is_ready_for_new_build", return_value=True
+                "veracode.submit_artifacts.check_if_build_exists", return_value=True
             ):
                 self.assertFalse(
                     submit_artifacts.setup_scan_prereqs(upload_api=upload_api)
@@ -421,7 +421,7 @@ class TestSubmitArtifacts(TestCase):
         # Successful create build
         with patch("veracode.submit_artifacts.create_build", return_value=True):
             with patch(
-                "veracode.submit_artifacts.is_ready_for_new_build", return_value=True
+                "veracode.submit_artifacts.check_if_build_exists", return_value=True
             ):
                 self.assertTrue(
                     submit_artifacts.setup_scan_prereqs(upload_api=upload_api)
@@ -429,7 +429,7 @@ class TestSubmitArtifacts(TestCase):
 
         # Build in progress, try to cancel and recreate
         with patch(
-            "veracode.submit_artifacts.is_ready_for_new_build", return_value=False
+            "veracode.submit_artifacts.check_if_build_exists", return_value=False
         ):
             # Unsuccessful create build
             with patch("veracode.submit_artifacts.create_build", return_value=True):
@@ -448,7 +448,7 @@ class TestSubmitArtifacts(TestCase):
                     )
 
         with patch(
-            "veracode.submit_artifacts.is_ready_for_new_build", return_value=True
+            "veracode.submit_artifacts.check_if_build_exists", return_value=True
         ):
             # Unsuccessful create build
             with patch("veracode.submit_artifacts.create_build", return_value=False):
@@ -466,9 +466,9 @@ class TestSubmitArtifacts(TestCase):
                         submit_artifacts.setup_scan_prereqs(upload_api=upload_api)
                     )
 
-    def test_is_ready_for_new_build(self):
+    def test_check_if_build_exists(self):
         """
-        Test the is_ready_for_new_build function
+        Test the check_if_build_exists function
         """
         upload_api = UploadAPI(app_id=test_constants.VALID_UPLOAD_API["app_id"])
 
@@ -484,7 +484,7 @@ class TestSubmitArtifacts(TestCase):
                 "veracode.submit_artifacts.element_contains_error", return_value=False
             ):
                 self.assertTrue(
-                    submit_artifacts.is_ready_for_new_build(upload_api=upload_api)
+                    submit_artifacts.check_if_build_exists(upload_api=upload_api)
                 )
 
             # Raise a RuntimeError when element_contains_error returns True
@@ -493,7 +493,7 @@ class TestSubmitArtifacts(TestCase):
             ):
                 self.assertRaises(
                     RuntimeError,
-                    submit_artifacts.is_ready_for_new_build,
+                    submit_artifacts.check_if_build_exists,
                     upload_api=upload_api,
                 )
 
@@ -511,7 +511,7 @@ class TestSubmitArtifacts(TestCase):
                 "veracode.submit_artifacts.element_contains_error", return_value=False
             ):
                 self.assertFalse(
-                    submit_artifacts.is_ready_for_new_build(upload_api=upload_api)
+                    submit_artifacts.check_if_build_exists(upload_api=upload_api)
                 )
 
         # Raise RuntimeError when HTTPError occurs
@@ -522,7 +522,7 @@ class TestSubmitArtifacts(TestCase):
                 mock_http.side_effect = HTTPError()
                 self.assertRaises(
                     RuntimeError,
-                    submit_artifacts.is_ready_for_new_build,
+                    submit_artifacts.check_if_build_exists,
                     upload_api=upload_api,
                 )
 
@@ -534,7 +534,7 @@ class TestSubmitArtifacts(TestCase):
                 mock_http.side_effect = HTTPError()
                 self.assertRaises(
                     RuntimeError,
-                    submit_artifacts.is_ready_for_new_build,
+                    submit_artifacts.check_if_build_exists,
                     upload_api=upload_api,
                 )
 
