@@ -400,18 +400,14 @@ class TestSubmitArtifacts(TestCase):
         ## Policy Scan
         # Successful create build
         with patch("veracode.submit_artifacts.create_build", return_value=True):
-            with patch(
-                "veracode.submit_artifacts.check_if_build_exists", return_value=True
-            ):
+            with patch("veracode.submit_artifacts.build_exists", return_value=True):
                 self.assertTrue(
                     submit_artifacts.setup_scan_prereqs(upload_api=upload_api)
                 )
 
         # Unsuccessful create build
         with patch("veracode.submit_artifacts.create_build", return_value=False):
-            with patch(
-                "veracode.submit_artifacts.check_if_build_exists", return_value=True
-            ):
+            with patch("veracode.submit_artifacts.build_exists", return_value=True):
                 self.assertFalse(
                     submit_artifacts.setup_scan_prereqs(upload_api=upload_api)
                 )
@@ -420,17 +416,13 @@ class TestSubmitArtifacts(TestCase):
         upload_api.sandbox_id = "12345"
         # Successful create build
         with patch("veracode.submit_artifacts.create_build", return_value=True):
-            with patch(
-                "veracode.submit_artifacts.check_if_build_exists", return_value=True
-            ):
+            with patch("veracode.submit_artifacts.build_exists", return_value=True):
                 self.assertTrue(
                     submit_artifacts.setup_scan_prereqs(upload_api=upload_api)
                 )
 
         # Build in progress, try to cancel and recreate
-        with patch(
-            "veracode.submit_artifacts.check_if_build_exists", return_value=False
-        ):
+        with patch("veracode.submit_artifacts.build_exists", return_value=False):
             # Unsuccessful create build
             with patch("veracode.submit_artifacts.create_build", return_value=True):
                 # cancel_build returns True, create_build returns False, return False
@@ -447,9 +439,7 @@ class TestSubmitArtifacts(TestCase):
                         submit_artifacts.setup_scan_prereqs(upload_api=upload_api)
                     )
 
-        with patch(
-            "veracode.submit_artifacts.check_if_build_exists", return_value=True
-        ):
+        with patch("veracode.submit_artifacts.build_exists", return_value=True):
             # Unsuccessful create build
             with patch("veracode.submit_artifacts.create_build", return_value=False):
                 # cancel_build returns True, create_build returns False, return False
@@ -466,9 +456,9 @@ class TestSubmitArtifacts(TestCase):
                         submit_artifacts.setup_scan_prereqs(upload_api=upload_api)
                     )
 
-    def test_check_if_build_exists(self):
+    def test_build_exists(self):
         """
-        Test the check_if_build_exists function
+        Test the build_exists function
         """
         upload_api = UploadAPI(app_id=test_constants.VALID_UPLOAD_API["app_id"])
 
@@ -483,18 +473,14 @@ class TestSubmitArtifacts(TestCase):
             with patch(
                 "veracode.submit_artifacts.element_contains_error", return_value=False
             ):
-                self.assertTrue(
-                    submit_artifacts.check_if_build_exists(upload_api=upload_api)
-                )
+                self.assertTrue(submit_artifacts.build_exists(upload_api=upload_api))
 
             # Raise a RuntimeError when element_contains_error returns True
             with patch(
                 "veracode.submit_artifacts.element_contains_error", return_value=True
             ):
                 self.assertRaises(
-                    RuntimeError,
-                    submit_artifacts.check_if_build_exists,
-                    upload_api=upload_api,
+                    RuntimeError, submit_artifacts.build_exists, upload_api=upload_api,
                 )
 
         ## Create Sandbox Scan and have existing build ID
@@ -510,8 +496,16 @@ class TestSubmitArtifacts(TestCase):
             with patch(
                 "veracode.submit_artifacts.element_contains_error", return_value=False
             ):
-                self.assertFalse(
-                    submit_artifacts.check_if_build_exists(upload_api=upload_api)
+                self.assertFalse(submit_artifacts.build_exists(upload_api=upload_api))
+
+        # Raise RuntimeError when HTTPError occurs
+        with patch("veracode.api.VeracodeXMLAPI.http_get") as mock_http:
+            with patch(
+                "veracode.submit_artifacts.element_contains_error", return_value=False
+            ):
+                mock_http.side_effect = HTTPError()
+                self.assertRaises(
+                    RuntimeError, submit_artifacts.build_exists, upload_api=upload_api,
                 )
 
         # Raise RuntimeError when HTTPError occurs
@@ -521,21 +515,7 @@ class TestSubmitArtifacts(TestCase):
             ):
                 mock_http.side_effect = HTTPError()
                 self.assertRaises(
-                    RuntimeError,
-                    submit_artifacts.check_if_build_exists,
-                    upload_api=upload_api,
-                )
-
-        # Raise RuntimeError when HTTPError occurs
-        with patch("veracode.api.VeracodeXMLAPI.http_get") as mock_http:
-            with patch(
-                "veracode.submit_artifacts.element_contains_error", return_value=False
-            ):
-                mock_http.side_effect = HTTPError()
-                self.assertRaises(
-                    RuntimeError,
-                    submit_artifacts.check_if_build_exists,
-                    upload_api=upload_api,
+                    RuntimeError, submit_artifacts.build_exists, upload_api=upload_api,
                 )
 
     @patch("veracode.submit_artifacts.begin_prescan")

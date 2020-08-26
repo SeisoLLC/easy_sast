@@ -274,7 +274,7 @@ def setup_scan_prereqs(*, upload_api: UploadAPI) -> bool:
     Setup the scan environment prereqs
     """
 
-    if not check_if_build_exists(upload_api=upload_api):
+    if not build_exists(upload_api=upload_api):
         LOG.info(
             "app_id %s was not ready for a new build", upload_api.app_id,
         )
@@ -363,7 +363,7 @@ def submit_artifacts(  # pylint: disable=too-many-return-statements, too-many-br
 
 
 @validate
-def check_if_build_exists(*, upload_api: UploadAPI) -> bool:
+def build_exists(*, upload_api: UploadAPI) -> bool:
     """
     Return whether a build already exists
 
