@@ -398,14 +398,14 @@ class TestSubmitArtifacts(TestCase):
         """
         upload_api = UploadAPI(app_id=test_constants.VALID_UPLOAD_API["app_id"])
         ## Policy Scan
-        # Successful create build
+        # Successful when build exists and new build creation succeeds
         with patch("veracode.submit_artifacts.create_build", return_value=True):
             with patch("veracode.submit_artifacts.build_exists", return_value=True):
                 self.assertTrue(
                     submit_artifacts.setup_scan_prereqs(upload_api=upload_api)
                 )
 
-        # Unsuccessful create build
+        # Fail when build already exists and build creation fails
         with patch("veracode.submit_artifacts.create_build", return_value=False):
             with patch("veracode.submit_artifacts.build_exists", return_value=True):
                 self.assertFalse(
@@ -414,24 +414,23 @@ class TestSubmitArtifacts(TestCase):
 
         ## Sandbox Scan
         upload_api.sandbox_id = "12345"
-        # Successful create build
+        # Succeed when build exists and new build creation succeeds
         with patch("veracode.submit_artifacts.create_build", return_value=True):
             with patch("veracode.submit_artifacts.build_exists", return_value=True):
                 self.assertTrue(
                     submit_artifacts.setup_scan_prereqs(upload_api=upload_api)
                 )
 
-        # Build in progress, try to cancel and recreate
+        # Succeed when no builds exist and build creation succeeds
         with patch("veracode.submit_artifacts.build_exists", return_value=False):
-            # Unsuccessful create build
             with patch("veracode.submit_artifacts.create_build", return_value=True):
-                # cancel_build returns True, create_build returns False, return False
+                # Succeed when no build exists and build creation succeeds
                 with patch("veracode.submit_artifacts.cancel_build", return_value=True):
                     self.assertTrue(
                         submit_artifacts.setup_scan_prereqs(upload_api=upload_api)
                     )
 
-                # cancel_build returns False, return False
+                # Fail when when build cancellation fails
                 with patch(
                     "veracode.submit_artifacts.cancel_build", return_value=False
                 ):
@@ -439,16 +438,15 @@ class TestSubmitArtifacts(TestCase):
                         submit_artifacts.setup_scan_prereqs(upload_api=upload_api)
                     )
 
+        # Fail when build exists, build cancellation succeeds, and build creation fails
         with patch("veracode.submit_artifacts.build_exists", return_value=True):
-            # Unsuccessful create build
             with patch("veracode.submit_artifacts.create_build", return_value=False):
-                # cancel_build returns True, create_build returns False, return False
                 with patch("veracode.submit_artifacts.cancel_build", return_value=True):
                     self.assertFalse(
                         submit_artifacts.setup_scan_prereqs(upload_api=upload_api)
                     )
 
-                # cancel_build returns False, return False
+                # Fail when build cancellation fails
                 with patch(
                     "veracode.submit_artifacts.cancel_build", return_value=False
                 ):
