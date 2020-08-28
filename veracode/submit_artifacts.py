@@ -162,10 +162,10 @@ def get_sandbox_id(*, sandbox_api: SandboxAPI) -> Union[str, None]:
             raise RuntimeError
 
         for sandbox in sandboxes:
-            if sandbox_api.sandbox_name == sandbox.attrib["sandbox_name"]:
+            if sandbox_api.sandbox_name == sandbox.get("sandbox_name"):
                 # Returns the first sandbox_name match as duplicates are not
                 # allowed by Veracode
-                return sandbox.attrib["sandbox_id"]
+                return sandbox.get("sandbox_id")
 
         # No sandbox_id exists with the provided sandbox_name
         LOG.info(
@@ -208,7 +208,7 @@ def create_sandbox(*, sandbox_api: SandboxAPI) -> str:
         try:
             # Because we only make one sandbox at a time, we can use index 0 to
             # extract and then return the sandbox_id
-            return response[0].attrib["sandbox_id"]
+            return response[0].get("sandbox_id")
         except (KeyError, IndexError):
             LOG.error("Unable to extract the sandbox_id from the Veracode response")
             raise RuntimeError
@@ -273,55 +273,25 @@ def setup_scan_prereqs(*, upload_api: UploadAPI) -> bool:
     """
     Setup the scan environment prereqs
     """
-    # Check to see if this is a Policy scan
-    if not isinstance(upload_api.sandbox_id, str):
-        if create_build(upload_api=upload_api):
-            LOG.debug(
-                "Successfully created an application build for app id %s",
-                upload_api.app_id,
-            )
-            return True
 
-        LOG.error("Failed create an application build for app id %s", upload_api.app_id)
-        return False
+    if not build_exists(upload_api=upload_api):
+        LOG.info(
+            "app_id %s was not ready for a new build", upload_api.app_id,
+        )
 
-    # This is a sandbox scan
-    if create_build(upload_api=upload_api):
-        LOG.debug(
-            "Successfully created an application build for app id %s sandbox id %s",
-            upload_api.app_id,
-            upload_api.sandbox_id,
-        )
-        return True
-
-    # Application build creation was unsuccessful and this is a sandbox
-    # scan, attempt to cancel the existing scan and retry
-    LOG.info(
-        "Failed to create an application build. Attempting to cancel an existing build for app_id %s sandbox %s and retry",
-        upload_api.app_id,
-        upload_api.sandbox_id,
-    )
-    if cancel_build(upload_api=upload_api):
-        LOG.debug(
-            "Retrying the build creation for app_id %s sandbox %s",
-            upload_api.app_id,
-            upload_api.sandbox_id,
-        )
-    else:
-        LOG.error(
-            "Unable to cancel the build for app_id %s sandbox_id %s",
-            upload_api.app_id,
-            upload_api.sandbox_id,
-        )
-        return False
+        if not cancel_build(upload_api=upload_api):
+            LOG.debug("Unable to cancel build for app_id %s", upload_api.app_id)
+            return False
 
     if create_build(upload_api=upload_api):
         LOG.info(
-            "Successfully created an application build for app id %s", upload_api.app_id
+            "Successfully created an application build for app id %s",
+            upload_api.app_id,
         )
         return True
 
     LOG.error("Failed to create an application build for app id %s", upload_api.app_id)
+
     return False
 
 
@@ -390,3 +360,45 @@ def submit_artifacts(  # pylint: disable=too-many-return-statements, too-many-br
         return False
 
     return True
+
+
+@validate
+def build_exists(*, upload_api: UploadAPI) -> bool:
+    """
+    Return whether a build already exists
+
+    https://help.veracode.com/reader/orRWez4I0tnZNaA_i0zn9g/Yjclv0XIfU1v_yqmkt18zA
+    """
+
+    try:
+        endpoint = "getbuildlist.do"
+        params = {"app_id": upload_api.app_id}
+
+        # If a sandbox_id is specified, add it to the params
+        if isinstance(upload_api.sandbox_id, str):
+            params["sandbox_id"] = upload_api.sandbox_id
+
+        response = upload_api.http_get(endpoint=endpoint, params=params)
+
+        if element_contains_error(parsed_xml=response):
+            LOG.error("Veracode returned an error when attempting to call %s", endpoint)
+            raise RuntimeError
+
+        try:
+            # If we don't throw, at least one build already exists
+            response[0].get("build_id")
+            return False
+
+        except IndexError:
+            # No existing builds
+            return True
+
+    except (
+        HTTPError,
+        ConnectionError,
+        Timeout,
+        TooManyRedirects,
+        RequestException,
+        RuntimeError,
+    ):
+        raise RuntimeError

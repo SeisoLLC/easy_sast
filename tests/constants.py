@@ -16,6 +16,8 @@ from xml.etree import (  # nosec (Used only when TYPE_CHECKING)
 from defusedxml import ElementTree
 import yaml
 
+# pylint: disable=too-many-lines
+
 ## Sample Results API environmental information
 VALID_RESULTS_API: Dict[str, Union[str, bool, Dict[str, str]]] = {}
 VALID_RESULTS_API["base_url"] = "https://analysiscenter.veracode.com/api/"
@@ -428,6 +430,208 @@ VALID_UPLOAD_API_DELETEBUILD_RESPONSE_XML["Element"] = ElementTree.fromstring(
     VALID_UPLOAD_API_DELETEBUILD_RESPONSE_XML["bytes"]
 )
 
+# Valid Upload API getbuildinfo.do information - build status is "vendor reviewing"
+# https://help.veracode.com/reader/orRWez4I0tnZNaA_i0zn9g/Yjclv0XIfU1v_yqmkt18zA
+VALID_UPLOAD_API_GETBUILDINFO_RESPONSE_XML = {}
+# Unfortunately, this varies slightly from the Veracode-provided example
+# because (1) the xml library cannot parse the XML using a XSD file, and (2)
+# the placeholders Veracode provided in its documentation result in invalid XML
+# regardless.
+VALID_UPLOAD_API_GETBUILDINFO_RESPONSE_XML[
+    "string"
+] = """<?xml version="1.0" encoding="UTF-8"?>
+
+<buildinfo xmlns:xsi="http&#x3a;&#x2f;&#x2f;www.w3.org&#x2f;2001&#x2f;XMLSchema-instance" 
+      xmlns="https&#x3a;&#x2f;&#x2f;analysiscenter.veracode.com&#x2f;schema&#x2f;4.0&#x2f;buildinfo" 
+      xsi:schemaLocation="https&#x3a;&#x2f;&#x2f;analysiscenter.veracode.com&#x2f;schema&#x2f;4.0&#x2f;buildinfo 
+      https&#x3a;&#x2f;&#x2f;analysiscenter.veracode.com&#x2f;resource&#x2f;4.0&#x2f;buildinfo.xsd" buildinfo_version="1.4" 
+      account_id="hunter2" app_id="1337" build_id="41414141">
+   <build version="13 Aug 2019 Static" build_id="41414141" submitter="Veracode" platform="Not Specified" 
+      lifecycle_stage="Not Specified" results_ready="false" policy_name="Veracode Transitional Very High" policy_version="1" 
+      policy_compliance_status="Not Assessed" policy_updated_date="2019-08-13T14&#x3a;02&#x3a;08-04&#x3a;00" 
+      rules_status="Not Assessed" grace_period_expired="false" scan_overdue="false" legacy_scan_engine="false">
+      <analysis_unit analysis_type="Static" status="Vendor Reviewing" engine_version="20190805180615"/>
+   </build>
+</buildinfo> """
+VALID_UPLOAD_API_GETBUILDINFO_RESPONSE_XML["bytes"] = bytes(
+    VALID_UPLOAD_API_GETBUILDINFO_RESPONSE_XML["string"], "utf-8"
+)
+VALID_UPLOAD_API_GETBUILDINFO_RESPONSE_XML["Element"] = ElementTree.fromstring(
+    VALID_UPLOAD_API_GETBUILDINFO_RESPONSE_XML["bytes"]
+)
+
+# Valid Upload API getbuildinfo.do information - new build ready - second scenario
+# # https://help.veracode.com/reader/orRWez4I0tnZNaA_i0zn9g/Yjclv0XIfU1v_yqmkt18zA
+VALID_UPLOAD_API_GETBUILDINFO_RESPONSE_READY_XML = {}
+# Unfortunately, this varies slightly from the Veracode-provided example
+# because (1) the xml library cannot parse the XML using a XSD file, and (2)
+# the placeholders Veracode provided in its documentation result in invalid XML
+# regardless.
+VALID_UPLOAD_API_GETBUILDINFO_RESPONSE_READY_XML[
+    "string"
+] = """<?xml version="1.0" encoding="UTF-8"?>
+
+<buildinfo xmlns:xsi="http&#x3a;&#x2f;&#x2f;www.w3.org&#x2f;2001&#x2f;XMLSchema-instance" 
+      xmlns="https&#x3a;&#x2f;&#x2f;analysiscenter.veracode.com&#x2f;schema&#x2f;4.0&#x2f;buildinfo" 
+      xsi:schemaLocation="https&#x3a;&#x2f;&#x2f;analysiscenter.veracode.com&#x2f;schema&#x2f;4.0&#x2f;buildinfo 
+      https&#x3a;&#x2f;&#x2f;analysiscenter.veracode.com&#x2f;resource&#x2f;4.0&#x2f;buildinfo.xsd" buildinfo_version="1.4" 
+      account_id="hunter2" app_id="1337" build_id="41414141">
+   <build version="13 Aug 2019 Static" build_id="41414141" submitter="Veracode" platform="Not Specified" 
+      lifecycle_stage="Not Specified" results_ready="true" policy_name="Veracode Transitional Very High" policy_version="1" 
+      policy_compliance_status="Not Assessed" policy_updated_date="2019-08-13T14&#x3a;02&#x3a;08-04&#x3a;00" 
+      rules_status="Not Assessed" grace_period_expired="false" scan_overdue="false" legacy_scan_engine="false">
+      <analysis_unit analysis_type="Static" status="Scan in Process" engine_version="20190805180615"/>
+   </build>
+</buildinfo> """
+VALID_UPLOAD_API_GETBUILDINFO_RESPONSE_READY_XML["bytes"] = bytes(
+    VALID_UPLOAD_API_GETBUILDINFO_RESPONSE_READY_XML["string"], "utf-8"
+)
+VALID_UPLOAD_API_GETBUILDINFO_RESPONSE_READY_XML["Element"] = ElementTree.fromstring(
+    VALID_UPLOAD_API_GETBUILDINFO_RESPONSE_READY_XML["bytes"]
+)
+
+# Valid Upload API getbuildinfo.do information - build in progress
+# https://help.veracode.com/reader/orRWez4I0tnZNaA_i0zn9g/Yjclv0XIfU1v_yqmkt18zA
+VALID_UPLOAD_API_GETBUILDINFO_IN_PROGRESS_RESPONSE_XML = {}
+# Unfortunately, this varies slightly from the Veracode-provided example
+# because (1) the xml library cannot parse the XML using a XSD file, and (2)
+# the placeholders Veracode provided in its documentation result in invalid XML
+# regardless.
+VALID_UPLOAD_API_GETBUILDINFO_IN_PROGRESS_RESPONSE_XML[
+    "string"
+] = """<?xml version="1.0" encoding="UTF-8"?>
+
+<buildinfo xmlns:xsi="http&#x3a;&#x2f;&#x2f;www.w3.org&#x2f;2001&#x2f;XMLSchema-instance" 
+      xmlns="https&#x3a;&#x2f;&#x2f;analysiscenter.veracode.com&#x2f;schema&#x2f;4.0&#x2f;buildinfo" 
+      xsi:schemaLocation="https&#x3a;&#x2f;&#x2f;analysiscenter.veracode.com&#x2f;schema&#x2f;4.0&#x2f;buildinfo 
+      https&#x3a;&#x2f;&#x2f;analysiscenter.veracode.com&#x2f;resource&#x2f;4.0&#x2f;buildinfo.xsd" buildinfo_version="1.4" 
+      account_id="hunter2" app_id="1337" build_id="41414141">
+   <build version="13 Aug 2019 Static" build_id="41414141" submitter="Veracode" platform="Not Specified" 
+      lifecycle_stage="Not Specified" results_ready="false" policy_name="Veracode Transitional Very High" policy_version="1" 
+      policy_compliance_status="Not Assessed" policy_updated_date="2019-08-13T14&#x3a;02&#x3a;08-04&#x3a;00" 
+      rules_status="Not Assessed" grace_period_expired="false" scan_overdue="false" legacy_scan_engine="false">
+      <analysis_unit analysis_type="Static" status="Scan In Process" engine_version="20190805180615"/>
+   </build>
+</buildinfo> """
+VALID_UPLOAD_API_GETBUILDINFO_IN_PROGRESS_RESPONSE_XML["bytes"] = bytes(
+    VALID_UPLOAD_API_GETBUILDINFO_IN_PROGRESS_RESPONSE_XML["string"], "utf-8"
+)
+VALID_UPLOAD_API_GETBUILDINFO_IN_PROGRESS_RESPONSE_XML[
+    "Element"
+] = ElementTree.fromstring(
+    VALID_UPLOAD_API_GETBUILDINFO_IN_PROGRESS_RESPONSE_XML["bytes"]
+)
+
+# Valid Upload API getbuildinfo.do information - missing build tag
+# https://help.veracode.com/reader/orRWez4I0tnZNaA_i0zn9g/Yjclv0XIfU1v_yqmkt18zA
+VALID_UPLOAD_API_GETBUILDINFO_RESULTS_READY_ERROR_IN_RESPONSE_XML = {}
+# Unfortunately, this varies slightly from the Veracode-provided example
+# because (1) the xml library cannot parse the XML using a XSD file, and (2)
+# the placeholders Veracode provided in its documentation result in invalid XML
+# regardless.
+VALID_UPLOAD_API_GETBUILDINFO_RESULTS_READY_ERROR_IN_RESPONSE_XML[
+    "string"
+] = """<?xml version="1.0" encoding="UTF-8"?>
+
+<buildinfo xmlns:xsi="http&#x3a;&#x2f;&#x2f;www.w3.org&#x2f;2001&#x2f;XMLSchema-instance" 
+      xmlns="https&#x3a;&#x2f;&#x2f;analysiscenter.veracode.com&#x2f;schema&#x2f;4.0&#x2f;buildinfo" 
+      xsi:schemaLocation="https&#x3a;&#x2f;&#x2f;analysiscenter.veracode.com&#x2f;schema&#x2f;4.0&#x2f;buildinfo 
+      https&#x3a;&#x2f;&#x2f;analysiscenter.veracode.com&#x2f;resource&#x2f;4.0&#x2f;buildinfo.xsd" buildinfo_version="1.4" 
+      account_id="hunter2" app_id="1337" build_id="41414141">
+</buildinfo> """
+VALID_UPLOAD_API_GETBUILDINFO_RESULTS_READY_ERROR_IN_RESPONSE_XML["bytes"] = bytes(
+    VALID_UPLOAD_API_GETBUILDINFO_RESULTS_READY_ERROR_IN_RESPONSE_XML["string"], "utf-8"
+)
+VALID_UPLOAD_API_GETBUILDINFO_RESULTS_READY_ERROR_IN_RESPONSE_XML[
+    "Element"
+] = ElementTree.fromstring(
+    VALID_UPLOAD_API_GETBUILDINFO_RESULTS_READY_ERROR_IN_RESPONSE_XML["bytes"]
+)
+
+# Valid Upload API getbuildlist.do information - build ID present
+# https://help.veracode.com/reader/orRWez4I0tnZNaA_i0zn9g/Yjclv0XIfU1v_yqmkt18zA
+VALID_UPLOAD_API_GETBUILDLIST_BUILDID_IN_RESPONSE_XML = {}
+# Unfortunately, this varies slightly from the Veracode-provided example
+# because (1) the xml library cannot parse the XML using a XSD file, and (2)
+# the placeholders Veracode provided in its documentation result in invalid XML
+# regardless.
+VALID_UPLOAD_API_GETBUILDLIST_BUILDID_IN_RESPONSE_XML[
+    "string"
+] = """<?xml version="1.0" encoding="UTF-8"?>
+
+<buildlist xmlns:xsi="http&#x3a;&#x2f;&#x2f;www.w3.org&#x2f;2001&#x2f;XMLSchema-instance"
+      xmlns="https&#x3a;&#x2f;&#x2f;analysiscenter.veracode.com&#x2f;schema&#x2f;2.0&#x2f;buildlist"
+      xsi:schemaLocation="https&#x3a;&#x2f;&#x2f;analysiscenter.veracode.com&#x2f;schema&#x2f;2.0&#x2f;buildlist
+      https&#x3a;&#x2f;&#x2f;analysiscenter.veracode.com&#x2f;resource&#x2f;2.0&#x2f;buildlist.xsd" buildlist_version="1.3"
+      account_id="12345" app_id="54321" sandbox_id="12345" app_name="Application Name">
+      <build build_id="7777"/>
+</buildlist>"""
+VALID_UPLOAD_API_GETBUILDLIST_BUILDID_IN_RESPONSE_XML["bytes"] = bytes(
+    VALID_UPLOAD_API_GETBUILDLIST_BUILDID_IN_RESPONSE_XML["string"], "utf-8"
+)
+VALID_UPLOAD_API_GETBUILDLIST_BUILDID_IN_RESPONSE_XML[
+    "Element"
+] = ElementTree.fromstring(
+    VALID_UPLOAD_API_GETBUILDLIST_BUILDID_IN_RESPONSE_XML["bytes"]
+)
+
+# Valid Upload API getbuildlist.do information - no build ID
+# https://help.veracode.com/reader/orRWez4I0tnZNaA_i0zn9g/Yjclv0XIfU1v_yqmkt18zA
+VALID_UPLOAD_API_GETBUILDLIST_MISSING_BUILDID_IN_RESPONSE_XML = {}
+# Unfortunately, this varies slightly from the Veracode-provided example
+# because (1) the xml library cannot parse the XML using a XSD file, and (2)
+# the placeholders Veracode provided in its documentation result in invalid XML
+# regardless.
+VALID_UPLOAD_API_GETBUILDLIST_MISSING_BUILDID_IN_RESPONSE_XML[
+    "string"
+] = """<?xml version="1.0" encoding="UTF-8"?>
+
+<buildlist xmlns:xsi="http&#x3a;&#x2f;&#x2f;www.w3.org&#x2f;2001&#x2f;XMLSchema-instance"
+      xmlns="https&#x3a;&#x2f;&#x2f;analysiscenter.veracode.com&#x2f;schema&#x2f;2.0&#x2f;buildlist"
+      xsi:schemaLocation="https&#x3a;&#x2f;&#x2f;analysiscenter.veracode.com&#x2f;schema&#x2f;2.0&#x2f;buildlist
+      https&#x3a;&#x2f;&#x2f;analysiscenter.veracode.com&#x2f;resource&#x2f;2.0&#x2f;buildlist.xsd" buildlist_version="1.3"
+      account_id="12345" app_id="54321" sandbox_id="12345" app_name="Application Name">
+</buildlist>"""
+VALID_UPLOAD_API_GETBUILDLIST_MISSING_BUILDID_IN_RESPONSE_XML["bytes"] = bytes(
+    VALID_UPLOAD_API_GETBUILDLIST_MISSING_BUILDID_IN_RESPONSE_XML["string"], "utf-8"
+)
+VALID_UPLOAD_API_GETBUILDLIST_MISSING_BUILDID_IN_RESPONSE_XML[
+    "Element"
+] = ElementTree.fromstring(
+    VALID_UPLOAD_API_GETBUILDLIST_MISSING_BUILDID_IN_RESPONSE_XML["bytes"]
+)
+
+# Valid Upload API getbuildinfo.do information - missing analysis_unit status attribute
+# https://help.veracode.com/reader/orRWez4I0tnZNaA_i0zn9g/Yjclv0XIfU1v_yqmkt18zA
+VALID_UPLOAD_API_GETBUILDINFO_STATUS_MISSING_IN_RESPONSE_XML = {}
+# Unfortunately, this varies slightly from the Veracode-provided example
+# because (1) the xml library cannot parse the XML using a XSD file, and (2)
+# the placeholders Veracode provided in its documentation result in invalid XML
+# regardless.
+VALID_UPLOAD_API_GETBUILDINFO_STATUS_MISSING_IN_RESPONSE_XML[
+    "string"
+] = """<?xml version="1.0" encoding="UTF-8"?>
+
+<buildinfo xmlns:xsi="http&#x3a;&#x2f;&#x2f;www.w3.org&#x2f;2001&#x2f;XMLSchema-instance" 
+      xmlns="https&#x3a;&#x2f;&#x2f;analysiscenter.veracode.com&#x2f;schema&#x2f;4.0&#x2f;buildinfo" 
+      xsi:schemaLocation="https&#x3a;&#x2f;&#x2f;analysiscenter.veracode.com&#x2f;schema&#x2f;4.0&#x2f;buildinfo 
+      https&#x3a;&#x2f;&#x2f;analysiscenter.veracode.com&#x2f;resource&#x2f;4.0&#x2f;buildinfo.xsd" buildinfo_version="1.4" 
+      account_id="hunter2" app_id="1337" build_id="41414141">
+   <build version="13 Aug 2019 Static" build_id="41414141" submitter="Veracode" platform="Not Specified" 
+      lifecycle_stage="Not Specified" results_ready="false" policy_name="Veracode Transitional Very High" policy_version="1" 
+      policy_compliance_status="Not Assessed" policy_updated_date="2019-08-13T14&#x3a;02&#x3a;08-04&#x3a;00" 
+      rules_status="Not Assessed" grace_period_expired="false" scan_overdue="false" legacy_scan_engine="false">
+      <analysis_unit analysis_type="Static" engine_version="20190805180615"/>
+   </build>
+</buildinfo> """
+VALID_UPLOAD_API_GETBUILDINFO_STATUS_MISSING_IN_RESPONSE_XML["bytes"] = bytes(
+    VALID_UPLOAD_API_GETBUILDINFO_STATUS_MISSING_IN_RESPONSE_XML["string"], "utf-8"
+)
+VALID_UPLOAD_API_GETBUILDINFO_STATUS_MISSING_IN_RESPONSE_XML[
+    "Element"
+] = ElementTree.fromstring(
+    VALID_UPLOAD_API_GETBUILDINFO_STATUS_MISSING_IN_RESPONSE_XML["bytes"]
+)
 
 ## Sample Sandbox API environmental information
 VALID_SANDBOX_API: Dict[str, Union[str, Dict[str, str], Path, bool]] = {}
