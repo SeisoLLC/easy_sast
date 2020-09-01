@@ -53,7 +53,8 @@ def get_latest_completed_build(
             return app
 
     LOG.error(
-        "Unable to find a completed build for app_id %s", results_api.app_id,
+        "Unable to find a completed build for app_id %s",
+        results_api.app_id,
     )
     return False
 

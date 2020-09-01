@@ -1,6 +1,6 @@
 {
   "errors": [],
-  "generated_at": "2020-08-26T20:08:01Z",
+  "generated_at": "2020-09-01T17:19:54Z",
   "metrics": {
     "./main.py": {
       "CONFIDENCE.HIGH": 0.0,
@@ -47,7 +47,7 @@
       "SEVERITY.LOW": 0.0,
       "SEVERITY.MEDIUM": 0.0,
       "SEVERITY.UNDEFINED": 0.0,
-      "loc": 621,
+      "loc": 629,
       "nosec": 1
     },
     "./tests/test_check_compliance.py": {
@@ -59,7 +59,7 @@
       "SEVERITY.LOW": 0.0,
       "SEVERITY.MEDIUM": 0.0,
       "SEVERITY.UNDEFINED": 0.0,
-      "loc": 169,
+      "loc": 171,
       "nosec": 0
     },
     "./tests/test_config.py": {
@@ -83,7 +83,7 @@
       "SEVERITY.LOW": 0.0,
       "SEVERITY.MEDIUM": 0.0,
       "SEVERITY.UNDEFINED": 0.0,
-      "loc": 283,
+      "loc": 285,
       "nosec": 0
     },
     "./tests/test_submit_artifacts.py": {
@@ -95,7 +95,7 @@
       "SEVERITY.LOW": 0.0,
       "SEVERITY.MEDIUM": 0.0,
       "SEVERITY.UNDEFINED": 0.0,
-      "loc": 523,
+      "loc": 529,
       "nosec": 0
     },
     "./tests/test_utils.py": {
@@ -107,7 +107,7 @@
       "SEVERITY.LOW": 0.0,
       "SEVERITY.MEDIUM": 0.0,
       "SEVERITY.UNDEFINED": 0.0,
-      "loc": 1055,
+      "loc": 1102,
       "nosec": 0
     },
     "./veracode/__init__.py": {
@@ -143,7 +143,7 @@
       "SEVERITY.LOW": 0.0,
       "SEVERITY.MEDIUM": 0.0,
       "SEVERITY.UNDEFINED": 0.0,
-      "loc": 100,
+      "loc": 101,
       "nosec": 1
     },
     "./veracode/config.py": {
@@ -155,7 +155,7 @@
       "SEVERITY.LOW": 0.0,
       "SEVERITY.MEDIUM": 0.0,
       "SEVERITY.UNDEFINED": 0.0,
-      "loc": 329,
+      "loc": 337,
       "nosec": 0
     },
     "./veracode/constants.py": {
@@ -179,7 +179,7 @@
       "SEVERITY.LOW": 0.0,
       "SEVERITY.MEDIUM": 0.0,
       "SEVERITY.UNDEFINED": 0.0,
-      "loc": 308,
+      "loc": 312,
       "nosec": 0
     },
     "./veracode/utils.py": {
@@ -191,7 +191,7 @@
       "SEVERITY.LOW": 0.0,
       "SEVERITY.MEDIUM": 0.0,
       "SEVERITY.UNDEFINED": 0.0,
-      "loc": 310,
+      "loc": 315,
       "nosec": 1
     },
     "_totals": {
@@ -203,7 +203,7 @@
       "SEVERITY.LOW": 0.0,
       "SEVERITY.MEDIUM": 0.0,
       "SEVERITY.UNDEFINED": 0.0,
-      "loc": 5776,
+      "loc": 5859,
       "nosec": 7
     }
   },

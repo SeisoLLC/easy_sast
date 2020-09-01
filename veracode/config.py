@@ -270,13 +270,19 @@ def create_arg_parser() -> ArgumentParser:
     """Parse the arguments"""
     parser = ArgumentParser()
     parser.add_argument(
-        "--api-key-id", type=str, help="veracode api key id",
+        "--api-key-id",
+        type=str,
+        help="veracode api key id",
     )
     parser.add_argument(
-        "--api-key-secret", type=str, help="veracode api key secret",
+        "--api-key-secret",
+        type=str,
+        help="veracode api key secret",
     )
     parser.add_argument(
-        "--app-id", type=str, help="application id as provided by Veracode",
+        "--app-id",
+        type=str,
+        help="application id as provided by Veracode",
     )
     parser.add_argument(
         "--build-dir",
@@ -284,7 +290,9 @@ def create_arg_parser() -> ArgumentParser:
         help="a Path containing build artifacts",
     )
     parser.add_argument(
-        "--build-id", type=str, help="application build id",
+        "--build-id",
+        type=str,
+        help="application build id",
     )
     parser.add_argument(
         "--config-file",

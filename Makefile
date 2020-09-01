@@ -1,7 +1,6 @@
 ## Initialization
 DOCKER         := docker
 FIND           := find
-FORMATTER      := black
 FROM_IMAGE     := python
 FROM_IMAGE_TAG := 3.8-alpine
 PIP            := pip3
@@ -52,7 +51,7 @@ buildx: clean
 
 format: clean
 	@$(PYTHON) -c 'print("Reformatting the code...")'
-	@$(FIND) . -type f -name '*.py' -exec $(DOCKER) run --rm -v $$(pwd):/data cytopia/black:latest {} +
+	@$(FIND) . -type f -name '*.py' -exec $(DOCKER) run --rm -v $$(pwd):/data cytopia/black@sha256:20af8eecc054b0bf321ff5cbaf2a3b4bab7611fb093620b42d61a866206c7b6e {} +
 
 
 ## Individual Rules
@@ -108,7 +107,7 @@ lint_python:
 	@$(PYTHON) -c 'print("Linting Python files...")'
 	@DOCKER_BUILDKIT=1 $(DOCKER) build --rm --target $@ -t $(IMAGE_NAME):latest-$@ .
 	@$(DOCKER) run --rm -v $$(pwd):/usr/src/app/ $(IMAGE_NAME):latest-$@
-	@$(FIND) . -type f -name '*.py' -exec $(DOCKER) run --rm -v $$(pwd):/data cytopia/black:latest --check {} +
+	@$(FIND) . -type f -name '*.py' -exec $(DOCKER) run --rm -v $$(pwd):/data cytopia/black@sha256:20af8eecc054b0bf321ff5cbaf2a3b4bab7611fb093620b42d61a866206c7b6e --check {} +
 
 lint_types:
 	@$(PYTHON) -c 'print("Running a Python static type checker...")'

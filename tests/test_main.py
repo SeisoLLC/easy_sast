@@ -251,7 +251,9 @@ class TestMain(TestCase):
     @patch("main.get_config")
     @patch("main.apply_config", side_effect=return_unmodified_api_object)
     def test_veracode_main_get_config_value_error(
-        self, mock_apply_config, mock_get_config,
+        self,
+        mock_apply_config,
+        mock_get_config,
     ):
         """
         Test main.py when get_config returns a ValueError

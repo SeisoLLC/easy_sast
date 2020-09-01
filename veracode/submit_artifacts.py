@@ -133,7 +133,10 @@ def upload_large_file(*, upload_api: UploadAPI, artifact: Path) -> bool:
         with open(artifact, "rb") as f:
             data = f.read()
             upload_api.http_post(
-                endpoint=endpoint, data=data, params=params, headers=headers,
+                endpoint=endpoint,
+                data=data,
+                params=params,
+                headers=headers,
             )
         return True
     except:
@@ -181,8 +184,8 @@ def get_sandbox_id(*, sandbox_api: SandboxAPI) -> Union[str, None]:
         TooManyRedirects,
         RequestException,
         RuntimeError,
-    ):
-        raise RuntimeError
+    ) as e:
+        raise RuntimeError from e
 
 
 @validate
@@ -209,9 +212,9 @@ def create_sandbox(*, sandbox_api: SandboxAPI) -> str:
             # Because we only make one sandbox at a time, we can use index 0 to
             # extract and then return the sandbox_id
             return response[0].get("sandbox_id")
-        except (KeyError, IndexError):
+        except (KeyError, IndexError) as e:
             LOG.error("Unable to extract the sandbox_id from the Veracode response")
-            raise RuntimeError
+            raise RuntimeError from e
     except (
         HTTPError,
         ConnectionError,
@@ -219,8 +222,8 @@ def create_sandbox(*, sandbox_api: SandboxAPI) -> str:
         TooManyRedirects,
         RequestException,
         RuntimeError,
-    ):
-        raise RuntimeError
+    ) as e:
+        raise RuntimeError from e
 
 
 @validate
@@ -276,7 +279,8 @@ def setup_scan_prereqs(*, upload_api: UploadAPI) -> bool:
 
     if not build_exists(upload_api=upload_api):
         LOG.info(
-            "app_id %s was not ready for a new build", upload_api.app_id,
+            "app_id %s was not ready for a new build",
+            upload_api.app_id,
         )
 
         if not cancel_build(upload_api=upload_api):
@@ -400,5 +404,5 @@ def build_exists(*, upload_api: UploadAPI) -> bool:
         TooManyRedirects,
         RequestException,
         RuntimeError,
-    ):
-        raise RuntimeError
+    ) as e:
+        raise RuntimeError from e

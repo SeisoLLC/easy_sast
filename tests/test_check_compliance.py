@@ -155,9 +155,11 @@ class TestVeracodeCheckCompliance(TestCase):
         # get_latest_completed_build has a mocked response that returns an
         # application with no build
         results_api = ResultsAPI(app_id=test_constants.VALID_RESULTS_API["app_id"])
-        mock_get_latest_completed_build.return_value = test_constants.VALID_RESULTS_API_GETAPPBUILDS_RESPONSE_XML_NO_BUILDS[
-            "Element"
-        ]
+        mock_get_latest_completed_build.return_value = (
+            test_constants.VALID_RESULTS_API_GETAPPBUILDS_RESPONSE_XML_NO_BUILDS[
+                "Element"
+            ]
+        )
         self.assertEqual(
             check_compliance.get_policy_compliance_status(results_api=results_api),
             "Unknown",
