@@ -158,9 +158,9 @@ class TestVeracodeConfig(CLITestCase):
         """
         # Succeed when calling the get_file_config function with a valid
         # config_file argument
-        mock_normalize_config.return_value = test_constants.VALID_CLEAN_FILE_CONFIG_NORMALIZED[
-            "dict"
-        ]
+        mock_normalize_config.return_value = (
+            test_constants.VALID_CLEAN_FILE_CONFIG_NORMALIZED["dict"]
+        )
         mock_parse_file_config.return_value = test_constants.VALID_CLEAN_FILE_CONFIG[
             "dict"
         ]

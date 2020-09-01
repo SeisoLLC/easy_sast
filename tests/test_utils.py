@@ -186,14 +186,18 @@ class TestVeracodeUtils(TestCase):
         # Succeed when calling the http_request function with valid arguments,
         # a verb="get", and a mocked 200 response
         mock_element_contains_error.return_value = False
-        mock_get.return_value.content = test_constants.VALID_RESULTS_API_GETAPPBUILDS_RESPONSE_XML_NO_BUILDS[
-            "bytes"
-        ]
+        mock_get.return_value.content = (
+            test_constants.VALID_RESULTS_API_GETAPPBUILDS_RESPONSE_XML_NO_BUILDS[
+                "bytes"
+            ]
+        )
         mock_get.return_value.status_code = 200
         mock_get.return_value.raise_for_status.side_effect = HTTPError()
-        mock_parse_xml.return_value = test_constants.VALID_RESULTS_API_GETAPPBUILDS_RESPONSE_XML_NO_BUILDS[
-            "Element"
-        ]
+        mock_parse_xml.return_value = (
+            test_constants.VALID_RESULTS_API_GETAPPBUILDS_RESPONSE_XML_NO_BUILDS[
+                "Element"
+            ]
+        )
 
         endpoint = "getappbuilds.do"
         url = (
@@ -230,9 +234,11 @@ class TestVeracodeUtils(TestCase):
         # These two should not be relevant, but keeping in case the test
         # follows an unexpected path
         mock_element_contains_error.return_value = False
-        mock_parse_xml.return_value = test_constants.VALID_RESULTS_API_GETAPPBUILDS_RESPONSE_XML_NO_BUILDS[
-            "Element"
-        ]
+        mock_parse_xml.return_value = (
+            test_constants.VALID_RESULTS_API_GETAPPBUILDS_RESPONSE_XML_NO_BUILDS[
+                "Element"
+            ]
+        )
 
         # Fail when attempting to call the http_request function with valid
         # arguments, a verb="get", and a mocked failure response from the
@@ -250,7 +256,10 @@ class TestVeracodeUtils(TestCase):
             mock_get.return_value.raise_for_status.side_effect = HTTPError()
 
             self.assertRaises(
-                HTTPError, utils.http_request, verb="get", url=url,
+                HTTPError,
+                utils.http_request,
+                verb="get",
+                url=url,
             )
 
     # http_request get connectionerror
@@ -267,9 +276,11 @@ class TestVeracodeUtils(TestCase):
         # These two should not be relevant, but keeping in case the test
         # follows an unexpected path
         mock_element_contains_error.return_value = False
-        mock_parse_xml.return_value = test_constants.VALID_RESULTS_API_GETAPPBUILDS_RESPONSE_XML_NO_BUILDS[
-            "Element"
-        ]
+        mock_parse_xml.return_value = (
+            test_constants.VALID_RESULTS_API_GETAPPBUILDS_RESPONSE_XML_NO_BUILDS[
+                "Element"
+            ]
+        )
 
         # Fail when attempting to call the http_request function with valid
         # arguments, a verb="get", and a mocked ConnectionError
@@ -284,7 +295,10 @@ class TestVeracodeUtils(TestCase):
         mock_get.side_effect = ConnectionError()
 
         self.assertRaises(
-            ConnectionError, utils.http_request, verb="get", url=url,
+            ConnectionError,
+            utils.http_request,
+            verb="get",
+            url=url,
         )
 
     # http_request get requestexception
@@ -301,9 +315,11 @@ class TestVeracodeUtils(TestCase):
         # These two should not be relevant, but keeping in case the test
         # follows an unexpected path
         mock_element_contains_error.return_value = False
-        mock_parse_xml.return_value = test_constants.VALID_RESULTS_API_GETAPPBUILDS_RESPONSE_XML_NO_BUILDS[
-            "Element"
-        ]
+        mock_parse_xml.return_value = (
+            test_constants.VALID_RESULTS_API_GETAPPBUILDS_RESPONSE_XML_NO_BUILDS[
+                "Element"
+            ]
+        )
 
         # Fail when attempting to call the http_request function with valid
         # arguments, a verb="get", and a mocked RequestException
@@ -318,7 +334,10 @@ class TestVeracodeUtils(TestCase):
         mock_get.side_effect = RequestException()
 
         self.assertRaises(
-            RequestException, utils.http_request, verb="get", url=url,
+            RequestException,
+            utils.http_request,
+            verb="get",
+            url=url,
         )
 
     # http_request get timeout
@@ -335,9 +354,11 @@ class TestVeracodeUtils(TestCase):
         # These two should not be relevant, but keeping in case the test
         # follows an unexpected path
         mock_element_contains_error.return_value = False
-        mock_parse_xml.return_value = test_constants.VALID_RESULTS_API_GETAPPBUILDS_RESPONSE_XML_NO_BUILDS[
-            "Element"
-        ]
+        mock_parse_xml.return_value = (
+            test_constants.VALID_RESULTS_API_GETAPPBUILDS_RESPONSE_XML_NO_BUILDS[
+                "Element"
+            ]
+        )
 
         # Fail when attempting to call the http_request function with valid
         # arguments, a verb="get", and a mocked Timeout
@@ -352,7 +373,10 @@ class TestVeracodeUtils(TestCase):
         mock_get.side_effect = Timeout()
 
         self.assertRaises(
-            Timeout, utils.http_request, verb="get", url=url,
+            Timeout,
+            utils.http_request,
+            verb="get",
+            url=url,
         )
 
     # http_request get toomanyredirects
@@ -369,9 +393,11 @@ class TestVeracodeUtils(TestCase):
         # These two should not be relevant, but keeping in case the test
         # follows an unexpected path
         mock_element_contains_error.return_value = False
-        mock_parse_xml.return_value = test_constants.VALID_RESULTS_API_GETAPPBUILDS_RESPONSE_XML_NO_BUILDS[
-            "Element"
-        ]
+        mock_parse_xml.return_value = (
+            test_constants.VALID_RESULTS_API_GETAPPBUILDS_RESPONSE_XML_NO_BUILDS[
+                "Element"
+            ]
+        )
 
         # Fail when attempting to call the http_request function with valid
         # arguments, a verb="get", and a mocked TooManyRedirects
@@ -386,7 +412,10 @@ class TestVeracodeUtils(TestCase):
         mock_get.side_effect = TooManyRedirects()
 
         self.assertRaises(
-            TooManyRedirects, utils.http_request, verb="get", url=url,
+            TooManyRedirects,
+            utils.http_request,
+            verb="get",
+            url=url,
         )
 
     # http_request get error body response
@@ -442,14 +471,14 @@ class TestVeracodeUtils(TestCase):
         # Succeed when calling the http_request function with valid arguments,
         # a verb="post", and a mocked 200 response
         mock_element_contains_error.return_value = False
-        mock_post.return_value.content = test_constants.VALID_UPLOAD_API_UPLOADLARGEFILE_RESPONSE_XML[
-            "bytes"
-        ]
+        mock_post.return_value.content = (
+            test_constants.VALID_UPLOAD_API_UPLOADLARGEFILE_RESPONSE_XML["bytes"]
+        )
         mock_post.return_value.status_code = 200
         mock_post.return_value.raise_for_status.side_effect = HTTPError()
-        mock_parse_xml.return_value = test_constants.VALID_UPLOAD_API_UPLOADLARGEFILE_RESPONSE_XML[
-            "Element"
-        ]
+        mock_parse_xml.return_value = (
+            test_constants.VALID_UPLOAD_API_UPLOADLARGEFILE_RESPONSE_XML["Element"]
+        )
 
         app_id = test_constants.VALID_UPLOAD_API["app_id"]
         filename = test_constants.VALID_FILE["name"]
@@ -464,7 +493,11 @@ class TestVeracodeUtils(TestCase):
             + endpoint
         )
         response = utils.http_request(
-            verb="post", url=url, data=data, params=params, headers=headers,
+            verb="post",
+            url=url,
+            data=data,
+            params=params,
+            headers=headers,
         )
 
         self.assertEqual(
@@ -493,9 +526,9 @@ class TestVeracodeUtils(TestCase):
         # These two should not be relevant, but keeping in case the test
         # follows an unexpected path
         mock_element_contains_error.return_value = False
-        mock_parse_xml.return_value = test_constants.VALID_UPLOAD_API_UPLOADLARGEFILE_RESPONSE_XML[
-            "Element"
-        ]
+        mock_parse_xml.return_value = (
+            test_constants.VALID_UPLOAD_API_UPLOADLARGEFILE_RESPONSE_XML["Element"]
+        )
 
         # Fail when attempting to call the http_request function with valid
         # arguments, a verb="post", and a mocked failure response from the
@@ -541,9 +574,9 @@ class TestVeracodeUtils(TestCase):
         # These two should not be relevant, but keeping in case the test
         # follows an unexpected path
         mock_element_contains_error.return_value = False
-        mock_parse_xml.return_value = test_constants.VALID_UPLOAD_API_UPLOADLARGEFILE_RESPONSE_XML[
-            "Element"
-        ]
+        mock_parse_xml.return_value = (
+            test_constants.VALID_UPLOAD_API_UPLOADLARGEFILE_RESPONSE_XML["Element"]
+        )
 
         # Fail when attempting to call the http_request function with valid
         # arguments, a verb="post", and a mocked ConnectionError
@@ -586,9 +619,9 @@ class TestVeracodeUtils(TestCase):
         # These two should not be relevant, but keeping in case the test
         # follows an unexpected path
         mock_element_contains_error.return_value = False
-        mock_parse_xml.return_value = test_constants.VALID_UPLOAD_API_UPLOADLARGEFILE_RESPONSE_XML[
-            "Element"
-        ]
+        mock_parse_xml.return_value = (
+            test_constants.VALID_UPLOAD_API_UPLOADLARGEFILE_RESPONSE_XML["Element"]
+        )
 
         # Fail when attempting to call the http_request function with valid
         # arguments, a verb="post", and a mocked RequestException
@@ -631,9 +664,9 @@ class TestVeracodeUtils(TestCase):
         # These two should not be relevant, but keeping in case the test
         # follows an unexpected path
         mock_element_contains_error.return_value = False
-        mock_parse_xml.return_value = test_constants.VALID_UPLOAD_API_UPLOADLARGEFILE_RESPONSE_XML[
-            "Element"
-        ]
+        mock_parse_xml.return_value = (
+            test_constants.VALID_UPLOAD_API_UPLOADLARGEFILE_RESPONSE_XML["Element"]
+        )
 
         # Fail when attempting to call the http_request function with valid
         # arguments, a verb="post", and a mocked Timeout
@@ -676,9 +709,9 @@ class TestVeracodeUtils(TestCase):
         # These two should not be relevant, but keeping in case the test
         # follows an unexpected path
         mock_element_contains_error.return_value = False
-        mock_parse_xml.return_value = test_constants.VALID_UPLOAD_API_UPLOADLARGEFILE_RESPONSE_XML[
-            "Element"
-        ]
+        mock_parse_xml.return_value = (
+            test_constants.VALID_UPLOAD_API_UPLOADLARGEFILE_RESPONSE_XML["Element"]
+        )
 
         # Fail when attempting to call the http_request function with valid
         # arguments, a verb="post", and a mocked TooManyRedirects
@@ -744,7 +777,11 @@ class TestVeracodeUtils(TestCase):
         mock_element_contains_error.return_value = True
 
         response = utils.http_request(
-            verb="post", url=url, data=data, params=params, headers=headers,
+            verb="post",
+            url=url,
+            data=data,
+            params=params,
+            headers=headers,
         )
 
         self.assertEqual(
@@ -772,7 +809,10 @@ class TestVeracodeUtils(TestCase):
 
         for verb in ["put", "patch", "delete", "options", "head", "connect", "trace"]:
             self.assertRaises(
-                ValueError, utils.http_request, verb=verb, url=url,
+                ValueError,
+                utils.http_request,
+                verb=verb,
+                url=url,
             )
 
     ## is_valid_attribute tests
@@ -822,7 +862,8 @@ class TestVeracodeUtils(TestCase):
         mock_protocol_is_insecure.return_value = False
         self.assertTrue(
             utils.is_valid_attribute(
-                key="base_url", value=test_constants.VALID_RESULTS_API["base_url"],
+                key="base_url",
+                value=test_constants.VALID_RESULTS_API["base_url"],
             )
         )
 
@@ -832,7 +873,8 @@ class TestVeracodeUtils(TestCase):
         mock_protocol_is_insecure.return_value = False
         self.assertFalse(
             utils.is_valid_attribute(
-                key="base_url", value=test_constants.VALID_RESULTS_API["base_url"],
+                key="base_url",
+                value=test_constants.VALID_RESULTS_API["base_url"],
             )
         )
 
@@ -842,7 +884,8 @@ class TestVeracodeUtils(TestCase):
         mock_protocol_is_insecure.return_value = False
         self.assertTrue(
             utils.is_valid_attribute(
-                key="base_url", value=test_constants.VALID_RESULTS_API["base_url"],
+                key="base_url",
+                value=test_constants.VALID_RESULTS_API["base_url"],
             )
         )
 
@@ -1380,7 +1423,9 @@ class TestVeracodeUtils(TestCase):
             "app_id"
         ]
         self.assertRaises(
-            ValueError, utils.validate_api, api=results_api,
+            ValueError,
+            utils.validate_api,
+            api=results_api,
         )
 
         # Fail when attempting to call the validate_api function, given
@@ -1389,7 +1434,9 @@ class TestVeracodeUtils(TestCase):
             "base_url"
         ]
         self.assertRaises(
-            ValueError, utils.validate_api, api=upload_api,
+            ValueError,
+            utils.validate_api,
+            api=upload_api,
         )
 
     ## protocol_is_insecure tests

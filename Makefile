@@ -108,7 +108,7 @@ lint_python:
 	@$(PYTHON) -c 'print("Linting Python files...")'
 	@DOCKER_BUILDKIT=1 $(DOCKER) build --rm --target $@ -t $(IMAGE_NAME):latest-$@ .
 	@$(DOCKER) run --rm -v $$(pwd):/usr/src/app/ $(IMAGE_NAME):latest-$@
-	@$(FIND) . -type f -name '*.py' -exec $(DOCKER) run --rm -v $$(pwd):/data cytopia/black:latest --check {} +
+	@$(FIND) . -type f -name '*.py' -exec $(DOCKER) run --rm -v $$(pwd):/data cytopia/black@sha256:20af8eecc054b0bf321ff5cbaf2a3b4bab7611fb093620b42d61a866206c7b6e --check {} +
 
 lint_types:
 	@$(PYTHON) -c 'print("Running a Python static type checker...")'

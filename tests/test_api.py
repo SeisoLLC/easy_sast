@@ -310,9 +310,9 @@ class TestVeracodeApiUploadAPI(TestCase):
 
         # Fail when attempting to get the build_dir property when it contains
         # an invalid value
-        upload_api._build_dir = constants.INVALID_UPLOAD_API_BUILD_DIR[  # pylint: disable=protected-access
-            "build_dir"
-        ]
+        upload_api._build_dir = (  # pylint: disable=protected-access
+            constants.INVALID_UPLOAD_API_BUILD_DIR["build_dir"]
+        )
         self.assertRaises(ValueError, getattr, upload_api, "build_dir")
 
         # Fail when attempting to delete the build_dir property, because the
@@ -345,9 +345,9 @@ class TestVeracodeApiUploadAPI(TestCase):
 
         # Fail when attempting to get the build_id property when it contains an
         # invalid value
-        upload_api._build_id = constants.INVALID_UPLOAD_API_BUILD_ID[  # pylint: disable=protected-access
-            "build_id"
-        ]
+        upload_api._build_id = (  # pylint: disable=protected-access
+            constants.INVALID_UPLOAD_API_BUILD_ID["build_id"]
+        )
         self.assertRaises(ValueError, getattr, upload_api, "build_id")
 
         # Fail when attempting to delete the build_id property, because the
@@ -374,7 +374,11 @@ class TestVeracodeApiUploadAPI(TestCase):
         # Fail when attempting to set the sandbox_id property to an invalid
         # value
         self.assertRaises(
-            ValueError, setattr, upload_api, "sandbox_id", 12489,
+            ValueError,
+            setattr,
+            upload_api,
+            "sandbox_id",
+            12489,
         )
 
         # Fail when attempting to get the sandbox_id property when it contains
@@ -462,9 +466,9 @@ class TestVeracodeApiUploadAPI(TestCase):
 
         # Fail when attempting to get the auto_scan property when it contains
         # an invalid value
-        upload_api._auto_scan = constants.INVALID_UPLOAD_API_AUTO_SCAN[  # pylint: disable=protected-access
-            "auto_scan"
-        ]
+        upload_api._auto_scan = (  # pylint: disable=protected-access
+            constants.INVALID_UPLOAD_API_AUTO_SCAN["auto_scan"]
+        )
         self.assertRaises(ValueError, getattr, upload_api, "auto_scan")
 
         # Fail when attempting to delete the auto_scan property, because the
@@ -484,9 +488,9 @@ class TestVeracodeApiUploadAPI(TestCase):
         self.assertRaises(KeyError, upload_api.http_get, endpoint="getappbuilds.do")
 
         # Succeed when calling the http_get method with valid arguments
-        mock_http_request.return_value = constants.VALID_UPLOAD_API_GETAPPINFO_RESPONSE_XML[
-            "Element"
-        ]
+        mock_http_request.return_value = (
+            constants.VALID_UPLOAD_API_GETAPPINFO_RESPONSE_XML["Element"]
+        )
         self.assertIsInstance(
             upload_api.http_get(endpoint="getappinfo.do"), InsecureElementTree.Element
         )
@@ -508,9 +512,9 @@ class TestVeracodeApiUploadAPI(TestCase):
         self.assertRaises(KeyError, upload_api.http_post, endpoint="createuser.do")
 
         # Succeed when calling the http_post method with valid arguments
-        mock_http_request.return_value = constants.VALID_UPLOAD_API_UPLOADLARGEFILE_RESPONSE_XML[
-            "Element"
-        ]
+        mock_http_request.return_value = (
+            constants.VALID_UPLOAD_API_UPLOADLARGEFILE_RESPONSE_XML["Element"]
+        )
         self.assertIsInstance(
             upload_api.http_post(endpoint="uploadlargefile.do"),
             InsecureElementTree.Element,
@@ -548,7 +552,7 @@ class TestVeracodeApiUploadAPI(TestCase):
         self.assertTrue(
             upload_api._validate(  # pylint: disable=protected-access
                 key="key", value="patched to be valid"
-            )  # pylint: disable=protected-access
+            )
         )
 
         # Fail when attempting to delete the _validate method, because the
@@ -801,7 +805,7 @@ class TestVeracodeApiResultsAPI(TestCase):
         self.assertTrue(
             results_api._validate(  # pylint: disable=protected-access
                 key="key", value="patched to be valid"
-            )  # pylint: disable=protected-access
+            )
         )
 
         # Fail when attempting to delete the _validate method, because the
@@ -964,9 +968,9 @@ class TestVeracodeApiSandboxAPI(TestCase):
 
         # Fail when attempting to get the build_id property when it contains an
         # invalid value
-        sandbox_api._build_id = constants.INVALID_SANDBOX_API_BUILD_ID[  # pylint: disable=protected-access
-            "build_id"
-        ]
+        sandbox_api._build_id = (  # pylint: disable=protected-access
+            constants.INVALID_SANDBOX_API_BUILD_ID["build_id"]
+        )
         self.assertRaises(ValueError, getattr, sandbox_api, "build_id")
 
         # Fail when attempting to delete the build_id property, because the
@@ -996,7 +1000,11 @@ class TestVeracodeApiSandboxAPI(TestCase):
         # Fail when attempting to set the sandbox_id property to an invalid
         # value
         self.assertRaises(
-            ValueError, setattr, sandbox_api, "sandbox_id", 12489,
+            ValueError,
+            setattr,
+            sandbox_api,
+            "sandbox_id",
+            12489,
         )
 
         # Fail when attempting to get the sandbox_id property when it contains

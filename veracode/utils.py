@@ -92,7 +92,12 @@ def element_contains_error(*, parsed_xml: InsecureElementTree.Element) -> bool:
 
 @validate
 def http_request(  # pylint: disable=too-many-statements
-    *, verb: str, url: str, data: str = None, params: Dict = None, headers: Dict = None,
+    *,
+    verb: str,
+    url: str,
+    data: str = None,
+    params: Dict = None,
+    headers: Dict = None,
 ) -> InsecureElementTree.Element:
     """
     Make API requests

@@ -478,7 +478,9 @@ class TestSubmitArtifacts(TestCase):
                 "veracode.submit_artifacts.element_contains_error", return_value=True
             ):
                 self.assertRaises(
-                    RuntimeError, submit_artifacts.build_exists, upload_api=upload_api,
+                    RuntimeError,
+                    submit_artifacts.build_exists,
+                    upload_api=upload_api,
                 )
 
         ## Create Sandbox Scan and have existing build ID
@@ -503,7 +505,9 @@ class TestSubmitArtifacts(TestCase):
             ):
                 mock_http.side_effect = HTTPError()
                 self.assertRaises(
-                    RuntimeError, submit_artifacts.build_exists, upload_api=upload_api,
+                    RuntimeError,
+                    submit_artifacts.build_exists,
+                    upload_api=upload_api,
                 )
 
         # Raise RuntimeError when HTTPError occurs
@@ -513,7 +517,9 @@ class TestSubmitArtifacts(TestCase):
             ):
                 mock_http.side_effect = HTTPError()
                 self.assertRaises(
-                    RuntimeError, submit_artifacts.build_exists, upload_api=upload_api,
+                    RuntimeError,
+                    submit_artifacts.build_exists,
+                    upload_api=upload_api,
                 )
 
     @patch("veracode.submit_artifacts.begin_prescan")

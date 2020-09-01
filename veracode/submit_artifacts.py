@@ -133,7 +133,10 @@ def upload_large_file(*, upload_api: UploadAPI, artifact: Path) -> bool:
         with open(artifact, "rb") as f:
             data = f.read()
             upload_api.http_post(
-                endpoint=endpoint, data=data, params=params, headers=headers,
+                endpoint=endpoint,
+                data=data,
+                params=params,
+                headers=headers,
             )
         return True
     except:
@@ -276,7 +279,8 @@ def setup_scan_prereqs(*, upload_api: UploadAPI) -> bool:
 
     if not build_exists(upload_api=upload_api):
         LOG.info(
-            "app_id %s was not ready for a new build", upload_api.app_id,
+            "app_id %s was not ready for a new build",
+            upload_api.app_id,
         )
 
         if not cancel_build(upload_api=upload_api):
