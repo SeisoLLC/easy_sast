@@ -238,8 +238,8 @@
     <p id="t184" class="pln"><span class="n"><a href="#t184">184</a></span><span class="t">        <span class="nam">TooManyRedirects</span><span class="op">,</span>&nbsp;</span><span class="r"></span></p>
     <p id="t185" class="pln"><span class="n"><a href="#t185">185</a></span><span class="t">        <span class="nam">RequestException</span><span class="op">,</span>&nbsp;</span><span class="r"></span></p>
     <p id="t186" class="pln"><span class="n"><a href="#t186">186</a></span><span class="t">        <span class="nam">RuntimeError</span><span class="op">,</span>&nbsp;</span><span class="r"></span></p>
-    <p id="t187" class="pln"><span class="n"><a href="#t187">187</a></span><span class="t">    <span class="op">)</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
-    <p id="t188" class="run"><span class="n"><a href="#t188">188</a></span><span class="t">        <span class="key">raise</span> <span class="nam">RuntimeError</span>&nbsp;</span><span class="r"></span></p>
+    <p id="t187" class="pln"><span class="n"><a href="#t187">187</a></span><span class="t">    <span class="op">)</span> <span class="key">as</span> <span class="nam">e</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
+    <p id="t188" class="run"><span class="n"><a href="#t188">188</a></span><span class="t">        <span class="key">raise</span> <span class="nam">RuntimeError</span> <span class="key">from</span> <span class="nam">e</span>&nbsp;</span><span class="r"></span></p>
     <p id="t189" class="pln"><span class="n"><a href="#t189">189</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p id="t190" class="pln"><span class="n"><a href="#t190">190</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p id="t191" class="run"><span class="n"><a href="#t191">191</a></span><span class="t"><span class="op">@</span><span class="nam">validate</span>&nbsp;</span><span class="r"></span></p>
@@ -266,9 +266,9 @@
     <p id="t212" class="pln"><span class="n"><a href="#t212">212</a></span><span class="t">            <span class="com"># Because we only make one sandbox at a time, we can use index 0 to</span>&nbsp;</span><span class="r"></span></p>
     <p id="t213" class="pln"><span class="n"><a href="#t213">213</a></span><span class="t">            <span class="com"># extract and then return the sandbox_id</span>&nbsp;</span><span class="r"></span></p>
     <p id="t214" class="run"><span class="n"><a href="#t214">214</a></span><span class="t">            <span class="key">return</span> <span class="nam">response</span><span class="op">[</span><span class="num">0</span><span class="op">]</span><span class="op">.</span><span class="nam">get</span><span class="op">(</span><span class="str">"sandbox_id"</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
-    <p id="t215" class="run"><span class="n"><a href="#t215">215</a></span><span class="t">        <span class="key">except</span> <span class="op">(</span><span class="nam">KeyError</span><span class="op">,</span> <span class="nam">IndexError</span><span class="op">)</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
+    <p id="t215" class="run"><span class="n"><a href="#t215">215</a></span><span class="t">        <span class="key">except</span> <span class="op">(</span><span class="nam">KeyError</span><span class="op">,</span> <span class="nam">IndexError</span><span class="op">)</span> <span class="key">as</span> <span class="nam">e</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
     <p id="t216" class="run"><span class="n"><a href="#t216">216</a></span><span class="t">            <span class="nam">LOG</span><span class="op">.</span><span class="nam">error</span><span class="op">(</span><span class="str">"Unable to extract the sandbox_id from the Veracode response"</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
-    <p id="t217" class="run"><span class="n"><a href="#t217">217</a></span><span class="t">            <span class="key">raise</span> <span class="nam">RuntimeError</span>&nbsp;</span><span class="r"></span></p>
+    <p id="t217" class="run"><span class="n"><a href="#t217">217</a></span><span class="t">            <span class="key">raise</span> <span class="nam">RuntimeError</span> <span class="key">from</span> <span class="nam">e</span>&nbsp;</span><span class="r"></span></p>
     <p id="t218" class="run"><span class="n"><a href="#t218">218</a></span><span class="t">    <span class="key">except</span> <span class="op">(</span>&nbsp;</span><span class="r"></span></p>
     <p id="t219" class="pln"><span class="n"><a href="#t219">219</a></span><span class="t">        <span class="nam">HTTPError</span><span class="op">,</span>&nbsp;</span><span class="r"></span></p>
     <p id="t220" class="pln"><span class="n"><a href="#t220">220</a></span><span class="t">        <span class="nam">ConnectionError</span><span class="op">,</span>&nbsp;</span><span class="r"></span></p>
@@ -276,8 +276,8 @@
     <p id="t222" class="pln"><span class="n"><a href="#t222">222</a></span><span class="t">        <span class="nam">TooManyRedirects</span><span class="op">,</span>&nbsp;</span><span class="r"></span></p>
     <p id="t223" class="pln"><span class="n"><a href="#t223">223</a></span><span class="t">        <span class="nam">RequestException</span><span class="op">,</span>&nbsp;</span><span class="r"></span></p>
     <p id="t224" class="pln"><span class="n"><a href="#t224">224</a></span><span class="t">        <span class="nam">RuntimeError</span><span class="op">,</span>&nbsp;</span><span class="r"></span></p>
-    <p id="t225" class="pln"><span class="n"><a href="#t225">225</a></span><span class="t">    <span class="op">)</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
-    <p id="t226" class="run"><span class="n"><a href="#t226">226</a></span><span class="t">        <span class="key">raise</span> <span class="nam">RuntimeError</span>&nbsp;</span><span class="r"></span></p>
+    <p id="t225" class="pln"><span class="n"><a href="#t225">225</a></span><span class="t">    <span class="op">)</span> <span class="key">as</span> <span class="nam">e</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
+    <p id="t226" class="run"><span class="n"><a href="#t226">226</a></span><span class="t">        <span class="key">raise</span> <span class="nam">RuntimeError</span> <span class="key">from</span> <span class="nam">e</span>&nbsp;</span><span class="r"></span></p>
     <p id="t227" class="pln"><span class="n"><a href="#t227">227</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p id="t228" class="pln"><span class="n"><a href="#t228">228</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p id="t229" class="run"><span class="n"><a href="#t229">229</a></span><span class="t"><span class="op">@</span><span class="nam">validate</span>&nbsp;</span><span class="r"></span></p>
@@ -458,14 +458,14 @@
     <p id="t404" class="pln"><span class="n"><a href="#t404">404</a></span><span class="t">        <span class="nam">TooManyRedirects</span><span class="op">,</span>&nbsp;</span><span class="r"></span></p>
     <p id="t405" class="pln"><span class="n"><a href="#t405">405</a></span><span class="t">        <span class="nam">RequestException</span><span class="op">,</span>&nbsp;</span><span class="r"></span></p>
     <p id="t406" class="pln"><span class="n"><a href="#t406">406</a></span><span class="t">        <span class="nam">RuntimeError</span><span class="op">,</span>&nbsp;</span><span class="r"></span></p>
-    <p id="t407" class="pln"><span class="n"><a href="#t407">407</a></span><span class="t">    <span class="op">)</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
-    <p id="t408" class="run"><span class="n"><a href="#t408">408</a></span><span class="t">        <span class="key">raise</span> <span class="nam">RuntimeError</span>&nbsp;</span><span class="r"></span></p>
+    <p id="t407" class="pln"><span class="n"><a href="#t407">407</a></span><span class="t">    <span class="op">)</span> <span class="key">as</span> <span class="nam">e</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
+    <p id="t408" class="run"><span class="n"><a href="#t408">408</a></span><span class="t">        <span class="key">raise</span> <span class="nam">RuntimeError</span> <span class="key">from</span> <span class="nam">e</span>&nbsp;</span><span class="r"></span></p>
 </div>
 <div id="footer">
     <div class="content">
         <p>
             <a class="nav" href="index.html">&#xab; index</a> &nbsp; &nbsp; <a class="nav" href="https://coverage.readthedocs.io">coverage.py v5.2.1</a>,
-            created at 2020-09-01 14:33 +0000
+            created at 2020-09-01 17:19 +0000
         </p>
     </div>
 </div>

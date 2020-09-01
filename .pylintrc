@@ -1,5 +1,5 @@
 [MASTER]
-good-names=f
+good-names=f, e
 disable=bad-continuation,
         line-too-long,
         duplicate-code

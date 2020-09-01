@@ -184,8 +184,8 @@ def get_sandbox_id(*, sandbox_api: SandboxAPI) -> Union[str, None]:
         TooManyRedirects,
         RequestException,
         RuntimeError,
-    ):
-        raise RuntimeError
+    ) as e:
+        raise RuntimeError from e
 
 
 @validate
@@ -212,9 +212,9 @@ def create_sandbox(*, sandbox_api: SandboxAPI) -> str:
             # Because we only make one sandbox at a time, we can use index 0 to
             # extract and then return the sandbox_id
             return response[0].get("sandbox_id")
-        except (KeyError, IndexError):
+        except (KeyError, IndexError) as e:
             LOG.error("Unable to extract the sandbox_id from the Veracode response")
-            raise RuntimeError
+            raise RuntimeError from e
     except (
         HTTPError,
         ConnectionError,
@@ -222,8 +222,8 @@ def create_sandbox(*, sandbox_api: SandboxAPI) -> str:
         TooManyRedirects,
         RequestException,
         RuntimeError,
-    ):
-        raise RuntimeError
+    ) as e:
+        raise RuntimeError from e
 
 
 @validate
@@ -404,5 +404,5 @@ def build_exists(*, upload_api: UploadAPI) -> bool:
         TooManyRedirects,
         RequestException,
         RuntimeError,
-    ):
-        raise RuntimeError
+    ) as e:
+        raise RuntimeError from e

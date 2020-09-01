@@ -1,7 +1,6 @@
 ## Initialization
 DOCKER         := docker
 FIND           := find
-FORMATTER      := black
 FROM_IMAGE     := python
 FROM_IMAGE_TAG := 3.8-alpine
 PIP            := pip3
@@ -52,7 +51,7 @@ buildx: clean
 
 format: clean
 	@$(PYTHON) -c 'print("Reformatting the code...")'
-	@$(FIND) . -type f -name '*.py' -exec $(DOCKER) run --rm -v $$(pwd):/data cytopia/black:latest {} +
+	@$(FIND) . -type f -name '*.py' -exec $(DOCKER) run --rm -v $$(pwd):/data cytopia/black@sha256:20af8eecc054b0bf321ff5cbaf2a3b4bab7611fb093620b42d61 {} +
 
 
 ## Individual Rules
