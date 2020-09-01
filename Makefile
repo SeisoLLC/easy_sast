@@ -51,7 +51,7 @@ buildx: clean
 
 format: clean
 	@$(PYTHON) -c 'print("Reformatting the code...")'
-	@$(FIND) . -type f -name '*.py' -exec $(DOCKER) run --rm -v $$(pwd):/data cytopia/black@sha256:20af8eecc054b0bf321ff5cbaf2a3b4bab7611fb093620b42d61 {} +
+	@$(FIND) . -type f -name '*.py' -exec $(DOCKER) run --rm -v $$(pwd):/data cytopia/black@sha256:20af8eecc054b0bf321ff5cbaf2a3b4bab7611fb093620b42d61a866206c7b6e {} +
 
 
 ## Individual Rules
