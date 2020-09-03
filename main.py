@@ -73,11 +73,11 @@ def main() -> None:
                 api_key_id=config["api_key_id"], api_key_secret=config["api_key_secret"]
             )
             # Sandboxes are optional
-            try:
+            if "sandbox_api" in locals():
                 success = submit_artifacts(
                     upload_api=upload_api, sandbox_api=sandbox_api
                 )
-            except NameError:
+            else:
                 success = submit_artifacts(upload_api=upload_api)
 
             if success:
