@@ -1,6 +1,6 @@
 {
   "errors": [],
-  "generated_at": "2020-09-03T14:41:52Z",
+  "generated_at": "2020-09-03T15:15:23Z",
   "metrics": {
     "./main.py": {
       "CONFIDENCE.HIGH": 0.0,
@@ -11,7 +11,7 @@
       "SEVERITY.LOW": 0.0,
       "SEVERITY.MEDIUM": 0.0,
       "SEVERITY.UNDEFINED": 0.0,
-      "loc": 75,
+      "loc": 74,
       "nosec": 0
     },
     "./tests/__init__.py": {
@@ -83,7 +83,7 @@
       "SEVERITY.LOW": 0.0,
       "SEVERITY.MEDIUM": 0.0,
       "SEVERITY.UNDEFINED": 0.0,
-      "loc": 285,
+      "loc": 304,
       "nosec": 0
     },
     "./tests/test_submit_artifacts.py": {
@@ -203,7 +203,7 @@
       "SEVERITY.LOW": 0.0,
       "SEVERITY.MEDIUM": 0.0,
       "SEVERITY.UNDEFINED": 0.0,
-      "loc": 5859,
+      "loc": 5877,
       "nosec": 7
     }
   },

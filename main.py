@@ -64,7 +64,7 @@ def main() -> None:
             )
         else:
             sandbox_api = None
-    except TypeError:
+    except (TypeError, NameError):
         log.error("Unable to create valid API objects")
         sys.exit(1)
 
