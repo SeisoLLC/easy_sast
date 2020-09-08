@@ -74,9 +74,7 @@ def main() -> None:
             configure_environment(
                 api_key_id=config["api_key_id"], api_key_secret=config["api_key_secret"]
             )
-            success = submit_artifacts(
-                upload_api=upload_api, sandbox_api=sandbox_api
-            )
+            success = submit_artifacts(upload_api=upload_api, sandbox_api=sandbox_api)
 
             if success:
                 log.info("Successfully submit build artifacts for scanning")
