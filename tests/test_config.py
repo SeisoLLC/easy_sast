@@ -579,22 +579,6 @@ class TestVeracodeConfig(CLITestCase):
         output = self.parser.parse_args(["--verbose"])
         self.assertEqual(output.config_file, Path("./easy_sast.yml").absolute())
 
-        # Succeed when calling the create_arg_parser function and pass only
-        # --version as an argument
-        with self.assertRaises(SystemExit) as contextmanager:
-            output = self.parser.parse_args(["--version"])
-        self.assertEqual(contextmanager.exception.code, 0)
-        # Using sys instead of _sys because it is the same thing per
-        # https://github.com/python/cpython/blob/6a263cf1adfc18cdba65c788dd76d35997a89acf/Lib/argparse.py#L90
-        mock__print_message.assert_called_once_with(veracode_version + "\n", sys.stdout)
-
-        # Succeed when calling the create_arg_parser function and do not pass
-        # --version as an argument
-        output = self.parser.parse_args(["--verbose"])
-        with self.assertRaises(SystemExit) as contextmanager:
-            output = self.parser.parse_args(["--version"])
-        self.assertEqual(contextmanager.exception.code, 0)
-
     ## is_valid_non_api_config tests
     @patch("veracode.config.is_valid_attribute")
     def test_is_valid_non_api_config(self, mock_is_valid_attribute):
@@ -800,7 +784,8 @@ class TestEasySASTConfig(CLITestCase):
 
     ## create_arg_parser tests
     # pylint: disable=too-many-statements
-    def test_create_arg_parser(self):
+    @patch("argparse.ArgumentParser._print_message")
+    def test_create_arg_parser(self, mock__print_message):
         """
         Test the create_arg_parser function
         """
@@ -809,6 +794,22 @@ class TestEasySASTConfig(CLITestCase):
         # --verbose or --debug as arguments
         output = self.parser.parse_args([])
         self.assertIsNone(output.loglevel)
+
+        # Succeed when calling the create_arg_parser function and pass only
+        # --version as an argument
+        with self.assertRaises(SystemExit) as contextmanager:
+            output = self.parser.parse_args(["--version"])
+        self.assertEqual(contextmanager.exception.code, 0)
+        # Using sys instead of _sys because it is the same thing per
+        # https://github.com/python/cpython/blob/6a263cf1adfc18cdba65c788dd76d35997a89acf/Lib/argparse.py#L90
+        mock__print_message.assert_called_once_with(veracode_version + "\n", sys.stdout)
+
+        # Succeed when calling the create_arg_parser function and do not pass
+        # --version as an argument
+        output = self.parser.parse_args(["--verbose"])
+        with self.assertRaises(SystemExit) as contextmanager:
+            output = self.parser.parse_args(["--version"])
+        self.assertEqual(contextmanager.exception.code, 0)
 
         # Succeed when calling the create_arg_parser function and pass only
         # --verbose as an argument
