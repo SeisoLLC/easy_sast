@@ -38,6 +38,10 @@ In order to integrate with Veracode, you will need to:
  - Be able to produce a [debug build of your application](https://help.veracode.com/reader/wySvh2U7LWNYqeVS7PQm_g/4FE4jcdxZZ3kUqdR1aSZqA).
  - Have a valid account and license to use [Veracode's SAST product](https://www.veracode.com/products/binary-static-analysis-sast) APIs outlined [below](#supported-veracode-apis).
  - Have an application in [Veracode's Analysis Center](https://analysiscenter.veracode.com) that you intend to use.
+ - Export your Veracode credentials as environment variables:
+ 
+        export VERACODE_API_KEY_ID=EXAMPLE
+        export VERACODE_API_KEY_SECRET=EXAMPLE
 
 #### Getting started
 1. Build the docker image:
@@ -46,7 +50,7 @@ In order to integrate with Veracode, you will need to:
     ```
 1. Run the docker container, passing it your API credentials and mounting the directory containing your build artifacts into /build:
     ```bash
-     docker run --env-file <(env | grep VERACODE_API_KEY_) -v "/path/to/build":/build easy_sast:latest
+    docker run --env-file <(env | grep ^VERACODE_API_KEY_) -v "/path/to/build":/build seiso/easy_sast:latest
     ```
 
 Additional details and configuration options are outlined in [usage](#usage) and on the [wiki](https://github.com/SeisoLLC/easy_sast/wiki/).
@@ -64,20 +68,14 @@ optional arguments:
   --debug                             enable debug level logging
   --verbose                           enable info level logging
 ```
-There are numerous ways to pass information into a running docker container.  For instance:
- 1. Pass environment variables to `docker run` using [`--env-file`](https://docs.docker.com/compose/environment-variables/#the-env_file-configuration-option). For example:
+There are two recommended methods to pass information into easy_sast at runtime:
+ 1. Pass environment variables to `docker run` using [`--env-file`](https://docs.docker.com/engine/reference/commandline/run/#set-environment-variables--e---env---env-file). For example:
      ```bash
-     export VERACODE_API_KEY_ID=EXAMPLE
-     export VERACODE_API_KEY_SECRET=EXAMPLE
-     docker run --env-file <(env | grep VERACODE_API_KEY_) -v "/path/to/build":/build easy_sast:latest
+     docker run --env-file <(env | grep VERACODE_API_KEY_) -v "/path/to/build":/build seiso/easy_sast:latest
      ```
  1. You may also want to pass an argument to the Python in the container by appending your arguments to `docker run`. For example:
      ```bash
-     docker run -e VERACODE_API_KEY_ID=EXAMPLE easy_sast:latest --workflow check_compliance
-     ```
- 1. Finally, you can load environment variables [`from a file`](https://docs.docker.com/engine/reference/commandline/run/#set-environment-variables--e---env---env-file) during `docker run`, for example:
-     ```bash
-     docker run --env-file=example_env_file -v "/path/to/build":/build easy_sast:latest
+     docker run -e VERACODE_API_KEY_ID=EXAMPLE seiso/easy_sast:latest --debug
      ```
 
 Want to learn about more advanced usage, such as optimizing SAST for pull requests?  Check out [the wiki](https://github.com/SeisoLLC/easy_sast/wiki/).
