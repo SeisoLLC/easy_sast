@@ -337,3 +337,25 @@ class TestMain(TestCase):
             ),
         ):
             self.assertIsNone(main.main())
+
+        # Test for UnboundLocalError
+        mock_apply_config.side_effect = UnboundLocalError
+
+        with patch(
+            "argparse.ArgumentParser.parse_args",
+            return_value=Namespace(
+                app_id=test_constants.VALID_UPLOAD_API["app_id"],
+                build_dir=test_constants.VALID_UPLOAD_API["build_dir"],
+                build_id=test_constants.VALID_UPLOAD_API["build_id"],
+                disable_auto_scan=not test_constants.VALID_UPLOAD_API["auto_scan"],
+                disable_scan_nonfatal_modules=not test_constants.VALID_UPLOAD_API[
+                    "scan_all_nonfatal_top_level_modules"
+                ],
+                loglevel=logging.WARNING,
+                api_key_id=test_constants.VALID_UPLOAD_API["api_key_id"],
+                api_key_secret=test_constants.VALID_UPLOAD_API["api_key_secret"],
+            ),
+        ):
+            with self.assertRaises(SystemExit) as contextmanager:
+                main.main()
+            self.assertEqual(contextmanager.exception.code, 1)
