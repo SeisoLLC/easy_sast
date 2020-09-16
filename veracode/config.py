@@ -234,17 +234,6 @@ def get_args_config() -> Dict:
     parser = create_arg_parser()
     parsed_args = vars(parser.parse_args())
 
-    inverted_attributes = {
-        "auto_scan": "disable_auto_scan",
-        "scan_all_nonfatal_top_level_modules": "disable_scan_nonfatal_modules",
-    }
-
-    # Invert and rename the inverted_attributes appropriately
-    for key, value in inverted_attributes.items():
-        if value in parsed_args.keys():
-            parsed_args[key] = not parsed_args[value]
-            del parsed_args[value]
-
     ## Load parsed arguments into args_config
     args_config = add_apis_to_config(config={})
 
@@ -270,54 +259,13 @@ def create_arg_parser() -> ArgumentParser:
     """Parse the arguments"""
     parser = ArgumentParser()
     parser.add_argument(
-        "--api-key-id",
-        type=str,
-        help="veracode api key id",
-    )
-    parser.add_argument(
-        "--api-key-secret",
-        type=str,
-        help="veracode api key secret",
-    )
-    parser.add_argument(
-        "--app-id",
-        type=str,
-        help="application id as provided by Veracode",
-    )
-    parser.add_argument(
-        "--build-dir",
-        type=lambda p: Path(p).absolute(),
-        help="a Path containing build artifacts",
-    )
-    parser.add_argument(
-        "--build-id",
-        type=str,
-        help="application build id",
-    )
-    parser.add_argument(
         "--config-file",
         type=lambda p: Path(p).absolute(),
         default=Path("easy_sast.yml").absolute(),
         help="specify a config file",
     )
-    parser.add_argument(
-        "--disable-auto-scan", action="store_true", help="disable auto_scan"
-    )
-    parser.add_argument(
-        "--disable-scan-nonfatal-modules",
-        action="store_true",
-        help="disable scan_all_nonfatal_top_level_modules",
-    )
-    parser.add_argument(
-        "--ignore-compliance-status",
-        action="store_true",
-        help="ignore (but still check) the compliance status",
-    )
-    parser.add_argument("--sandbox-name", type=str, help="application sandbox name")
+
     parser.add_argument("--version", action="version", version=__version__)
-    parser.add_argument(
-        "--workflow", nargs="+", help="specify the workflow steps to enable and order"
-    )
 
     group = parser.add_mutually_exclusive_group()
     group.add_argument(
@@ -334,6 +282,7 @@ def create_arg_parser() -> ArgumentParser:
         const="INFO",
         help="enable info level logging",
     )
+
     return parser
 
 

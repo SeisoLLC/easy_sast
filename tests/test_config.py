@@ -561,75 +561,10 @@ class TestVeracodeConfig(CLITestCase):
 
     ## create_arg_parser tests
     # pylint: disable=too-many-statements
-    @patch("argparse.ArgumentParser._print_message")
-    def test_create_arg_parser(self, mock__print_message):
+    def test_create_arg_parser(self):
         """
         Test the create_arg_parser function
         """
-        # Succeed when calling the create_arg_parser function and pass only
-        # --api-key-id as an argument
-        output = self.parser.parse_args(
-            ["--api-key-id=" + test_constants.VALID_UPLOAD_API["api_key_id"]]
-        )
-        self.assertEqual(
-            output.api_key_id, test_constants.VALID_UPLOAD_API["api_key_id"]
-        )
-
-        # Succeed when calling the create_arg_parser function and do not pass
-        # --api-key-id as an argument
-        output = self.parser.parse_args(["--verbose"])
-        self.assertIsNone(output.api_key_id)
-
-        # Succeed when calling the create_arg_parser function and pass only
-        # --api-key-secret as an argument
-        output = self.parser.parse_args(
-            ["--api-key-secret=" + test_constants.VALID_UPLOAD_API["api_key_secret"]]
-        )
-        self.assertEqual(
-            output.api_key_secret, test_constants.VALID_UPLOAD_API["api_key_secret"]
-        )
-
-        # Succeed when calling the create_arg_parser function and do not pass
-        # --api-key-secret as an argument
-        output = self.parser.parse_args(["--verbose"])
-        self.assertIsNone(output.api_key_secret)
-
-        # Succeed when calling the create_arg_parser function wnd pass only
-        # --app-id as an argument
-        output = self.parser.parse_args(["--app-id=31337"])
-        self.assertEqual(output.app_id, "31337")
-
-        # Succeed when calling the create_arg_parser function and do not pass
-        # --app-id as an argument
-        output = self.parser.parse_args(["--verbose"])
-        self.assertIsNone(output.app_id)
-
-        # Succeed when calling the create_arg_parser function and pass only
-        # --build-dir as an argument
-        output = self.parser.parse_args(["--build-dir=./"])
-        self.assertEqual(output.build_dir, Path("./").absolute())
-
-        # Succeed when calling the create_arg_parser function and pass only
-        # --build-id as an argument
-        output = self.parser.parse_args(
-            ["--build-id=" + test_constants.VALID_UPLOAD_API["build_id"]]
-        )
-        self.assertEqual(output.build_id, test_constants.VALID_UPLOAD_API["build_id"])
-
-        # Succeed when calling the create_arg_parser function and pass only
-        # --sandbox-name as an argument
-        output = self.parser.parse_args(
-            ["--sandbox-name=" + test_constants.VALID_SANDBOX_API["sandbox_name"]]
-        )
-        self.assertEqual(
-            output.sandbox_name, test_constants.VALID_SANDBOX_API["sandbox_name"]
-        )
-
-        # Succeed when calling the create_arg_parser function and do not pass
-        # --build-id as an argument
-        output = self.parser.parse_args(["--verbose"])
-        self.assertIsNone(output.build_id)
-
         # Succeed when calling the create_arg_parser function and pass only
         # --config-file as an argument
         output = self.parser.parse_args(
@@ -642,92 +577,6 @@ class TestVeracodeConfig(CLITestCase):
         # argument
         output = self.parser.parse_args(["--verbose"])
         self.assertEqual(output.config_file, Path("./easy_sast.yml").absolute())
-
-        # Succeed when calling the create_arg_parser function and pass only
-        # --disable-auto-scan as an argument
-        output = self.parser.parse_args(["--disable-auto-scan"])
-        self.assertEqual(output.disable_auto_scan, True)
-
-        # Succeed and return the default value for disable-auto-scan when
-        # calling the create_arg_parser function without passing
-        # --disable-auto-scan as an argument
-        output = self.parser.parse_args(
-            ["--build-id=" + test_constants.VALID_UPLOAD_API["build_id"]]
-        )
-        self.assertEqual(output.disable_auto_scan, False)
-
-        # Succeed when calling the create_arg_parser function and pass only
-        # --disable-scan-nonfatal-modules as an argument
-        output = self.parser.parse_args(["--disable-scan-nonfatal-modules"])
-        self.assertEqual(output.disable_scan_nonfatal_modules, True)
-
-        # Succeed and return the default value for
-        # disable-scan-nonfatal-modules when calling the create_arg_parser
-        # function without passing --disable-scan-nonfatal-modules as an
-        # argument
-        output = self.parser.parse_args(["--disable-auto-scan"])
-        self.assertEqual(output.disable_scan_nonfatal_modules, False)
-
-        # Succeed when calling the create_arg_parser function and pass only
-        # --ignore-compliance-status as an argument
-        output = self.parser.parse_args(["--ignore-compliance-status"])
-        self.assertEqual(output.ignore_compliance_status, True)
-
-        # Succeed when calling the create_arg_parser function and pass only
-        # --ignore-compliance-status as an argument
-        output = self.parser.parse_args(["--disable-auto-scan"])
-        self.assertEqual(output.ignore_compliance_status, False)
-
-        # Succeed when calling the create_arg_parser function and pass only
-        # --version as an argument
-        with self.assertRaises(SystemExit) as contextmanager:
-            output = self.parser.parse_args(["--version"])
-        self.assertEqual(contextmanager.exception.code, 0)
-        # Using sys instead of _sys because it is the same thing per
-        # https://github.com/python/cpython/blob/6a263cf1adfc18cdba65c788dd76d35997a89acf/Lib/argparse.py#L90
-        mock__print_message.assert_called_once_with(veracode_version + "\n", sys.stdout)
-
-        # Succeed when calling the create_arg_parser function and do not pass
-        # --version as an argument
-        output = self.parser.parse_args(["--disable-auto-scan"])
-        with self.assertRaises(SystemExit) as contextmanager:
-            output = self.parser.parse_args(["--version"])
-        self.assertEqual(contextmanager.exception.code, 0)
-
-        # Succeed when calling the create_arg_parser function and pass only
-        # --workflow as an argument
-        output = self.parser.parse_args(["--workflow", "submit_artifacts"])
-        self.assertEqual(output.workflow, ["submit_artifacts"])
-        output = self.parser.parse_args(["--workflow", "check_compliance"])
-        self.assertEqual(output.workflow, ["check_compliance"])
-        output = self.parser.parse_args(["--workflow", "literally any string"])
-        self.assertEqual(output.workflow, ["literally any string"])
-
-        # Succeed when calling the create_arg_parser function and do not pass
-        # --workflow as an argument
-        output = self.parser.parse_args(["--verbose"])
-        self.assertIsNone(output.workflow)
-
-        # Succeed when calling the create_arg_parser function and pass only
-        # --verbose as an argument
-        output = self.parser.parse_args(["--verbose"])
-        self.assertEqual(output.loglevel, "INFO")
-
-        # Succeed when calling the create_arg_parser function and do not pass
-        # --verbose or --debug as arguments
-        output = self.parser.parse_args(["--disable-auto-scan"])
-        self.assertIsNone(output.loglevel)
-
-        # Succeed when calling the create_arg_parser function and pass only
-        # --debug as an argument
-        output = self.parser.parse_args(["--debug"])
-        self.assertEqual(output.loglevel, "DEBUG")
-
-        # Fail when calling the create_arg_parser function and pass both
-        # --debug and --verbose as an argument, as they are mutually exclusive
-        with self.assertRaises(SystemExit) as contextmanager:
-            output = self.parser.parse_args(["--debug", "--verbose"])
-        self.assertEqual(contextmanager.exception.code, 2)
 
     ## is_valid_non_api_config tests
     @patch("veracode.config.is_valid_attribute")
@@ -925,3 +774,54 @@ class TestVeracodeConfig(CLITestCase):
         self.assertEqual(
             config.apply_config(api=results_api, config=configuration), results_api
         )
+
+
+class TestEasySASTConfig(CLITestCase):
+    """
+    Test config.py
+    """
+
+    ## create_arg_parser tests
+    # pylint: disable=too-many-statements
+    @patch("argparse.ArgumentParser._print_message")
+    def test_create_arg_parser(self, mock__print_message):
+        """
+        Test the create_arg_parser function
+        """
+
+        # Succeed when calling the create_arg_parser function and do not pass
+        # --verbose or --debug as arguments
+        output = self.parser.parse_args([])
+        self.assertIsNone(output.loglevel)
+
+        # Succeed when calling the create_arg_parser function and pass only
+        # --version as an argument
+        with self.assertRaises(SystemExit) as contextmanager:
+            output = self.parser.parse_args(["--version"])
+        self.assertEqual(contextmanager.exception.code, 0)
+        # Using sys instead of _sys because it is the same thing per
+        # https://github.com/python/cpython/blob/6a263cf1adfc18cdba65c788dd76d35997a89acf/Lib/argparse.py#L90
+        mock__print_message.assert_called_once_with(veracode_version + "\n", sys.stdout)
+
+        # Succeed when calling the create_arg_parser function and do not pass
+        # --version as an argument
+        output = self.parser.parse_args(["--verbose"])
+        with self.assertRaises(SystemExit) as contextmanager:
+            output = self.parser.parse_args(["--version"])
+        self.assertEqual(contextmanager.exception.code, 0)
+
+        # Succeed when calling the create_arg_parser function and pass only
+        # --verbose as an argument
+        output = self.parser.parse_args(["--verbose"])
+        self.assertEqual(output.loglevel, "INFO")
+
+        # Succeed when calling the create_arg_parser function and pass only
+        # --debug as an argument
+        output = self.parser.parse_args(["--debug"])
+        self.assertEqual(output.loglevel, "DEBUG")
+
+        # Fail when calling the create_arg_parser function and pass both
+        # --debug and --verbose as an argument, as they are mutually exclusive
+        with self.assertRaises(SystemExit) as contextmanager:
+            output = self.parser.parse_args(["--debug", "--verbose"])
+        self.assertEqual(contextmanager.exception.code, 2)

@@ -1,6 +1,6 @@
 {
   "errors": [],
-  "generated_at": "2020-09-08T17:40:23Z",
+  "generated_at": "2020-09-16T20:57:54Z",
   "metrics": {
     "./main.py": {
       "CONFIDENCE.HIGH": 0.0,
@@ -71,7 +71,7 @@
       "SEVERITY.LOW": 0.0,
       "SEVERITY.MEDIUM": 0.0,
       "SEVERITY.UNDEFINED": 0.0,
-      "loc": 651,
+      "loc": 603,
       "nosec": 0
     },
     "./tests/test_main.py": {
@@ -155,7 +155,7 @@
       "SEVERITY.LOW": 0.0,
       "SEVERITY.MEDIUM": 0.0,
       "SEVERITY.UNDEFINED": 0.0,
-      "loc": 337,
+      "loc": 287,
       "nosec": 0
     },
     "./veracode/constants.py": {
@@ -203,7 +203,7 @@
       "SEVERITY.LOW": 0.0,
       "SEVERITY.MEDIUM": 0.0,
       "SEVERITY.UNDEFINED": 0.0,
-      "loc": 5875,
+      "loc": 5777,
       "nosec": 7
     }
   },
