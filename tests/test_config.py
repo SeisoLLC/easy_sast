@@ -561,8 +561,7 @@ class TestVeracodeConfig(CLITestCase):
 
     ## create_arg_parser tests
     # pylint: disable=too-many-statements
-    @patch("argparse.ArgumentParser._print_message")
-    def test_create_arg_parser(self, mock__print_message):
+    def test_create_arg_parser(self):
         """
         Test the create_arg_parser function
         """

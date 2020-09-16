@@ -75,7 +75,7 @@ There are two recommended methods to pass information into easy_sast at runtime:
      ```
  1. You may also want to pass an argument to the Python in the container by appending your arguments to `docker run`. For example:
      ```bash
-     docker run -e VERACODE_API_KEY_ID=EXAMPLE seiso/easy_sast:latest --debug
+     docker run -e VERACODE_API_KEY_ID=EXAMPLE -e VERACODE_API_KEY_SECRET=EXAMPLE seiso/easy_sast:latest --debug
      ```
 
 Want to learn about more advanced usage, such as optimizing SAST for pull requests?  Check out [the wiki](https://github.com/SeisoLLC/easy_sast/wiki/).
