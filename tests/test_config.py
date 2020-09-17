@@ -785,10 +785,11 @@ class TestVeracodeConfig(CLITestCase):
         # Succeed when calling the apply_config function with a valid
         # Results API object and config
         configuration["apis"]["unknown"] = {"a": "b"}
-        results_api = ResultsAPI(app_id="31337")
-        self.assertEqual(
-            config.apply_config(api=results_api, config=configuration), results_api
-        )
+        with patch("veracode.api.get_app_id", return_value="1337"):
+            results_api = ResultsAPI(app_name="TestApp")
+            self.assertEqual(
+                config.apply_config(api=results_api, config=configuration), results_api
+            )
 
 
 class TestEasySASTConfig(CLITestCase):

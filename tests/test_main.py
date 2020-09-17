@@ -343,7 +343,8 @@ class TestMain(TestCase):
                 api_key_secret=test_constants.VALID_UPLOAD_API["api_key_secret"],
             ),
         ):
-            self.assertIsNone(main.main())
+            with patch("veracode.api.get_app_id", return_value="1337"):
+                self.assertIsNone(main.main())
 
         # Test for UnboundLocalError
         mock_apply_config.side_effect = UnboundLocalError
@@ -363,6 +364,7 @@ class TestMain(TestCase):
                 api_key_secret=test_constants.VALID_UPLOAD_API["api_key_secret"],
             ),
         ):
-            with self.assertRaises(SystemExit) as contextmanager:
-                main.main()
-            self.assertEqual(contextmanager.exception.code, 1)
+            with patch("veracode.api.get_app_id", return_value="1337"):
+                with self.assertRaises(SystemExit) as contextmanager:
+                    main.main()
+                self.assertEqual(contextmanager.exception.code, 1)
