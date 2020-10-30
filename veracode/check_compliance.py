@@ -6,7 +6,7 @@ A python module to check the compliance status of an app in Veracode via their X
 # built-ins
 import logging
 from typing import Union, Optional
-from xml.etree import (  # nosec (Used only when TYPE_CHECKING)
+from xml.etree import (  # nosec (Used only when TYPE_CHECKING) # nosem: python.lang.security.use-defused-xml.use-defused-xml
     ElementTree as InsecureElementTree,
 )
 

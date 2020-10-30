@@ -8,7 +8,7 @@ import copy
 import secrets
 from pathlib import Path
 from typing import Dict, List, Union
-from xml.etree import (  # nosec (Used only when TYPE_CHECKING)
+from xml.etree import (  # nosec (Used only when TYPE_CHECKING) # nosem: python.lang.security.use-defused-xml.use-defused-xml
     ElementTree as InsecureElementTree,
 )
 
