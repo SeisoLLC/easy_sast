@@ -160,5 +160,6 @@ report_coverage: test_unit
 .PHONY: report_security
 report_security: test_security
 	@python3 -c 'print("Updating the security testing reports...")'
-	@docker run --rm -v $$(pwd):/usr/src/app/ $(IMAGE_NAME):latest-test_security && find . -type f -name '*.py' -exec bandit --format json -o reports/bandit_report.json {} + && \
-		semgrep --config=p/r2c-ci --exclude='tests/*.py' --output=reports/semgrep_report.json .
+	@docker run --rm -v $$(pwd):/usr/src/app/ $(IMAGE_NAME):latest-test_security \
+		&& find . -type f -name '*.py' -exec bandit --format json -o reports/bandit_report.json {} + \
+		&& semgrep --config=p/r2c-ci --exclude='tests' --exclude='reports' --output=reports/semgrep_report.json --strict --verbose .
