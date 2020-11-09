@@ -16,7 +16,8 @@ from pathlib import Path
 import logging
 import re
 import inspect
-from xml.etree import (  # nosec (This is only used for static typing)
+
+from xml.etree import (  # nosec (This is only used for static typing) # nosem: python.lang.security.use-defused-xml.use-defused-xml
     ElementTree as InsecureElementTree,
 )
 from urllib.parse import urlparse

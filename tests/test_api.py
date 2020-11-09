@@ -9,7 +9,7 @@ from pathlib import Path
 import logging
 from unittest import TestCase
 from unittest.mock import patch
-from xml.etree import (  # nosec (Used only when TYPE_CHECKING)
+from xml.etree import (  # nosec (Used only when TYPE_CHECKING) # nosem: python.lang.security.use-defused-xml.use-defused-xml
     ElementTree as InsecureElementTree,
 )
 

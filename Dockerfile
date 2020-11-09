@@ -61,8 +61,9 @@ CMD ["run", "-m", "unittest", "discover", "-s", "tests", "-p", "test_*.py"]
 
 ## Security Tests
 FROM ci AS test_security
-ENTRYPOINT find . -type f -name '*.py' -exec bandit {} + && \
-  trufflehog --regex --entropy=False file:///usr/src/app/ --exclude_paths .truffleHog-exclude.txt
+ENTRYPOINT find . -type f -name '*.py' -exec bandit {} + \
+  && trufflehog --regex --entropy=False file:///usr/src/app/ --exclude_paths .truffleHog-exclude.txt \
+  && semgrep --config=p/r2c-ci --exclude='tests' --exclude='reports' --strict --verbose /usr/src/app
 
 ## easy_sast
 FROM "${ARG_FROM_IMAGE}":"${ARG_FROM_IMAGE_TAG}" AS Final
