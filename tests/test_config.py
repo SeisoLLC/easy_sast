@@ -760,7 +760,7 @@ class TestVeracodeConfig(CLITestCase):
         # Ensure calling the apply_config function with different `app_id`s
         # does not result in an object with the same version string (which is
         # unique per-API)
-        with patch("veracode.api.get_app_id", return_value="1337"):
+        with patch("veracode.api.get_app_id", return_value="31337"):
             upload_api = UploadAPI(app_name="TestApp")
             applied_upload_api = config.apply_config(
                 api=upload_api, config=configuration

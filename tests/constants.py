@@ -788,8 +788,8 @@ VALID_APPLIST_API["app_name"] = "TestApp"
 VALID_APPLIST_API["build_id"] = "v1.2.3"
 VALID_APPLIST_API["username"] = "TestUser"
 
-# https://help.veracode.com/reader/LMv_dtSHyb7iIxAQznC~9w/kb2SM9net26_L91VploQGw
-VALID_APPLIST_API_RESPONSE_XML = {}
+# https://help.veracode.com/reader/orRWez4I0tnZNaA_i0zn9g/Z4Ecf1fw7868vYPVgkglww
+VALID_UPLOAD_API_APPLIST_RESPONSE_XML = {}
 
 VALID_APPLIST_API_RESPONSE_XML[
     "string"

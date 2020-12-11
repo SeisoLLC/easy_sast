@@ -28,15 +28,15 @@ class VeracodeXMLAPI:
     https://help.veracode.com/reader/LMv_dtSHyb7iIxAQznC~9w/pd_p6JjB9PcDNH3GzWF5Ag
     """
 
-    def __init__(self, app_name: str):
+    def __init__(self, *, app_name: str):
         self._version = None
 
         ## Use the setter to apply a default to ensure it is valid
         self.base_url = "https://analysiscenter.veracode.com/api/"
 
         # Set app name and look up ID
-        self._app_name = app_name
-        self._app_id = get_app_id(app_name)
+        self.app_name = app_name
+        self.app_id = get_app_id(app_name)
 
     def http_get(
         self,
@@ -190,7 +190,7 @@ class UploadAPI(VeracodeXMLAPI):  # pylint: disable=too-many-instance-attributes
 
     def __init__(self, *, app_name: str):
         # Don't forget to call the init of the parent
-        super().__init__(app_name)
+        super().__init__(app_name=app_name)
 
         ## Use the setter to apply a default to ensure it is valid
         # version information was pulled from
@@ -368,7 +368,7 @@ class ResultsAPI(VeracodeXMLAPI):
 
     def __init__(self, *, app_name: str):
         # Don't forget to call the init of the parent
-        super().__init__(app_name)
+        super().__init__(app_name=app_name)
 
         ## Use the setter to apply a default to ensure it is valid
         self.ignore_compliance_status = False
@@ -420,7 +420,7 @@ class SandboxAPI(VeracodeXMLAPI):
 
     def __init__(self, *, app_name: str, sandbox_name: str):
         # Don't forget to call the init of the parent
-        super().__init__(app_name)
+        super().__init__(app_name=app_name)
 
         # version information was pulled from
         # https://help.veracode.com/reader/LMv_dtSHyb7iIxAQznC~9w/KusbW5J7EG8jEr64JEiBzw
