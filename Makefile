@@ -1,6 +1,6 @@
 ## Initialization
 FROM_IMAGE     := python
-FROM_IMAGE_TAG := 3.8-alpine
+FROM_IMAGE_TAG := 3.9-alpine
 VENDOR         := veracode
 
 COMMIT_HASH    := $(shell git rev-parse HEAD)
@@ -79,8 +79,8 @@ init_git:
 .PHONY: requirements
 requirements: requirements-to-freeze.txt $(VENDOR)/requirements-to-freeze.txt
 	@python3 -c 'print("Updating the requirements.txt files...")'
-	@docker run --rm -v $$(pwd):/usr/src/app/ python:3.8 /bin/bash -c "pip3 install -r /usr/src/app/requirements-to-freeze.txt && pip3 freeze > /usr/src/app/requirements.txt"
-	@docker run --rm -v $$(pwd):/usr/src/app/ python:3.8 /bin/bash -c "pip3 install -r /usr/src/app/$(VENDOR)/requirements-to-freeze.txt && pip3 freeze > /usr/src/app/$(VENDOR)/requirements.txt"
+	@docker run --rm -v $$(pwd):/usr/src/app/ python:3.9 /bin/bash -c "pip3 install -r /usr/src/app/requirements-to-freeze.txt && pip3 freeze > /usr/src/app/requirements.txt"
+	@docker run --rm -v $$(pwd):/usr/src/app/ python:3.9 /bin/bash -c "pip3 install -r /usr/src/app/$(VENDOR)/requirements-to-freeze.txt && pip3 freeze > /usr/src/app/$(VENDOR)/requirements.txt"
 
 .PHONY: hook_commit-msg
 hook_commit-msg:
