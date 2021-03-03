@@ -2,12 +2,12 @@ certifi==2020.12.5
 chardet==4.0.0
 defusedxml==0.6.0
 docopt==0.6.2
-httpie==2.3.0
+httpie==2.4.0
 idna==2.10
-Pygments==2.7.3
+Pygments==2.8.0
 PySocks==1.7.1
-PyYAML==5.3.1
+PyYAML==5.4.1
 requests==2.25.1
 requests-toolbelt==0.9.1
-urllib3==1.26.2
+urllib3==1.26.3
 veracode-api-signing==19.9.0
