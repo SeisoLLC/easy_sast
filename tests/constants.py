@@ -255,7 +255,33 @@ VALID_UPLOAD_API["scan_all_nonfatal_top_level_modules"] = True
 VALID_UPLOAD_API["auto_scan"] = True
 VALID_UPLOAD_API["api_key_id"] = secrets.token_hex(16)
 VALID_UPLOAD_API["api_key_secret"] = secrets.token_hex(64)  # nosec
+VALID_UPLOAD_API["username"] = "TestUser"
 
+# https://help.veracode.com/reader/orRWez4I0tnZNaA_i0zn9g/Z4Ecf1fw7868vYPVgkglww
+VALID_UPLOAD_API_APPLIST_API_RESPONSE_XML = {}
+
+VALID_UPLOAD_API_APPLIST_API_RESPONSE_XML[
+    "string"
+] = """<?xml version="1.0" encoding="UTF-8"?>
+
+<applist xmlns:xsi="http&#x3a;&#x2f;&#x2f;www.w3.org&#x2f;2001&#x2f;XMLSchema-instance" 
+      xmlns="https&#x3a;&#x2f;&#x2f;analysiscenter.veracode.com&#x2f;schema&#x2f;2.0&#x2f;applist" 
+      xsi:schemaLocation="https&#x3a;&#x2f;&#x2f;analysiscenter.veracode.com&#x2f;schema&#x2f;2.0&#x2f;applist 
+      https&#x3a;&#x2f;&#x2f;analysiscenter.veracode.com&#x2f;resource&#x2f;2.0&#x2f;applist.xsd" applist_version="1.2" 
+      account_id="12345">
+   <app app_id="1337" app_name="TestApp" policy_updated_date="2019-08-13T14&#x3a;09&#x3a;11-04&#x3a;00"/>
+   <user login_account_type="user" username="TestUser" create_application_profile="true" create_sandbox="true" 
+      create_new_build="true" create_policy_scan="true" create_sandbox_scan="true" assign_app_to_team="true" 
+      assign_app_to_any_team="true" view_sandbox="true" view_results="true" approve_mitigations="true" 
+      submit_static_scan="true" submit_policy_static_scan="true" submit_sandbox_static_scan="true"/>
+</applist>"""
+
+VALID_UPLOAD_API_APPLIST_API_RESPONSE_XML["bytes"] = bytes(
+    VALID_UPLOAD_API_APPLIST_API_RESPONSE_XML["string"], "utf-8"
+)
+VALID_UPLOAD_API_APPLIST_API_RESPONSE_XML["Element"] = ElementTree.fromstring(
+    VALID_UPLOAD_API_APPLIST_API_RESPONSE_XML["bytes"]
+)
 
 INVALID_UPLOAD_API_MISSING_BUILD_DIR = copy.deepcopy(VALID_UPLOAD_API)
 del INVALID_UPLOAD_API_MISSING_BUILD_DIR["build_dir"]
@@ -775,44 +801,6 @@ INVALID_SANDBOX_CREATESANDBOX_API_RESPONSE_XML_NO_SANDBOX[
 
 INVALID_SANDBOX_API_INCORRECT_DOMAIN = copy.deepcopy(VALID_RESULTS_API)
 INVALID_SANDBOX_API_INCORRECT_DOMAIN["base_url"] = "https:///api/"
-
-
-# Valid Application List API response
-
-VALID_APPLIST_API: Dict[str, Union[str, Dict[str, str], Path, bool]] = {}
-VALID_APPLIST_API["base_url"] = "https://analysiscenter.veracode.com/api/"
-VALID_APPLIST_API["version"] = {"getapplist.do": "5.0"}
-
-VALID_APPLIST_API["app_id"] = "1337"
-VALID_APPLIST_API["app_name"] = "TestApp"
-VALID_APPLIST_API["build_id"] = "v1.2.3"
-VALID_APPLIST_API["username"] = "TestUser"
-
-# https://help.veracode.com/reader/orRWez4I0tnZNaA_i0zn9g/Z4Ecf1fw7868vYPVgkglww
-VALID_UPLOAD_API_APPLIST_RESPONSE_XML = {}
-
-VALID_APPLIST_API_RESPONSE_XML[
-    "string"
-] = """<?xml version="1.0" encoding="UTF-8"?>
-
-<applist xmlns:xsi="http&#x3a;&#x2f;&#x2f;www.w3.org&#x2f;2001&#x2f;XMLSchema-instance" 
-      xmlns="https&#x3a;&#x2f;&#x2f;analysiscenter.veracode.com&#x2f;schema&#x2f;2.0&#x2f;applist" 
-      xsi:schemaLocation="https&#x3a;&#x2f;&#x2f;analysiscenter.veracode.com&#x2f;schema&#x2f;2.0&#x2f;applist 
-      https&#x3a;&#x2f;&#x2f;analysiscenter.veracode.com&#x2f;resource&#x2f;2.0&#x2f;applist.xsd" applist_version="1.2" 
-      account_id="12345">
-   <app app_id="1337" app_name="TestApp" policy_updated_date="2019-08-13T14&#x3a;09&#x3a;11-04&#x3a;00"/>
-   <user login_account_type="user" username="TestUser" create_application_profile="true" create_sandbox="true" 
-      create_new_build="true" create_policy_scan="true" create_sandbox_scan="true" assign_app_to_team="true" 
-      assign_app_to_any_team="true" view_sandbox="true" view_results="true" approve_mitigations="true" 
-      submit_static_scan="true" submit_policy_static_scan="true" submit_sandbox_static_scan="true"/>
-</applist>"""
-
-VALID_APPLIST_API_RESPONSE_XML["bytes"] = bytes(
-    VALID_APPLIST_API_RESPONSE_XML["string"], "utf-8"
-)
-VALID_APPLIST_API_RESPONSE_XML["Element"] = ElementTree.fromstring(
-    VALID_APPLIST_API_RESPONSE_XML["bytes"]
-)
 
 ## Example file info
 VALID_FILE: Dict[str, Union[str, List[str], bytes, Path]] = {}

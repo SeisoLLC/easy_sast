@@ -35,8 +35,10 @@ class TestVeracodeApiVeracodeXMLAPI(TestCase):
         """
         Test the VeracodeXMLAPI version property
         """
-        with patch("veracode.api.get_app_id", return_value="1337"):
-            veracode_xml_api = VeracodeXMLAPI("TestApp")
+        with patch(
+            "veracode.api.get_app_id", return_value=constants.VALID_UPLOAD_API["app_id"]
+        ):
+            veracode_xml_api = VeracodeXMLAPI(app_name="TestApp")
 
         # Fail when attempting to get the version property because version is
         # hard coded to an invalid value to discourage direct use of this class
@@ -63,16 +65,14 @@ class TestVeracodeApiVeracodeXMLAPI(TestCase):
     ## VeracodeXMLAPI app_id property
     def test_veracode_xml_api_app_id(self):
         """
-        Test the VeracodeXMLAPI app_name property
+        Test the VeracodeXMLAPI app_id property
         """
-        with patch("veracode.api.get_app_id", return_value=0):
-            veracode_xml_api = VeracodeXMLAPI("TestApp")
+        with patch(
+            "veracode.api.get_app_id", return_value=constants.VALID_UPLOAD_API["app_id"]
+        ):
+            veracode_xml_api = VeracodeXMLAPI(app_name="TestApp")
 
-        # Fail when attempting to get the app_id property because app_id is
-        # hard coded to an invalid value to discourage direct use of this class
-        self.assertRaises(ValueError, getattr, veracode_xml_api, "app_id")
-
-        # Fail when attempting to set the app_name property to an invalid value
+        # Fail when attempting to set the app_id property to an invalid value
         self.assertRaises(
             ValueError,
             setattr,
@@ -95,8 +95,10 @@ class TestVeracodeApiVeracodeXMLAPI(TestCase):
         """
         Test the VeracodeXMLAPI app_name property
         """
-        with patch("veracode.api.get_app_id", return_value="1337"):
-            veracode_xml_api = VeracodeXMLAPI("TestApp")
+        with patch(
+            "veracode.api.get_app_id", return_value=constants.VALID_UPLOAD_API["app_id"]
+        ):
+            veracode_xml_api = VeracodeXMLAPI(app_name="TestApp")
 
         # Fail when attempting to set the app_name property to an invalid value
         self.assertRaises(
@@ -118,8 +120,10 @@ class TestVeracodeApiVeracodeXMLAPI(TestCase):
         # deleter is intentionally missing
         self.assertRaises(AttributeError, delattr, veracode_xml_api, "app_name")
 
-        with patch("veracode.api.get_app_id", return_value="1337"):
-            veracode_xml_api = VeracodeXMLAPI("TestApp")
+        with patch(
+            "veracode.api.get_app_id", return_value=constants.VALID_UPLOAD_API["app_id"]
+        ):
+            veracode_xml_api = VeracodeXMLAPI(app_name="TestApp")
 
         # Fail when attempting to set the app_name property to an invalid value
         self.assertRaises(
@@ -135,8 +139,10 @@ class TestVeracodeApiVeracodeXMLAPI(TestCase):
         """
         Test the VeracodeXMLAPI base_url property
         """
-        with patch("veracode.api.get_app_id", return_value="1337"):
-            veracode_xml_api = VeracodeXMLAPI("TestApp")
+        with patch(
+            "veracode.api.get_app_id", return_value=constants.VALID_UPLOAD_API["app_id"]
+        ):
+            veracode_xml_api = VeracodeXMLAPI(app_name="TestApp")
 
         # Succeed when getting a valid base_url property
         self.assertIsInstance(getattr(veracode_xml_api, "base_url"), str)
@@ -166,8 +172,10 @@ class TestVeracodeApiVeracodeXMLAPI(TestCase):
         """
         Test the VeracodeXMLAPI http_get method
         """
-        with patch("veracode.api.get_app_id", return_value="1337"):
-            veracode_xml_api = VeracodeXMLAPI("TestApp")
+        with patch(
+            "veracode.api.get_app_id", return_value=constants.VALID_UPLOAD_API["app_id"]
+        ):
+            veracode_xml_api = VeracodeXMLAPI(app_name="TestApp")
 
         # Fail when attempting to delete the http_get method, because the
         # deleter is intentionally missing
@@ -178,8 +186,10 @@ class TestVeracodeApiVeracodeXMLAPI(TestCase):
         """
         Test the VeracodeXMLAPI http_post method
         """
-        with patch("veracode.api.get_app_id", return_value="1337"):
-            veracode_xml_api = VeracodeXMLAPI("TestApp")
+        with patch(
+            "veracode.api.get_app_id", return_value=constants.VALID_UPLOAD_API["app_id"]
+        ):
+            veracode_xml_api = VeracodeXMLAPI(app_name="TestApp")
 
         # Fail when attempting to delete the http_post method, because the
         # deleter is intentionally missing
@@ -191,8 +201,10 @@ class TestVeracodeApiVeracodeXMLAPI(TestCase):
         """
         Test the VeracodeXMLAPI _validate method
         """
-        with patch("veracode.api.get_app_id", return_value="1337"):
-            veracode_xml_api = VeracodeXMLAPI("TestApp")
+        with patch(
+            "veracode.api.get_app_id", return_value=constants.VALID_UPLOAD_API["app_id"]
+        ):
+            veracode_xml_api = VeracodeXMLAPI(app_name="TestApp")
 
         # Mock all attributes are invalid
         mock_is_valid_attribute.return_value = False
@@ -222,7 +234,9 @@ class TestVeracodeApiUploadAPI(TestCase):
         """
         Test the UploadAPI version property
         """
-        with patch("veracode.api.get_app_id", return_value="1337"):
+        with patch(
+            "veracode.api.get_app_id", return_value=constants.VALID_UPLOAD_API["app_id"]
+        ):
             upload_api = UploadAPI(app_name=constants.VALID_UPLOAD_API["app_name"])
 
         # Succeed when getting a valid version property
@@ -264,7 +278,9 @@ class TestVeracodeApiUploadAPI(TestCase):
 
         # Succeed when creating an UploadAPI object when the app_name property is
         # properly provided to the constructor
-        with patch("veracode.api.get_app_id", return_value="1337"):
+        with patch(
+            "veracode.api.get_app_id", return_value=constants.VALID_UPLOAD_API["app_id"]
+        ):
             upload_api = UploadAPI(app_name=constants.VALID_UPLOAD_API["app_name"])
 
         self.assertIsInstance(getattr(upload_api, "app_name"), str)
@@ -302,7 +318,9 @@ class TestVeracodeApiUploadAPI(TestCase):
         """
         Test the UploadAPI base_url property
         """
-        with patch("veracode.api.get_app_id", return_value="1337"):
+        with patch(
+            "veracode.api.get_app_id", return_value=constants.VALID_UPLOAD_API["app_id"]
+        ):
             upload_api = UploadAPI(app_name=constants.VALID_UPLOAD_API["app_name"])
 
         # Succeed when getting a valid base_url property
@@ -338,7 +356,9 @@ class TestVeracodeApiUploadAPI(TestCase):
         """
         Test the UploadAPI build_dir property
         """
-        with patch("veracode.api.get_app_id", return_value="1337"):
+        with patch(
+            "veracode.api.get_app_id", return_value=constants.VALID_UPLOAD_API["app_id"]
+        ):
             upload_api = UploadAPI(app_name=constants.VALID_UPLOAD_API["app_name"])
 
         # Succeed when getting a valid build_dir property
@@ -375,7 +395,9 @@ class TestVeracodeApiUploadAPI(TestCase):
         """
         Test the UploadAPI build_id property
         """
-        with patch("veracode.api.get_app_id", return_value="1337"):
+        with patch(
+            "veracode.api.get_app_id", return_value=constants.VALID_UPLOAD_API["app_id"]
+        ):
             upload_api = UploadAPI(app_name=constants.VALID_UPLOAD_API["app_name"])
 
         # Succeed when getting a valid build_id property
@@ -411,7 +433,9 @@ class TestVeracodeApiUploadAPI(TestCase):
         """
         Test the UploadAPI sandbox_id property
         """
-        with patch("veracode.api.get_app_id", return_value="1337"):
+        with patch(
+            "veracode.api.get_app_id", return_value=constants.VALID_UPLOAD_API["app_id"]
+        ):
             upload_api = UploadAPI(app_name=constants.VALID_UPLOAD_API["app_name"])
 
         # Succeed when getting the default sandbox_id property
@@ -448,7 +472,9 @@ class TestVeracodeApiUploadAPI(TestCase):
         """
         Test the UploadAPI scan_all_nonfatal_top_level_modules property
         """
-        with patch("veracode.api.get_app_id", return_value="1337"):
+        with patch(
+            "veracode.api.get_app_id", return_value=constants.VALID_UPLOAD_API["app_id"]
+        ):
             upload_api = UploadAPI(app_name=constants.VALID_UPLOAD_API["app_name"])
 
         # Succeed when getting a valid scan_all_nonfatal_top_level_modules
@@ -498,7 +524,9 @@ class TestVeracodeApiUploadAPI(TestCase):
         """
         Test the UploadAPI auto_scan property
         """
-        with patch("veracode.api.get_app_id", return_value="1337"):
+        with patch(
+            "veracode.api.get_app_id", return_value=constants.VALID_UPLOAD_API["app_id"]
+        ):
             upload_api = UploadAPI(app_name=constants.VALID_UPLOAD_API["app_name"])
 
         # Succeed when getting a valid auto_scan property
@@ -536,7 +564,9 @@ class TestVeracodeApiUploadAPI(TestCase):
         """
         Test the UploadAPI http_get method
         """
-        with patch("veracode.api.get_app_id", return_value="1337"):
+        with patch(
+            "veracode.api.get_app_id", return_value=constants.VALID_UPLOAD_API["app_id"]
+        ):
             upload_api = UploadAPI(app_name=constants.VALID_UPLOAD_API["app_name"])
 
         # Fail when attempting to call the http_get method with invalid
@@ -561,7 +591,9 @@ class TestVeracodeApiUploadAPI(TestCase):
         """
         Test the UploadAPI http_post method
         """
-        with patch("veracode.api.get_app_id", return_value="1337"):
+        with patch(
+            "veracode.api.get_app_id", return_value=constants.VALID_UPLOAD_API["app_id"]
+        ):
             upload_api = UploadAPI(app_name=constants.VALID_UPLOAD_API["app_name"])
 
         # Fail when attempting to call the http_post method with invalid
@@ -587,7 +619,9 @@ class TestVeracodeApiUploadAPI(TestCase):
         """
         Test the UploadAPI _validate method
         """
-        with patch("veracode.api.get_app_id", return_value="1337"):
+        with patch(
+            "veracode.api.get_app_id", return_value=constants.VALID_UPLOAD_API["app_id"]
+        ):
             upload_api = UploadAPI(app_name=constants.VALID_UPLOAD_API["app_name"])
 
         # Mock all attributes are invalid
@@ -628,7 +662,9 @@ class TestVeracodeApiResultsAPI(TestCase):
         """
         Test the ResultsAPI version property
         """
-        with patch("veracode.api.get_app_id", return_value="1337"):
+        with patch(
+            "veracode.api.get_app_id", return_value=constants.VALID_UPLOAD_API["app_id"]
+        ):
             results_api = ResultsAPI(app_name=constants.VALID_RESULTS_API["app_name"])
 
         # Succeed when getting a valid version property
@@ -670,7 +706,9 @@ class TestVeracodeApiResultsAPI(TestCase):
 
         # Succeed when creating a ResultsAPI object when the app_name property is
         # properly provided to the constructor
-        with patch("veracode.api.get_app_id", return_value="1337"):
+        with patch(
+            "veracode.api.get_app_id", return_value=constants.VALID_UPLOAD_API["app_id"]
+        ):
             results_api = ResultsAPI(app_name=constants.VALID_RESULTS_API["app_name"])
 
         self.assertIsInstance(getattr(results_api, "app_name"), str)
@@ -708,7 +746,9 @@ class TestVeracodeApiResultsAPI(TestCase):
         """
         Test the ResultsAPI base_url property
         """
-        with patch("veracode.api.get_app_id", return_value="1337"):
+        with patch(
+            "veracode.api.get_app_id", return_value=constants.VALID_UPLOAD_API["app_id"]
+        ):
             results_api = ResultsAPI(app_name=constants.VALID_RESULTS_API["app_name"])
 
         # Succeed when getting a valid base_url property
@@ -744,7 +784,9 @@ class TestVeracodeApiResultsAPI(TestCase):
         """
         Test the ResultsAPI ignore_compliance_status property
         """
-        with patch("veracode.api.get_app_id", return_value="1337"):
+        with patch(
+            "veracode.api.get_app_id", return_value=constants.VALID_UPLOAD_API["app_id"]
+        ):
             results_api = ResultsAPI(app_name=constants.VALID_RESULTS_API["app_name"])
 
         # Succeed when getting a valid ignore_compliance_status property
@@ -791,7 +833,9 @@ class TestVeracodeApiResultsAPI(TestCase):
         """
         Test the ResultsAPI http_get method
         """
-        with patch("veracode.api.get_app_id", return_value="1337"):
+        with patch(
+            "veracode.api.get_app_id", return_value=constants.VALID_UPLOAD_API["app_id"]
+        ):
             results_api = ResultsAPI(app_name=constants.VALID_RESULTS_API["app_name"])
 
         # Fail when attempting to call the http_get method with invalid
@@ -817,7 +861,9 @@ class TestVeracodeApiResultsAPI(TestCase):
         """
         Test the ResultsAPI http_post method
         """
-        with patch("veracode.api.get_app_id", return_value="1337"):
+        with patch(
+            "veracode.api.get_app_id", return_value=constants.VALID_UPLOAD_API["app_id"]
+        ):
             results_api = ResultsAPI(app_name=constants.VALID_RESULTS_API["app_name"])
 
         # Fail when attempting to call the http_post method with invalid
@@ -847,7 +893,9 @@ class TestVeracodeApiResultsAPI(TestCase):
         """
         Test the ResultsAPI _validate method
         """
-        with patch("veracode.api.get_app_id", return_value="1337"):
+        with patch(
+            "veracode.api.get_app_id", return_value=constants.VALID_UPLOAD_API["app_id"]
+        ):
             results_api = ResultsAPI(app_name=constants.VALID_RESULTS_API["app_name"])
 
         # Mock all attributes are invalid
@@ -888,7 +936,9 @@ class TestVeracodeApiSandboxAPI(TestCase):
         """
         Test the SandboxAPI version property
         """
-        with patch("veracode.api.get_app_id", return_value="1337"):
+        with patch(
+            "veracode.api.get_app_id", return_value=constants.VALID_UPLOAD_API["app_id"]
+        ):
             sandbox_api = SandboxAPI(
                 app_name=constants.VALID_SANDBOX_API["app_name"],
                 sandbox_name=constants.VALID_SANDBOX_API["sandbox_name"],
@@ -933,7 +983,9 @@ class TestVeracodeApiSandboxAPI(TestCase):
 
         # Succeed when creating an SandboxAPI object when the app_name property is
         # properly provided to the constructor
-        with patch("veracode.api.get_app_id", return_value="1337"):
+        with patch(
+            "veracode.api.get_app_id", return_value=constants.VALID_UPLOAD_API["app_id"]
+        ):
             sandbox_api = SandboxAPI(
                 app_name=constants.VALID_SANDBOX_API["app_name"],
                 sandbox_name=constants.VALID_SANDBOX_API["sandbox_name"],
@@ -974,7 +1026,9 @@ class TestVeracodeApiSandboxAPI(TestCase):
         """
         Test the SandboxAPI base_url property
         """
-        with patch("veracode.api.get_app_id", return_value="1337"):
+        with patch(
+            "veracode.api.get_app_id", return_value=constants.VALID_UPLOAD_API["app_id"]
+        ):
             sandbox_api = SandboxAPI(
                 app_name=constants.VALID_SANDBOX_API["app_name"],
                 sandbox_name=constants.VALID_SANDBOX_API["sandbox_name"],
@@ -1013,7 +1067,9 @@ class TestVeracodeApiSandboxAPI(TestCase):
         """
         Test the SandboxAPI build_id property
         """
-        with patch("veracode.api.get_app_id", return_value="1337"):
+        with patch(
+            "veracode.api.get_app_id", return_value=constants.VALID_UPLOAD_API["app_id"]
+        ):
             sandbox_api = SandboxAPI(
                 app_name=constants.VALID_SANDBOX_API["app_name"],
                 sandbox_name=constants.VALID_SANDBOX_API["sandbox_name"],
@@ -1052,7 +1108,9 @@ class TestVeracodeApiSandboxAPI(TestCase):
         """
         Test the SandboxAPI sandbox_id property
         """
-        with patch("veracode.api.get_app_id", return_value="1337"):
+        with patch(
+            "veracode.api.get_app_id", return_value=constants.VALID_UPLOAD_API["app_id"]
+        ):
             sandbox_api = SandboxAPI(
                 app_name=constants.VALID_SANDBOX_API["app_name"],
                 sandbox_name=constants.VALID_SANDBOX_API["sandbox_name"],
@@ -1092,7 +1150,9 @@ class TestVeracodeApiSandboxAPI(TestCase):
         """
         Test the SandboxAPI sandbox_name property
         """
-        with patch("veracode.api.get_app_id", return_value="1337"):
+        with patch(
+            "veracode.api.get_app_id", return_value=constants.VALID_UPLOAD_API["app_id"]
+        ):
             sandbox_api = SandboxAPI(
                 app_name=constants.VALID_SANDBOX_API["app_name"],
                 sandbox_name=constants.VALID_SANDBOX_API["sandbox_name"],

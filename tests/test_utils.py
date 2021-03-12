@@ -49,7 +49,10 @@ class TestVeracodeUtils(TestCase):
         ) -> None:
             pass
 
-        with patch("veracode.api.get_app_id", return_value="1337"):
+        with patch(
+            "veracode.api.get_app_id",
+            return_value=test_constants.VALID_UPLOAD_API["app_id"],
+        ):
             results_api = ResultsAPI(
                 app_name=test_constants.VALID_RESULTS_API["app_name"]
             )
@@ -61,7 +64,10 @@ class TestVeracodeUtils(TestCase):
         ) -> None:
             pass
 
-        with patch("veracode.api.get_app_id", return_value="1337"):
+        with patch(
+            "veracode.api.get_app_id",
+            return_value=test_constants.VALID_UPLOAD_API["app_id"],
+        ):
             upload_api = UploadAPI(app_name=test_constants.VALID_UPLOAD_API["app_name"])
 
         # Test the validate decorator with a valid ResultsAPI
@@ -1413,7 +1419,10 @@ class TestVeracodeUtils(TestCase):
         """
         # Succeed when calling the validate_api function, given a
         # properly configured ResultsAPI object
-        with patch("veracode.api.get_app_id", return_value="1337"):
+        with patch(
+            "veracode.api.get_app_id",
+            return_value=test_constants.VALID_UPLOAD_API["app_id"],
+        ):
             results_api = ResultsAPI(
                 app_name=test_constants.VALID_RESULTS_API["app_name"]
             )
@@ -1446,7 +1455,10 @@ class TestVeracodeUtils(TestCase):
                 api=upload_api,
             )
 
-        with patch("veracode.api.get_app_id", return_value="1337"):
+        with patch(
+            "veracode.api.get_app_id",
+            return_value=test_constants.VALID_UPLOAD_API["app_id"],
+        ):
             results_api = ResultsAPI(
                 app_name=test_constants.VALID_RESULTS_API["app_name"]
             )
@@ -1627,18 +1639,20 @@ class TestVeracodeUtils(TestCase):
         """
         Test the get_app_id function
         """
-        app_name = test_constants.VALID_APPLIST_API["app_name"]
+        app_name = test_constants.VALID_UPLOAD_API["app_name"]
 
         # Succeed when calling the get_app_id function and the api call
         # gets a valid response
         with patch(
             "veracode.utils.http_request",
-            return_value=test_constants.VALID_APPLIST_API_RESPONSE_XML["Element"],
+            return_value=test_constants.VALID_UPLOAD_API_APPLIST_API_RESPONSE_XML[
+                "Element"
+            ],
         ):
             with patch("veracode.utils.element_contains_error", return_value=False):
                 self.assertEqual(
                     utils.get_app_id(app_name=app_name),
-                    test_constants.VALID_APPLIST_API["app_id"],
+                    test_constants.VALID_UPLOAD_API["app_id"],
                 )
 
             # Raise a RuntimeError when element_contains_error returns True
@@ -1654,7 +1668,9 @@ class TestVeracodeUtils(TestCase):
         # app_id
         with patch(
             "veracode.utils.http_request",
-            return_value=test_constants.VALID_APPLIST_API_RESPONSE_XML["Element"],
+            return_value=test_constants.VALID_UPLOAD_API_APPLIST_API_RESPONSE_XML[
+                "Element"
+            ],
         ):
             with patch(
                 "veracode.submit_artifacts.element_contains_error", return_value=False

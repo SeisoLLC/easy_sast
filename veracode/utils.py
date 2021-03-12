@@ -404,21 +404,20 @@ def is_valid_netloc(*, netloc: str) -> bool:
 
 
 @validate
-def get_app_id(app_name: str) -> Union[int, None]:
+def get_app_id(app_name: str) -> Union[str, None]:
     """
     Query for and return the app_id associated with the app_name
 
     https://help.veracode.com/reader/orRWez4I0tnZNaA_i0zn9g/Z4Ecf1fw7868vYPVgkglww
     """
     try:
-        ## Use the setter to apply a default to ensure it is valid
-        version = {"getapplist.do": "5.0"}
-        base_url = "https://analysiscenter.veracode.com/api/"
         endpoint = "getapplist.do"
+        version = constants.UPLOAD_API_VERSIONS[endpoint]
+        base_url = constants.API_BASE_URL
         params = {"include_user_info": False}
 
         applications = http_request(
-            verb="get", url=base_url + version[endpoint] + "/" + endpoint, params=params
+            verb="get", url=base_url + version + "/" + endpoint, params=params
         )
         if element_contains_error(parsed_xml=applications):
             LOG.error("Veracode returned an error when attempting to call %s", endpoint)

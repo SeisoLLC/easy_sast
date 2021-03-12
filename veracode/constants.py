@@ -8,6 +8,8 @@ SUPPORTED_API_CLASSES = {"ResultsAPI", "UploadAPI", "SandboxAPI"}
 SUPPORTED_WORKFLOWS = {"submit_artifacts", "check_compliance"}
 SUPPORTED_VERBS = {"get", "post"}
 
+API_BASE_URL = "https://analysiscenter.veracode.com/api/"
+
 ## API Attributes
 API_ATTRIBUTES = {
     "upload": {
@@ -48,6 +50,50 @@ ONLY_RESULTS_ATTRIBUTES = API_ATTRIBUTES["results"].difference(
 ONLY_SANDBOX_ATTRIBUTES = API_ATTRIBUTES["sandbox"].difference(
     API_ATTRIBUTES["results"], API_ATTRIBUTES["upload"]
 )
+
+# Upload API
+UPLOAD_API_VERSIONS = {
+    "beginprescan.do": "5.0",
+    "beginscan.do": "5.0",
+    "createapp.do": "5.0",
+    "createbuild.do": "5.0",
+    "deleteapp.do": "5.0",
+    "deletebuild.do": "5.0",
+    "getappinfo.do": "5.0",
+    "getapplist.do": "5.0",
+    "getbuildinfo.do": "5.0",
+    "getbuildlist.do": "5.0",
+    "getfilelist.do": "5.0",
+    "getpolicylist.do": "5.0",
+    "getprescanresults.do": "5.0",
+    "getvendorlist.do": "5.0",
+    "removefile.do": "5.0",
+    "updateapp.do": "5.0",
+    "updatebuild.do": "5.0",
+    "uploadfile.do": "5.0",
+    "uploadlargefile.do": "5.0",
+}
+
+# Results API
+RESULTS_API_VERSIONS = {
+    "detailedreport.do": "5.0",
+    "detailedreportpdf.do": "4.0",
+    "getaccountcustomfieldlist.do": "5.0",
+    "getappbuilds.do": "4.0",
+    "getcallstacks.do": "5.0",
+    "summaryreport.do": "4.0",
+    "summaryreportpdf.do": "4.0",
+    "thirdpartyreportpdf.do": "4.0",
+}
+
+# Sandbox API
+SANDBOX_API_VERSIONS = {
+    "createsandbox.do": "5.0",
+    "getsandboxlist.do": "5.0",
+    "promotesandbox.do": "5.0",
+    "updatesandbox.do": "5.0",
+    "deletesandbox.do": "5.0",
+}
 
 ## Config Options
 REQUIRED_CONFIG_ATTRIBUTES_API = {"app_name"}
