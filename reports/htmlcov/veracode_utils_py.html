@@ -22,8 +22,8 @@
         </h1>
         <img id="keyboard_icon" src="keybd_closed.png" alt="Show keyboard shortcuts" />
         <h2 class="stats">
-            262 statements &nbsp;
-            <button type="button" class="run shortkey_r button_toggle_run" title="Toggle lines run">262 run</button>
+            263 statements &nbsp;
+            <button type="button" class="run shortkey_r button_toggle_run" title="Toggle lines run">263 run</button>
             <button type="button" class="mis show_mis shortkey_m button_toggle_mis" title="Toggle lines missing">0 missing</button>
             <button type="button" class="exc show_exc shortkey_x button_toggle_exc" title="Toggle lines excluded">2 excluded</button>
             <button type="button" class="par run show_par shortkey_p button_toggle_par" title="Toggle lines partially run">0 partial</button>
@@ -458,21 +458,21 @@
     <p id="t403" class="run"><span class="n"><a href="#t403">403</a></span><span class="t">    <span class="key">return</span> <span class="key">False</span>&nbsp;</span><span class="r"></span></p>
     <p id="t404" class="pln"><span class="n"><a href="#t404">404</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p id="t405" class="pln"><span class="n"><a href="#t405">405</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
-    <p id="t406" class="run"><span class="n"><a href="#t406">406</a></span><span class="t"><span class="key">def</span> <span class="nam">get_app_id</span><span class="op">(</span><span class="nam">app_name</span><span class="op">:</span> <span class="nam">str</span><span class="op">)</span> <span class="op">-></span> <span class="nam">Union</span><span class="op">[</span><span class="nam">int</span><span class="op">,</span> <span class="key">None</span><span class="op">]</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
-    <p id="t407" class="pln"><span class="n"><a href="#t407">407</a></span><span class="t">    <span class="str">"""</span>&nbsp;</span><span class="r"></span></p>
-    <p id="t408" class="pln"><span class="n"><a href="#t408">408</a></span><span class="t"><span class="str">    Query for and return the app_id associated with the app_name</span>&nbsp;</span><span class="r"></span></p>
-    <p id="t409" class="pln"><span class="n"><a href="#t409">409</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
-    <p id="t410" class="pln"><span class="n"><a href="#t410">410</a></span><span class="t"><span class="str">    https://help.veracode.com/reader/orRWez4I0tnZNaA_i0zn9g/Z4Ecf1fw7868vYPVgkglww</span>&nbsp;</span><span class="r"></span></p>
-    <p id="t411" class="pln"><span class="n"><a href="#t411">411</a></span><span class="t"><span class="str">    """</span>&nbsp;</span><span class="r"></span></p>
-    <p id="t412" class="run"><span class="n"><a href="#t412">412</a></span><span class="t">    <span class="key">try</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
-    <p id="t413" class="pln"><span class="n"><a href="#t413">413</a></span><span class="t">        <span class="com">## Use the setter to apply a default to ensure it is valid</span>&nbsp;</span><span class="r"></span></p>
-    <p id="t414" class="run"><span class="n"><a href="#t414">414</a></span><span class="t">        <span class="nam">version</span> <span class="op">=</span> <span class="op">{</span><span class="str">"getapplist.do"</span><span class="op">:</span> <span class="str">"5.0"</span><span class="op">}</span>&nbsp;</span><span class="r"></span></p>
-    <p id="t415" class="run"><span class="n"><a href="#t415">415</a></span><span class="t">        <span class="nam">base_url</span> <span class="op">=</span> <span class="str">"https://analysiscenter.veracode.com/api/"</span>&nbsp;</span><span class="r"></span></p>
-    <p id="t416" class="run"><span class="n"><a href="#t416">416</a></span><span class="t">        <span class="nam">endpoint</span> <span class="op">=</span> <span class="str">"getapplist.do"</span>&nbsp;</span><span class="r"></span></p>
+    <p id="t406" class="run"><span class="n"><a href="#t406">406</a></span><span class="t"><span class="op">@</span><span class="nam">validate</span>&nbsp;</span><span class="r"></span></p>
+    <p id="t407" class="run"><span class="n"><a href="#t407">407</a></span><span class="t"><span class="key">def</span> <span class="nam">get_app_id</span><span class="op">(</span><span class="nam">app_name</span><span class="op">:</span> <span class="nam">str</span><span class="op">)</span> <span class="op">-></span> <span class="nam">Union</span><span class="op">[</span><span class="nam">str</span><span class="op">,</span> <span class="key">None</span><span class="op">]</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
+    <p id="t408" class="pln"><span class="n"><a href="#t408">408</a></span><span class="t">    <span class="str">"""</span>&nbsp;</span><span class="r"></span></p>
+    <p id="t409" class="pln"><span class="n"><a href="#t409">409</a></span><span class="t"><span class="str">    Query for and return the app_id associated with the app_name</span>&nbsp;</span><span class="r"></span></p>
+    <p id="t410" class="pln"><span class="n"><a href="#t410">410</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
+    <p id="t411" class="pln"><span class="n"><a href="#t411">411</a></span><span class="t"><span class="str">    https://help.veracode.com/reader/orRWez4I0tnZNaA_i0zn9g/Z4Ecf1fw7868vYPVgkglww</span>&nbsp;</span><span class="r"></span></p>
+    <p id="t412" class="pln"><span class="n"><a href="#t412">412</a></span><span class="t"><span class="str">    """</span>&nbsp;</span><span class="r"></span></p>
+    <p id="t413" class="run"><span class="n"><a href="#t413">413</a></span><span class="t">    <span class="key">try</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
+    <p id="t414" class="run"><span class="n"><a href="#t414">414</a></span><span class="t">        <span class="nam">endpoint</span> <span class="op">=</span> <span class="str">"getapplist.do"</span>&nbsp;</span><span class="r"></span></p>
+    <p id="t415" class="run"><span class="n"><a href="#t415">415</a></span><span class="t">        <span class="nam">version</span> <span class="op">=</span> <span class="nam">constants</span><span class="op">.</span><span class="nam">UPLOAD_API_VERSIONS</span><span class="op">[</span><span class="nam">endpoint</span><span class="op">]</span>&nbsp;</span><span class="r"></span></p>
+    <p id="t416" class="run"><span class="n"><a href="#t416">416</a></span><span class="t">        <span class="nam">base_url</span> <span class="op">=</span> <span class="nam">constants</span><span class="op">.</span><span class="nam">API_BASE_URL</span>&nbsp;</span><span class="r"></span></p>
     <p id="t417" class="run"><span class="n"><a href="#t417">417</a></span><span class="t">        <span class="nam">params</span> <span class="op">=</span> <span class="op">{</span><span class="str">"include_user_info"</span><span class="op">:</span> <span class="key">False</span><span class="op">}</span>&nbsp;</span><span class="r"></span></p>
     <p id="t418" class="pln"><span class="n"><a href="#t418">418</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p id="t419" class="run"><span class="n"><a href="#t419">419</a></span><span class="t">        <span class="nam">applications</span> <span class="op">=</span> <span class="nam">http_request</span><span class="op">(</span>&nbsp;</span><span class="r"></span></p>
-    <p id="t420" class="pln"><span class="n"><a href="#t420">420</a></span><span class="t">            <span class="nam">verb</span><span class="op">=</span><span class="str">"get"</span><span class="op">,</span> <span class="nam">url</span><span class="op">=</span><span class="nam">base_url</span> <span class="op">+</span> <span class="nam">version</span><span class="op">[</span><span class="nam">endpoint</span><span class="op">]</span> <span class="op">+</span> <span class="str">"/"</span> <span class="op">+</span> <span class="nam">endpoint</span><span class="op">,</span> <span class="nam">params</span><span class="op">=</span><span class="nam">params</span>&nbsp;</span><span class="r"></span></p>
+    <p id="t420" class="pln"><span class="n"><a href="#t420">420</a></span><span class="t">            <span class="nam">verb</span><span class="op">=</span><span class="str">"get"</span><span class="op">,</span> <span class="nam">url</span><span class="op">=</span><span class="nam">base_url</span> <span class="op">+</span> <span class="nam">version</span> <span class="op">+</span> <span class="str">"/"</span> <span class="op">+</span> <span class="nam">endpoint</span><span class="op">,</span> <span class="nam">params</span><span class="op">=</span><span class="nam">params</span>&nbsp;</span><span class="r"></span></p>
     <p id="t421" class="pln"><span class="n"><a href="#t421">421</a></span><span class="t">        <span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p id="t422" class="run"><span class="n"><a href="#t422">422</a></span><span class="t">        <span class="key">if</span> <span class="nam">element_contains_error</span><span class="op">(</span><span class="nam">parsed_xml</span><span class="op">=</span><span class="nam">applications</span><span class="op">)</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
     <p id="t423" class="run"><span class="n"><a href="#t423">423</a></span><span class="t">            <span class="nam">LOG</span><span class="op">.</span><span class="nam">error</span><span class="op">(</span><span class="str">"Veracode returned an error when attempting to call %s"</span><span class="op">,</span> <span class="nam">endpoint</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
@@ -499,7 +499,7 @@
     <div class="content">
         <p>
             <a class="nav" href="index.html">&#xab; index</a> &nbsp; &nbsp; <a class="nav" href="https://coverage.readthedocs.io">coverage.py v5.4</a>,
-            created at 2021-02-25 22:31 +0000
+            created at 2021-03-12 21:51 +0000
         </p>
     </div>
 </div>

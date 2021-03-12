@@ -1,6 +1,6 @@
 {
   "errors": [],
-  "generated_at": "2021-03-11T22:42:23Z",
+  "generated_at": "2021-03-12T21:52:33Z",
   "metrics": {
     "./main.py": {
       "CONFIDENCE.HIGH": 0.0,
@@ -35,7 +35,7 @@
       "SEVERITY.LOW": 0.0,
       "SEVERITY.MEDIUM": 0.0,
       "SEVERITY.UNDEFINED": 0.0,
-      "loc": 919,
+      "loc": 913,
       "nosec": 4
     },
     "./tests/test_api.py": {
@@ -47,7 +47,7 @@
       "SEVERITY.LOW": 0.0,
       "SEVERITY.MEDIUM": 0.0,
       "SEVERITY.UNDEFINED": 0.0,
-      "loc": 687,
+      "loc": 750,
       "nosec": 1
     },
     "./tests/test_check_compliance.py": {
@@ -107,7 +107,7 @@
       "SEVERITY.LOW": 0.0,
       "SEVERITY.MEDIUM": 0.0,
       "SEVERITY.UNDEFINED": 0.0,
-      "loc": 1160,
+      "loc": 1176,
       "nosec": 0
     },
     "./veracode/__init__.py": {
@@ -131,7 +131,7 @@
       "SEVERITY.LOW": 0.0,
       "SEVERITY.MEDIUM": 0.0,
       "SEVERITY.UNDEFINED": 0.0,
-      "loc": 404,
+      "loc": 369,
       "nosec": 0
     },
     "./veracode/check_compliance.py": {
@@ -167,7 +167,7 @@
       "SEVERITY.LOW": 0.0,
       "SEVERITY.MEDIUM": 0.0,
       "SEVERITY.UNDEFINED": 0.0,
-      "loc": 77,
+      "loc": 116,
       "nosec": 0
     },
     "./veracode/submit_artifacts.py": {
@@ -191,7 +191,7 @@
       "SEVERITY.LOW": 0.0,
       "SEVERITY.MEDIUM": 0.0,
       "SEVERITY.UNDEFINED": 0.0,
-      "loc": 352,
+      "loc": 353,
       "nosec": 1
     },
     "_totals": {
@@ -203,7 +203,7 @@
       "SEVERITY.LOW": 0.0,
       "SEVERITY.MEDIUM": 0.0,
       "SEVERITY.UNDEFINED": 0.0,
-      "loc": 6126,
+      "loc": 6204,
       "nosec": 7
     }
   },
