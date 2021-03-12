@@ -30,7 +30,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - name: Install the dependencies
         run: |
-          pip install -r requirements.txt veracode/requirements.txt
+          pip install -r requirements.txt -r veracode/requirements.txt
           echo "CODEQL_PYTHON=$(which python)" >> "${GITHUB_ENV}"
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v1
