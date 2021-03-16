@@ -51,7 +51,7 @@ class TestVeracodeUtils(TestCase):
 
         with patch(
             "veracode.api.get_app_id",
-            return_value=test_constants.VALID_UPLOAD_API["app_id"],
+            return_value=test_constants.VALID_RESULTS_API["app_id"],
         ):
             results_api = ResultsAPI(
                 app_name=test_constants.VALID_RESULTS_API["app_name"]
@@ -66,9 +66,9 @@ class TestVeracodeUtils(TestCase):
 
         with patch(
             "veracode.api.get_app_id",
-            return_value=test_constants.VALID_UPLOAD_API["app_id"],
+            return_value=test_constants.VALID_RESULTS_API["app_id"],
         ):
-            upload_api = UploadAPI(app_name=test_constants.VALID_UPLOAD_API["app_name"])
+            upload_api = UploadAPI(app_name=test_constants.VALID_RESULTS_API["app_name"])
 
         # Test the validate decorator with a valid ResultsAPI
         for is_valid_attribute_return_value in [True, False]:
@@ -1421,7 +1421,7 @@ class TestVeracodeUtils(TestCase):
         # properly configured ResultsAPI object
         with patch(
             "veracode.api.get_app_id",
-            return_value=test_constants.VALID_UPLOAD_API["app_id"],
+            return_value=test_constants.VALID_RESULTS_API["app_id"],
         ):
             results_api = ResultsAPI(
                 app_name=test_constants.VALID_RESULTS_API["app_name"]
@@ -1457,7 +1457,7 @@ class TestVeracodeUtils(TestCase):
 
         with patch(
             "veracode.api.get_app_id",
-            return_value=test_constants.VALID_UPLOAD_API["app_id"],
+            return_value=test_constants.VALID_RESULTS_API["app_id"],
         ):
             results_api = ResultsAPI(
                 app_name=test_constants.VALID_RESULTS_API["app_name"]
