@@ -1,0 +1,74 @@
+---
+name:
+  "CI"
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: Ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - name: Run linting
+        run: make lint
+  test:
+    name: Test
+    runs-on: Ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - name: Run the tests
+        run: make test
+  build:
+    name: Build
+    runs-on: Ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build the Docker image
+        run: make build
+  codecov:
+    name: Codecov
+    runs-on: Ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - name: Run codecov
+        run: make codecov
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+  distribute:
+    name: Distribute
+    if: ${{ github.event_name == 'push' }}
+    needs: [lint, test, build, codecov]
+    runs-on: Ubuntu-20.04
+    steps:
+      - name: Checkout the repo
+        uses: actions/checkout@v2
+      - name: Setup python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
+      - name: Install the dependencies
+        run: |
+          pip3 install -r requirements.txt
+      - name: Login to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Publish the README
+        uses: peter-evans/dockerhub-description@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          repository: seiso/easy_sast
+          short-description: |
+            A docker container that integrates static analysis tools
+            into your project
+      - name: Publish the latest docker image
+        run: invoke publish latest

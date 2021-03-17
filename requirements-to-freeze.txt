@@ -3,8 +3,9 @@ black
 codecov
 coverage
 gitlint
+invoke
 mypy
 pylint
 semgrep
-yamllint
 truffleHog
+yamllint
