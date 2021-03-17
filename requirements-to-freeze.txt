@@ -1,5 +1,6 @@
 bandit
 black
+bumpversion
 codecov
 coverage
 gitlint
