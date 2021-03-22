@@ -2,9 +2,11 @@ bandit
 black
 codecov
 coverage
+docker
 gitlint
+invoke
 mypy
 pylint
 semgrep
-yamllint
 truffleHog
+yamllint

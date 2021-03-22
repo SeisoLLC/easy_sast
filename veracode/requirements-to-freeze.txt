@@ -1,4 +1,4 @@
+PyYAML
 defusedxml
 requests
 veracode-api-signing
-PyYAML
