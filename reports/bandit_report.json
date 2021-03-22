@@ -1,6 +1,6 @@
 {
   "errors": [],
-  "generated_at": "2021-03-11T22:42:23Z",
+  "generated_at": "2021-03-22T13:56:27Z",
   "metrics": {
     "./main.py": {
       "CONFIDENCE.HIGH": 0.0,
@@ -12,6 +12,18 @@
       "SEVERITY.MEDIUM": 0.0,
       "SEVERITY.UNDEFINED": 0.0,
       "loc": 72,
+      "nosec": 0
+    },
+    "./tasks.py": {
+      "CONFIDENCE.HIGH": 0.0,
+      "CONFIDENCE.LOW": 0.0,
+      "CONFIDENCE.MEDIUM": 0.0,
+      "CONFIDENCE.UNDEFINED": 0.0,
+      "SEVERITY.HIGH": 0.0,
+      "SEVERITY.LOW": 0.0,
+      "SEVERITY.MEDIUM": 0.0,
+      "SEVERITY.UNDEFINED": 0.0,
+      "loc": 37,
       "nosec": 0
     },
     "./tests/__init__.py": {
@@ -203,7 +215,7 @@
       "SEVERITY.LOW": 0.0,
       "SEVERITY.MEDIUM": 0.0,
       "SEVERITY.UNDEFINED": 0.0,
-      "loc": 5777,
+      "loc": 5814,
       "nosec": 7
     }
   },
