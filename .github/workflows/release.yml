@@ -20,6 +20,8 @@ jobs:
       - name: Install the dependencies
         run: |
           pip3 install -r requirements.txt
+      - name: Build the Docker image
+        run: make build
       - name: Publish the release to GitHub
         uses: softprops/action-gh-release@v1
         env:
