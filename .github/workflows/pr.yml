@@ -1,0 +1,42 @@
+---
+name: PR
+
+on:
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: Ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          # Needed due to git commit message linting
+          ref: ${{ github.event.pull_request.head.sha }}
+      - name: Run linting
+        run: make lint
+  test:
+    name: Test
+    runs-on: Ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - name: Run the tests
+        run: make test
+  build:
+    name: Build
+    runs-on: Ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build the Docker image
+        run: make build
+  codecov:
+    name: Codecov
+    runs-on: Ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - name: Run codecov
+        run: make codecov
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
