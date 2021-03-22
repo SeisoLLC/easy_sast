@@ -4,7 +4,8 @@ FROM_IMAGE_TAG := 3.9-alpine
 VENDOR         := veracode
 
 COMMIT_HASH    := $(shell git rev-parse HEAD)
-IMAGE_NAME     := $(shell python3 -c "from $(VENDOR) import __project_name__; print(__project_name__)")
+PROJECT_NAME   := $(shell python3 -c "from $(VENDOR) import __project_name__; print(__project_name__)")
+IMAGE_NAME     := seiso/$(PROJECT_NAME)
 VERSION        := $(shell python3 -c "from $(VENDOR) import __version__; print(__version__)")
 
 
