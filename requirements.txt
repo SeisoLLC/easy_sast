@@ -10,6 +10,7 @@ click==7.1.2
 codecov==2.1.11
 colorama==0.4.4
 coverage==5.5
+docker==4.4.4
 gitdb==4.0.5
 gitdb2==4.0.2
 gitlint==0.15.0
@@ -46,5 +47,6 @@ truffleHogRegexes==0.0.7
 typed-ast==1.4.2
 typing-extensions==3.7.4.3
 urllib3==1.26.4
+websocket-client==0.58.0
 wrapt==1.12.1
 yamllint==1.26.0

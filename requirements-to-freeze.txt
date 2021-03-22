@@ -2,6 +2,7 @@ bandit
 black
 codecov
 coverage
+docker
 gitlint
 invoke
 mypy
