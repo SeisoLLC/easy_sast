@@ -404,7 +404,7 @@ def is_valid_netloc(*, netloc: str) -> bool:
 
 
 @validate
-def get_app_id(app_name: str) -> Union[str, None]:
+def get_app_id(*, app_name: str) -> Union[str, None]:
     """
     Query for and return the app_id associated with the app_name
 
