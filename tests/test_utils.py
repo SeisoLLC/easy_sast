@@ -68,7 +68,9 @@ class TestVeracodeUtils(TestCase):
             "veracode.api.get_app_id",
             return_value=test_constants.VALID_RESULTS_API["app_id"],
         ):
-            upload_api = UploadAPI(app_name=test_constants.VALID_RESULTS_API["app_name"])
+            upload_api = UploadAPI(
+                app_name=test_constants.VALID_RESULTS_API["app_name"]
+            )
 
         # Test the validate decorator with a valid ResultsAPI
         for is_valid_attribute_return_value in [True, False]:
