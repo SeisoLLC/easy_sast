@@ -1,10 +1,10 @@
 ## Global
 ARG ARG_FROM_IMAGE=python
-ARG ARG_FROM_IMAGE_TAG=3.8-alpine
+ARG ARG_FROM_IMAGE_TAG=3.9-alpine
 
 ## Builder stage
 # https://hub.docker.com/_/python?tab=tags
-FROM python:3.8 AS builder
+FROM python:3.9 AS builder
 ARG ARG_VENDOR=veracode
 ENV ENV_VENDOR=${ARG_VENDOR}
 WORKDIR /usr/src/app/

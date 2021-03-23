@@ -37,7 +37,7 @@ class VeracodeXMLAPI:
 
         # Set app name and look up ID
         self.app_name = app_name
-        self.app_id = get_app_id(app_name)
+        self.app_id = get_app_id(app_name=app_name)
 
     def http_get(
         self,
