@@ -84,6 +84,8 @@ Want to learn about more advanced usage, such as optimizing SAST for pull reques
  - [Upload API](https://help.veracode.com/reader/LMv_dtSHyb7iIxAQznC~9w/G1Nd5yH0QSlT~vPccPhtRQ)
  - [Results API](https://help.veracode.com/reader/LMv_dtSHyb7iIxAQznC~9w/Mp2BEkLx6rD87k465BWqQg)
 
+Note that at minimum your Veracode user must have permission to access the upload API and its [getapplist.do](https://help.veracode.com/reader/orRWez4I0tnZNaA_i0zn9g/Z4Ecf1fw7868vYPVgkglww) endpoint.
+
 If you'd like to see support for more Veracode APIs or workflows to interact with those APIs, please [open an issue](https://github.com/SeisoLLC/easy_sast/issues) and let us know!
 
 ## Contributing

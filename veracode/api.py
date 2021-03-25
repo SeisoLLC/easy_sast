@@ -35,7 +35,13 @@ class VeracodeXMLAPI:
         ## Use the setter to apply a default to ensure it is valid
         self.base_url = constants.API_BASE_URL
 
-        # Set app name and look up ID
+        """
+        Set app name and look up ID
+
+        Note: App ID resolution depends on access to the Veracode upload API and
+        the "getapplist.do" endpoint:
+        https://help.veracode.com/reader/orRWez4I0tnZNaA_i0zn9g/Z4Ecf1fw7868vYPVgkglww
+        """
         self.app_name = app_name
         self.app_id = get_app_id(app_name=app_name)
 
@@ -345,6 +351,10 @@ class UploadAPI(VeracodeXMLAPI):  # pylint: disable=too-many-instance-attributes
 class ResultsAPI(VeracodeXMLAPI):
     """
     A class to interact with the Results API
+
+    Note: App ID resolution depends on access to the Veracode upload API and
+    the "getapplist.do" endpoint:
+    https://help.veracode.com/reader/orRWez4I0tnZNaA_i0zn9g/Z4Ecf1fw7868vYPVgkglww
     """
 
     def __init__(self, *, app_name: str):
@@ -388,6 +398,10 @@ class ResultsAPI(VeracodeXMLAPI):
 class SandboxAPI(VeracodeXMLAPI):
     """
     A class to interact with the Sandbox API
+
+    Note: App ID resolution depends on access to the Veracode upload API and
+    the "getapplist.do" endpoint:
+    https://help.veracode.com/reader/orRWez4I0tnZNaA_i0zn9g/Z4Ecf1fw7868vYPVgkglww
     """
 
     def __init__(self, *, app_name: str, sandbox_name: str):
