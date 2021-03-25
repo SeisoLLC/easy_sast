@@ -224,6 +224,14 @@ def is_valid_attribute(  # pylint: disable=too-many-branches, too-many-statement
         except (ValueError, TypeError):
             is_valid = False
             LOG.error("app_id must be a string containing a whole number")
+    elif key == "app_name":
+        if not isinstance(value, str):
+            is_valid = False
+            LOG.error("app_name must be a string")
+        # Roughly the Veracode app name allowed characters, excluding \
+        elif not re.fullmatch(r"[a-zA-Z0-9`~!@#$%^&*()_+=\-\[\]|}{;:,./? ]+", value):
+            is_valid = False
+            LOG.error("An invalid app_name was provided")
     elif key == "build_dir":
         if not isinstance(value, Path):
             is_valid = False
@@ -393,3 +401,41 @@ def is_valid_netloc(*, netloc: str) -> bool:
         return True
 
     return False
+
+
+@validate
+def get_app_id(*, app_name: str) -> Union[str, None]:
+    """
+    Query for and return the app_id associated with the app_name
+
+    https://help.veracode.com/reader/orRWez4I0tnZNaA_i0zn9g/Z4Ecf1fw7868vYPVgkglww
+    """
+    try:
+        endpoint = "getapplist.do"
+        version = constants.UPLOAD_API_VERSIONS[endpoint]
+        base_url = constants.API_BASE_URL
+        params = {"include_user_info": False}
+
+        applications = http_request(
+            verb="get", url=base_url + version + "/" + endpoint, params=params
+        )
+        if element_contains_error(parsed_xml=applications):
+            LOG.error("Veracode returned an error when attempting to call %s", endpoint)
+            raise RuntimeError
+
+        for application in applications:
+            if application.get("app_name") == app_name:
+                return application.attrib["app_id"]
+
+        # No app_id exists with the provided app_name
+        LOG.info("An application named %s does not exist", app_name)
+        return None
+    except (
+        HTTPError,
+        ConnectionError,
+        Timeout,
+        TooManyRedirects,
+        RequestException,
+        RuntimeError,
+    ) as e:
+        raise RuntimeError from e

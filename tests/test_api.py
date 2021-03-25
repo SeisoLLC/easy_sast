@@ -35,7 +35,10 @@ class TestVeracodeApiVeracodeXMLAPI(TestCase):
         """
         Test the VeracodeXMLAPI version property
         """
-        veracode_xml_api = VeracodeXMLAPI()
+        with patch(
+            "veracode.api.get_app_id", return_value=constants.VALID_UPLOAD_API["app_id"]
+        ):
+            veracode_xml_api = VeracodeXMLAPI(app_name="TestApp")
 
         # Fail when attempting to get the version property because version is
         # hard coded to an invalid value to discourage direct use of this class
@@ -64,11 +67,10 @@ class TestVeracodeApiVeracodeXMLAPI(TestCase):
         """
         Test the VeracodeXMLAPI app_id property
         """
-        veracode_xml_api = VeracodeXMLAPI()
-
-        # Fail when attempting to get the app_id property because app_id is
-        # hard coded to an invalid value to discourage direct use of this class
-        self.assertRaises(ValueError, getattr, veracode_xml_api, "app_id")
+        with patch(
+            "veracode.api.get_app_id", return_value=constants.VALID_UPLOAD_API["app_id"]
+        ):
+            veracode_xml_api = VeracodeXMLAPI(app_name="TestApp")
 
         # Fail when attempting to set the app_id property to an invalid value
         self.assertRaises(
@@ -88,12 +90,59 @@ class TestVeracodeApiVeracodeXMLAPI(TestCase):
         # deleter is intentionally missing
         self.assertRaises(AttributeError, delattr, veracode_xml_api, "app_id")
 
+    ## VeracodeXMLAPI app_name property
+    def test_veracode_xml_api_app_name(self):
+        """
+        Test the VeracodeXMLAPI app_name property
+        """
+        with patch(
+            "veracode.api.get_app_id", return_value=constants.VALID_UPLOAD_API["app_id"]
+        ):
+            veracode_xml_api = VeracodeXMLAPI(app_name="TestApp")
+
+        # Fail when attempting to set the app_name property to an invalid value
+        self.assertRaises(
+            ValueError,
+            setattr,
+            veracode_xml_api,
+            "app_name",
+            constants.INVALID_RESULTS_API_INCORRECT_APP_NAME["app_name"],
+        )
+
+        # Succeed when setting the app_name property to a valid value
+        self.assertIsNone(
+            setattr(
+                veracode_xml_api, "app_name", constants.VALID_UPLOAD_API["app_name"]
+            )
+        )
+
+        # Fail when attempting to delete the app_name property, because the
+        # deleter is intentionally missing
+        self.assertRaises(AttributeError, delattr, veracode_xml_api, "app_name")
+
+        with patch(
+            "veracode.api.get_app_id", return_value=constants.VALID_UPLOAD_API["app_id"]
+        ):
+            veracode_xml_api = VeracodeXMLAPI(app_name="TestApp")
+
+        # Fail when attempting to set the app_name property to an invalid value
+        self.assertRaises(
+            ValueError,
+            setattr,
+            veracode_xml_api,
+            "app_name",
+            constants.INVALID_RESULTS_API_INVALID_CHAR_APP_NAME["app_name"],
+        )
+
     ## VeracodeXMLAPI base_url property
     def test_veracode_xml_api_base_url(self):
         """
         Test the VeracodeXMLAPI base_url property
         """
-        veracode_xml_api = VeracodeXMLAPI()
+        with patch(
+            "veracode.api.get_app_id", return_value=constants.VALID_UPLOAD_API["app_id"]
+        ):
+            veracode_xml_api = VeracodeXMLAPI(app_name="TestApp")
 
         # Succeed when getting a valid base_url property
         self.assertIsInstance(getattr(veracode_xml_api, "base_url"), str)
@@ -123,7 +172,10 @@ class TestVeracodeApiVeracodeXMLAPI(TestCase):
         """
         Test the VeracodeXMLAPI http_get method
         """
-        veracode_xml_api = VeracodeXMLAPI()
+        with patch(
+            "veracode.api.get_app_id", return_value=constants.VALID_UPLOAD_API["app_id"]
+        ):
+            veracode_xml_api = VeracodeXMLAPI(app_name="TestApp")
 
         # Fail when attempting to delete the http_get method, because the
         # deleter is intentionally missing
@@ -134,7 +186,10 @@ class TestVeracodeApiVeracodeXMLAPI(TestCase):
         """
         Test the VeracodeXMLAPI http_post method
         """
-        veracode_xml_api = VeracodeXMLAPI()
+        with patch(
+            "veracode.api.get_app_id", return_value=constants.VALID_UPLOAD_API["app_id"]
+        ):
+            veracode_xml_api = VeracodeXMLAPI(app_name="TestApp")
 
         # Fail when attempting to delete the http_post method, because the
         # deleter is intentionally missing
@@ -146,7 +201,10 @@ class TestVeracodeApiVeracodeXMLAPI(TestCase):
         """
         Test the VeracodeXMLAPI _validate method
         """
-        veracode_xml_api = VeracodeXMLAPI()
+        with patch(
+            "veracode.api.get_app_id", return_value=constants.VALID_UPLOAD_API["app_id"]
+        ):
+            veracode_xml_api = VeracodeXMLAPI(app_name="TestApp")
 
         # Mock all attributes are invalid
         mock_is_valid_attribute.return_value = False
@@ -176,7 +234,10 @@ class TestVeracodeApiUploadAPI(TestCase):
         """
         Test the UploadAPI version property
         """
-        upload_api = UploadAPI(app_id=constants.VALID_UPLOAD_API["app_id"])
+        with patch(
+            "veracode.api.get_app_id", return_value=constants.VALID_UPLOAD_API["app_id"]
+        ):
+            upload_api = UploadAPI(app_name=constants.VALID_UPLOAD_API["app_name"])
 
         # Succeed when getting a valid version property
         self.assertIsInstance(upload_api.version, dict)
@@ -206,54 +267,61 @@ class TestVeracodeApiUploadAPI(TestCase):
         # deleter is intentionally missing
         self.assertRaises(AttributeError, delattr, upload_api, "version")
 
-    ## UploadAPI app_id property
-    def test_upload_api_app_id(self):
+    ## UploadAPI app_name property
+    def test_upload_api_app_name(self):
         """
-        Test the UploadAPI app_id property
+        Test the UploadAPI app_name property
         """
-        # Fail when attempting to create an UploadAPI object when the app_id
+        # Fail when attempting to create an UploadAPI object when the app_name
         # property wasn't provided to the constructor
         self.assertRaises(TypeError, UploadAPI)
 
-        # Succeed when creating an UploadAPI object when the app_id property is
+        # Succeed when creating an UploadAPI object when the app_name property is
         # properly provided to the constructor
-        upload_api = UploadAPI(app_id=constants.VALID_UPLOAD_API["app_id"])
-        self.assertIsInstance(getattr(upload_api, "app_id"), str)
+        with patch(
+            "veracode.api.get_app_id", return_value=constants.VALID_UPLOAD_API["app_id"]
+        ):
+            upload_api = UploadAPI(app_name=constants.VALID_UPLOAD_API["app_name"])
 
-        # Succeed when setting the app_id property to a valid value
+        self.assertIsInstance(getattr(upload_api, "app_name"), str)
+
+        # Succeed when setting the app_name property to a valid value
         self.assertIsNone(
-            setattr(upload_api, "app_id", constants.VALID_UPLOAD_API["app_id"])
+            setattr(upload_api, "app_name", constants.VALID_UPLOAD_API["app_name"])
         )
 
-        # Succeed when getting a valid app_id property
-        self.assertIsInstance(upload_api.app_id, str)
+        # Succeed when getting a valid app_name property
+        self.assertIsInstance(upload_api.app_name, str)
 
-        # Fail when attempting to set the app_id property to an invalid value
+        # Fail when attempting to set the app_name property to an invalid value
         self.assertRaises(
             ValueError,
             setattr,
             upload_api,
-            "app_id",
-            constants.INVALID_RESULTS_API_INCORRECT_APP_ID["app_id"],
+            "app_name",
+            constants.INVALID_RESULTS_API_INCORRECT_APP_NAME["app_name"],
         )
 
-        # Fail when attempting to get the app_id property when it contains an
+        # Fail when attempting to get the app_name property when it contains an
         # invalid value
-        upload_api._app_id = constants.INVALID_RESULTS_API_INCORRECT_APP_ID[  # pylint: disable=protected-access
-            "app_id"
+        upload_api._app_name = constants.INVALID_RESULTS_API_INCORRECT_APP_NAME[  # pylint: disable=protected-access
+            "app_name"
         ]
-        self.assertRaises(ValueError, getattr, upload_api, "app_id")
+        self.assertRaises(ValueError, getattr, upload_api, "app_name")
 
-        # Fail when attempting to delete the app_id property, because the
+        # Fail when attempting to delete the app_name property, because the
         # deleter is intentionally missing
-        self.assertRaises(AttributeError, delattr, upload_api, "app_id")
+        self.assertRaises(AttributeError, delattr, upload_api, "app_name")
 
     ## UploadAPI base_url property
     def test_upload_api_base_url(self):
         """
         Test the UploadAPI base_url property
         """
-        upload_api = UploadAPI(app_id=constants.VALID_UPLOAD_API["app_id"])
+        with patch(
+            "veracode.api.get_app_id", return_value=constants.VALID_UPLOAD_API["app_id"]
+        ):
+            upload_api = UploadAPI(app_name=constants.VALID_UPLOAD_API["app_name"])
 
         # Succeed when getting a valid base_url property
         self.assertIsInstance(upload_api.base_url, str)
@@ -288,7 +356,10 @@ class TestVeracodeApiUploadAPI(TestCase):
         """
         Test the UploadAPI build_dir property
         """
-        upload_api = UploadAPI(app_id=constants.VALID_UPLOAD_API["app_id"])
+        with patch(
+            "veracode.api.get_app_id", return_value=constants.VALID_UPLOAD_API["app_id"]
+        ):
+            upload_api = UploadAPI(app_name=constants.VALID_UPLOAD_API["app_name"])
 
         # Succeed when getting a valid build_dir property
         self.assertIsInstance(upload_api.build_dir, Path)
@@ -324,7 +395,10 @@ class TestVeracodeApiUploadAPI(TestCase):
         """
         Test the UploadAPI build_id property
         """
-        upload_api = UploadAPI(app_id=constants.VALID_UPLOAD_API["app_id"])
+        with patch(
+            "veracode.api.get_app_id", return_value=constants.VALID_UPLOAD_API["app_id"]
+        ):
+            upload_api = UploadAPI(app_name=constants.VALID_UPLOAD_API["app_name"])
 
         # Succeed when getting a valid build_id property
         self.assertIsInstance(upload_api.build_id, str)
@@ -359,7 +433,10 @@ class TestVeracodeApiUploadAPI(TestCase):
         """
         Test the UploadAPI sandbox_id property
         """
-        upload_api = UploadAPI(app_id=constants.VALID_UPLOAD_API["app_id"])
+        with patch(
+            "veracode.api.get_app_id", return_value=constants.VALID_UPLOAD_API["app_id"]
+        ):
+            upload_api = UploadAPI(app_name=constants.VALID_UPLOAD_API["app_name"])
 
         # Succeed when getting the default sandbox_id property
         self.assertIsNone(upload_api.sandbox_id)
@@ -368,7 +445,7 @@ class TestVeracodeApiUploadAPI(TestCase):
         self.assertIsNone(setattr(upload_api, "sandbox_id", None))
         self.assertIsNone(setattr(upload_api, "sandbox_id", "12489"))
 
-        # Succeed when getting a valid app_id property
+        # Succeed when getting a valid sandbox_id property
         self.assertIsInstance(upload_api.sandbox_id, str)
 
         # Fail when attempting to set the sandbox_id property to an invalid
@@ -395,7 +472,10 @@ class TestVeracodeApiUploadAPI(TestCase):
         """
         Test the UploadAPI scan_all_nonfatal_top_level_modules property
         """
-        upload_api = UploadAPI(app_id=constants.VALID_UPLOAD_API["app_id"])
+        with patch(
+            "veracode.api.get_app_id", return_value=constants.VALID_UPLOAD_API["app_id"]
+        ):
+            upload_api = UploadAPI(app_name=constants.VALID_UPLOAD_API["app_name"])
 
         # Succeed when getting a valid scan_all_nonfatal_top_level_modules
         # property
@@ -444,7 +524,10 @@ class TestVeracodeApiUploadAPI(TestCase):
         """
         Test the UploadAPI auto_scan property
         """
-        upload_api = UploadAPI(app_id=constants.VALID_UPLOAD_API["app_id"])
+        with patch(
+            "veracode.api.get_app_id", return_value=constants.VALID_UPLOAD_API["app_id"]
+        ):
+            upload_api = UploadAPI(app_name=constants.VALID_UPLOAD_API["app_name"])
 
         # Succeed when getting a valid auto_scan property
         self.assertIsInstance(upload_api.auto_scan, bool)
@@ -481,7 +564,10 @@ class TestVeracodeApiUploadAPI(TestCase):
         """
         Test the UploadAPI http_get method
         """
-        upload_api = UploadAPI(app_id=constants.VALID_UPLOAD_API["app_id"])
+        with patch(
+            "veracode.api.get_app_id", return_value=constants.VALID_UPLOAD_API["app_id"]
+        ):
+            upload_api = UploadAPI(app_name=constants.VALID_UPLOAD_API["app_name"])
 
         # Fail when attempting to call the http_get method with invalid
         # arguments
@@ -505,7 +591,10 @@ class TestVeracodeApiUploadAPI(TestCase):
         """
         Test the UploadAPI http_post method
         """
-        upload_api = UploadAPI(app_id=constants.VALID_UPLOAD_API["app_id"])
+        with patch(
+            "veracode.api.get_app_id", return_value=constants.VALID_UPLOAD_API["app_id"]
+        ):
+            upload_api = UploadAPI(app_name=constants.VALID_UPLOAD_API["app_name"])
 
         # Fail when attempting to call the http_post method with invalid
         # arguments
@@ -530,7 +619,10 @@ class TestVeracodeApiUploadAPI(TestCase):
         """
         Test the UploadAPI _validate method
         """
-        upload_api = UploadAPI(app_id=constants.VALID_UPLOAD_API["app_id"])
+        with patch(
+            "veracode.api.get_app_id", return_value=constants.VALID_UPLOAD_API["app_id"]
+        ):
+            upload_api = UploadAPI(app_name=constants.VALID_UPLOAD_API["app_name"])
 
         # Mock all attributes are invalid
         mock_is_valid_attribute.return_value = False
@@ -570,7 +662,10 @@ class TestVeracodeApiResultsAPI(TestCase):
         """
         Test the ResultsAPI version property
         """
-        results_api = ResultsAPI(app_id=constants.VALID_RESULTS_API["app_id"])
+        with patch(
+            "veracode.api.get_app_id", return_value=constants.VALID_UPLOAD_API["app_id"]
+        ):
+            results_api = ResultsAPI(app_name=constants.VALID_RESULTS_API["app_name"])
 
         # Succeed when getting a valid version property
         self.assertIsInstance(results_api.version, dict)
@@ -600,55 +695,61 @@ class TestVeracodeApiResultsAPI(TestCase):
         # deleter is intentionally missing
         self.assertRaises(AttributeError, delattr, results_api, "version")
 
-    ## ResultsAPI app_id property
-    def test_results_api_app_id(self):
+    ## ResultsAPI app_name property
+    def test_results_api_app_name(self):
         """
-        Test the ResultsAPI app_id property
+        Test the ResultsAPI app_name property
         """
-        # Fail when attempting to create a ResultsAPI object when the app_id
+        # Fail when attempting to create a ResultsAPI object when the app_name
         # property wasn't provided to the constructor
         self.assertRaises(TypeError, ResultsAPI)
 
-        # Succeed when creating a ResultsAPI object when the app_id property is
+        # Succeed when creating a ResultsAPI object when the app_name property is
         # properly provided to the constructor
-        results_api = ResultsAPI(app_id=constants.VALID_RESULTS_API["app_id"])
+        with patch(
+            "veracode.api.get_app_id", return_value=constants.VALID_UPLOAD_API["app_id"]
+        ):
+            results_api = ResultsAPI(app_name=constants.VALID_RESULTS_API["app_name"])
 
-        self.assertIsInstance(getattr(results_api, "app_id"), str)
+        self.assertIsInstance(getattr(results_api, "app_name"), str)
 
-        # Succeed when setting the app_id property to a valid value
+        # Succeed when setting the app_name property to a valid value
         self.assertIsNone(
-            setattr(results_api, "app_id", constants.VALID_RESULTS_API["app_id"])
+            setattr(results_api, "app_name", constants.VALID_RESULTS_API["app_name"])
         )
 
-        # Succeed when getting a valid app_id property
-        self.assertIsInstance(results_api.app_id, str)
+        # Succeed when getting a valid app_name property
+        self.assertIsInstance(results_api.app_name, str)
 
-        # Fail when attempting to set the app_id property to an invalid value
+        # Fail when attempting to set the app_name property to an invalid value
         self.assertRaises(
             ValueError,
             setattr,
             results_api,
-            "app_id",
-            constants.INVALID_RESULTS_API_INCORRECT_APP_ID["app_id"],
+            "app_name",
+            constants.INVALID_RESULTS_API_INCORRECT_APP_NAME["app_name"],
         )
 
-        # Fail when attempting to get the app_id property when it contains an
+        # Fail when attempting to get the app_name property when it contains an
         # invalid value
-        results_api._app_id = constants.INVALID_RESULTS_API_INCORRECT_APP_ID[  # pylint: disable=protected-access
-            "app_id"
+        results_api._app_name = constants.INVALID_RESULTS_API_INCORRECT_APP_NAME[  # pylint: disable=protected-access
+            "app_name"
         ]
-        self.assertRaises(ValueError, getattr, results_api, "app_id")
+        self.assertRaises(ValueError, getattr, results_api, "app_name")
 
-        # Fail when attempting to delete the app_id property, because the
+        # Fail when attempting to delete the app_name property, because the
         # deleter is intentionally missing
-        self.assertRaises(AttributeError, delattr, results_api, "app_id")
+        self.assertRaises(AttributeError, delattr, results_api, "app_name")
 
     ## ResultsAPI base_url property
     def test_results_api_base_url(self):
         """
         Test the ResultsAPI base_url property
         """
-        results_api = ResultsAPI(app_id=constants.VALID_RESULTS_API["app_id"])
+        with patch(
+            "veracode.api.get_app_id", return_value=constants.VALID_UPLOAD_API["app_id"]
+        ):
+            results_api = ResultsAPI(app_name=constants.VALID_RESULTS_API["app_name"])
 
         # Succeed when getting a valid base_url property
         self.assertIsInstance(results_api.base_url, str)
@@ -683,7 +784,10 @@ class TestVeracodeApiResultsAPI(TestCase):
         """
         Test the ResultsAPI ignore_compliance_status property
         """
-        results_api = ResultsAPI(app_id=constants.VALID_RESULTS_API["app_id"])
+        with patch(
+            "veracode.api.get_app_id", return_value=constants.VALID_UPLOAD_API["app_id"]
+        ):
+            results_api = ResultsAPI(app_name=constants.VALID_RESULTS_API["app_name"])
 
         # Succeed when getting a valid ignore_compliance_status property
         self.assertIsInstance(results_api.ignore_compliance_status, bool)
@@ -729,7 +833,10 @@ class TestVeracodeApiResultsAPI(TestCase):
         """
         Test the ResultsAPI http_get method
         """
-        results_api = ResultsAPI(app_id=constants.VALID_RESULTS_API["app_id"])
+        with patch(
+            "veracode.api.get_app_id", return_value=constants.VALID_UPLOAD_API["app_id"]
+        ):
+            results_api = ResultsAPI(app_name=constants.VALID_RESULTS_API["app_name"])
 
         # Fail when attempting to call the http_get method with invalid
         # arguments
@@ -754,7 +861,10 @@ class TestVeracodeApiResultsAPI(TestCase):
         """
         Test the ResultsAPI http_post method
         """
-        results_api = ResultsAPI(app_id=constants.VALID_RESULTS_API["app_id"])
+        with patch(
+            "veracode.api.get_app_id", return_value=constants.VALID_UPLOAD_API["app_id"]
+        ):
+            results_api = ResultsAPI(app_name=constants.VALID_RESULTS_API["app_name"])
 
         # Fail when attempting to call the http_post method with invalid
         # arguments
@@ -783,7 +893,10 @@ class TestVeracodeApiResultsAPI(TestCase):
         """
         Test the ResultsAPI _validate method
         """
-        results_api = ResultsAPI(app_id=constants.VALID_RESULTS_API["app_id"])
+        with patch(
+            "veracode.api.get_app_id", return_value=constants.VALID_UPLOAD_API["app_id"]
+        ):
+            results_api = ResultsAPI(app_name=constants.VALID_RESULTS_API["app_name"])
 
         # Mock all attributes are invalid
         mock_is_valid_attribute.return_value = False
@@ -823,10 +936,13 @@ class TestVeracodeApiSandboxAPI(TestCase):
         """
         Test the SandboxAPI version property
         """
-        sandbox_api = SandboxAPI(
-            app_id=constants.VALID_SANDBOX_API["app_id"],
-            sandbox_name=constants.VALID_SANDBOX_API["sandbox_name"],
-        )
+        with patch(
+            "veracode.api.get_app_id", return_value=constants.VALID_UPLOAD_API["app_id"]
+        ):
+            sandbox_api = SandboxAPI(
+                app_name=constants.VALID_SANDBOX_API["app_name"],
+                sandbox_name=constants.VALID_SANDBOX_API["sandbox_name"],
+            )
 
         # Succeed when getting a valid version property
         self.assertIsInstance(sandbox_api.version, dict)
@@ -856,60 +972,67 @@ class TestVeracodeApiSandboxAPI(TestCase):
         # deleter is intentionally missing
         self.assertRaises(AttributeError, delattr, sandbox_api, "version")
 
-    ## SandboxAPI app_id property
-    def test_sandbox_api_app_id(self):
+    ## SandboxAPI app_name property
+    def test_sandbox_api_app_name(self):
         """
-        Test the SandboxAPI app_id property
+        Test the SandboxAPI app_name property
         """
-        # Fail when attempting to create an SandboxAPI object when the app_id
+        # Fail when attempting to create an SandboxAPI object when the app_name
         # property wasn't provided to the constructor
         self.assertRaises(TypeError, SandboxAPI)
 
-        # Succeed when creating an SandboxAPI object when the app_id property is
+        # Succeed when creating an SandboxAPI object when the app_name property is
         # properly provided to the constructor
-        sandbox_api = SandboxAPI(
-            app_id=constants.VALID_SANDBOX_API["app_id"],
-            sandbox_name=constants.VALID_SANDBOX_API["sandbox_name"],
-        )
-        self.assertIsInstance(getattr(sandbox_api, "app_id"), str)
+        with patch(
+            "veracode.api.get_app_id", return_value=constants.VALID_UPLOAD_API["app_id"]
+        ):
+            sandbox_api = SandboxAPI(
+                app_name=constants.VALID_SANDBOX_API["app_name"],
+                sandbox_name=constants.VALID_SANDBOX_API["sandbox_name"],
+            )
 
-        # Succeed when setting the app_id property to a valid value
+        self.assertIsInstance(getattr(sandbox_api, "app_name"), str)
+
+        # Succeed when setting the app_name property to a valid value
         self.assertIsNone(
-            setattr(sandbox_api, "app_id", constants.VALID_SANDBOX_API["app_id"])
+            setattr(sandbox_api, "app_name", constants.VALID_SANDBOX_API["app_name"])
         )
 
-        # Succeed when getting a valid app_id property
-        self.assertIsInstance(sandbox_api.app_id, str)
+        # Succeed when getting a valid app_name property
+        self.assertIsInstance(sandbox_api.app_name, str)
 
-        # Fail when attempting to set the app_id property to an invalid value
+        # Fail when attempting to set the app_name property to an invalid value
         self.assertRaises(
             ValueError,
             setattr,
             sandbox_api,
-            "app_id",
-            constants.INVALID_RESULTS_API_INCORRECT_APP_ID["app_id"],
+            "app_name",
+            constants.INVALID_RESULTS_API_INCORRECT_APP_NAME["app_name"],
         )
 
-        # Fail when attempting to get the app_id property when it contains an
+        # Fail when attempting to get the app_name property when it contains an
         # invalid value
-        sandbox_api._app_id = constants.INVALID_RESULTS_API_INCORRECT_APP_ID[  # pylint: disable=protected-access
-            "app_id"
+        sandbox_api._app_name = constants.INVALID_RESULTS_API_INCORRECT_APP_NAME[  # pylint: disable=protected-access
+            "app_name"
         ]
-        self.assertRaises(ValueError, getattr, sandbox_api, "app_id")
+        self.assertRaises(ValueError, getattr, sandbox_api, "app_name")
 
-        # Fail when attempting to delete the app_id property, because the
+        # Fail when attempting to delete the app_name property, because the
         # deleter is intentionally missing
-        self.assertRaises(AttributeError, delattr, sandbox_api, "app_id")
+        self.assertRaises(AttributeError, delattr, sandbox_api, "app_name")
 
     ## SandboxAPI base_url property
     def test_sandbox_api_base_url(self):
         """
         Test the SandboxAPI base_url property
         """
-        sandbox_api = SandboxAPI(
-            app_id=constants.VALID_SANDBOX_API["app_id"],
-            sandbox_name=constants.VALID_SANDBOX_API["sandbox_name"],
-        )
+        with patch(
+            "veracode.api.get_app_id", return_value=constants.VALID_UPLOAD_API["app_id"]
+        ):
+            sandbox_api = SandboxAPI(
+                app_name=constants.VALID_SANDBOX_API["app_name"],
+                sandbox_name=constants.VALID_SANDBOX_API["sandbox_name"],
+            )
 
         # Succeed when getting a valid base_url property
         self.assertIsInstance(sandbox_api.base_url, str)
@@ -944,10 +1067,13 @@ class TestVeracodeApiSandboxAPI(TestCase):
         """
         Test the SandboxAPI build_id property
         """
-        sandbox_api = SandboxAPI(
-            app_id=constants.VALID_SANDBOX_API["app_id"],
-            sandbox_name=constants.VALID_SANDBOX_API["sandbox_name"],
-        )
+        with patch(
+            "veracode.api.get_app_id", return_value=constants.VALID_UPLOAD_API["app_id"]
+        ):
+            sandbox_api = SandboxAPI(
+                app_name=constants.VALID_SANDBOX_API["app_name"],
+                sandbox_name=constants.VALID_SANDBOX_API["sandbox_name"],
+            )
 
         # Succeed when getting a valid build_id property
         self.assertIsInstance(sandbox_api.build_id, str)
@@ -982,10 +1108,13 @@ class TestVeracodeApiSandboxAPI(TestCase):
         """
         Test the SandboxAPI sandbox_id property
         """
-        sandbox_api = SandboxAPI(
-            app_id=constants.VALID_SANDBOX_API["app_id"],
-            sandbox_name=constants.VALID_SANDBOX_API["sandbox_name"],
-        )
+        with patch(
+            "veracode.api.get_app_id", return_value=constants.VALID_UPLOAD_API["app_id"]
+        ):
+            sandbox_api = SandboxAPI(
+                app_name=constants.VALID_SANDBOX_API["app_name"],
+                sandbox_name=constants.VALID_SANDBOX_API["sandbox_name"],
+            )
 
         # Succeed when getting a the default sandbox_id property
         self.assertIsNone(sandbox_api.sandbox_id)
@@ -994,7 +1123,7 @@ class TestVeracodeApiSandboxAPI(TestCase):
         self.assertIsNone(setattr(sandbox_api, "sandbox_id", None))
         self.assertIsNone(setattr(sandbox_api, "sandbox_id", "12489"))
 
-        # Succeed when getting a valid app_id property
+        # Succeed when getting a valid sandbox_id property
         self.assertIsInstance(sandbox_api.sandbox_id, str)
 
         # Fail when attempting to set the sandbox_id property to an invalid
@@ -1021,10 +1150,13 @@ class TestVeracodeApiSandboxAPI(TestCase):
         """
         Test the SandboxAPI sandbox_name property
         """
-        sandbox_api = SandboxAPI(
-            app_id=constants.VALID_SANDBOX_API["app_id"],
-            sandbox_name=constants.VALID_SANDBOX_API["sandbox_name"],
-        )
+        with patch(
+            "veracode.api.get_app_id", return_value=constants.VALID_UPLOAD_API["app_id"]
+        ):
+            sandbox_api = SandboxAPI(
+                app_name=constants.VALID_SANDBOX_API["app_name"],
+                sandbox_name=constants.VALID_SANDBOX_API["sandbox_name"],
+            )
 
         # Succeed when getting a valid sandbox_name property
         self.assertIsInstance(sandbox_api.sandbox_name, str)

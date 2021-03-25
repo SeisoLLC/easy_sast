@@ -46,28 +46,46 @@ class TestSubmitArtifacts(TestCase):
             with patch(
                 "veracode.submit_artifacts.element_contains_error", return_value=False
             ):
-                # Policy scan, no error in response body
-                upload_api = UploadAPI(app_id=test_constants.VALID_UPLOAD_API["app_id"])
-                self.assertTrue(submit_artifacts.create_build(upload_api=upload_api))
+                with patch("veracode.api.get_app_id", return_value="1337"):
+                    # Policy scan, no error in response body
+                    upload_api = UploadAPI(
+                        app_name=test_constants.VALID_UPLOAD_API["app_name"]
+                    )
+                    self.assertTrue(
+                        submit_artifacts.create_build(upload_api=upload_api)
+                    )
 
-                # Sandbox scan, no error in response body
-                upload_api = UploadAPI(app_id=test_constants.VALID_UPLOAD_API["app_id"])
-                upload_api.sandbox_id = "12345"
-                self.assertTrue(submit_artifacts.create_build(upload_api=upload_api))
+                    # Sandbox scan, no error in response body
+                    upload_api = UploadAPI(
+                        app_name=test_constants.VALID_UPLOAD_API["app_name"]
+                    )
+                    upload_api.sandbox_id = "12345"
+                    self.assertTrue(
+                        submit_artifacts.create_build(upload_api=upload_api)
+                    )
 
             # Fail when the create_build function gets a response containing an
             # error in the response body
             with patch(
                 "veracode.submit_artifacts.element_contains_error", return_value=True
             ):
-                # Policy scan, response body contains error
-                upload_api = UploadAPI(app_id=test_constants.VALID_UPLOAD_API["app_id"])
-                self.assertFalse(submit_artifacts.create_build(upload_api=upload_api))
+                with patch("veracode.api.get_app_id", return_value="1337"):
+                    # Policy scan, response body contains error
+                    upload_api = UploadAPI(
+                        app_name=test_constants.VALID_UPLOAD_API["app_name"]
+                    )
+                    self.assertFalse(
+                        submit_artifacts.create_build(upload_api=upload_api)
+                    )
 
-                # Sandbox scan, response body contains error
-                upload_api = UploadAPI(app_id=test_constants.VALID_UPLOAD_API["app_id"])
-                upload_api.sandbox_id = "12345"
-                self.assertFalse(submit_artifacts.create_build(upload_api=upload_api))
+                    # Sandbox scan, response body contains error
+                    upload_api = UploadAPI(
+                        app_name=test_constants.VALID_UPLOAD_API["app_name"]
+                    )
+                    upload_api.sandbox_id = "12345"
+                    self.assertFalse(
+                        submit_artifacts.create_build(upload_api=upload_api)
+                    )
 
         # Fail when calling the create_build function and the api call gets a
         # mocked error message response and a mocked side effect of HTTPError
@@ -80,14 +98,23 @@ class TestSubmitArtifacts(TestCase):
             with patch(
                 "veracode.submit_artifacts.element_contains_error", return_value=False
             ):
-                # Policy scan, no error in response body
-                upload_api = UploadAPI(app_id=test_constants.VALID_UPLOAD_API["app_id"])
-                self.assertFalse(submit_artifacts.create_build(upload_api=upload_api))
+                with patch("veracode.api.get_app_id", return_value="1337"):
+                    # Policy scan, no error in response body
+                    upload_api = UploadAPI(
+                        app_name=test_constants.VALID_UPLOAD_API["app_name"]
+                    )
+                    self.assertFalse(
+                        submit_artifacts.create_build(upload_api=upload_api)
+                    )
 
-                # Sandbox scan, no error in response body
-                upload_api = UploadAPI(app_id=test_constants.VALID_UPLOAD_API["app_id"])
-                upload_api.sandbox_id = "12345"
-                self.assertFalse(submit_artifacts.create_build(upload_api=upload_api))
+                    # Sandbox scan, no error in response body
+                    upload_api = UploadAPI(
+                        app_name=test_constants.VALID_UPLOAD_API["app_name"]
+                    )
+                    upload_api.sandbox_id = "12345"
+                    self.assertFalse(
+                        submit_artifacts.create_build(upload_api=upload_api)
+                    )
 
     def test_begin_prescan(self):
         """
@@ -105,28 +132,46 @@ class TestSubmitArtifacts(TestCase):
             with patch(
                 "veracode.submit_artifacts.element_contains_error", return_value=False
             ):
-                # Policy scan
-                upload_api = UploadAPI(app_id=test_constants.VALID_UPLOAD_API["app_id"])
-                self.assertTrue(submit_artifacts.begin_prescan(upload_api=upload_api))
+                with patch("veracode.api.get_app_id", return_value="1337"):
+                    # Policy scan
+                    upload_api = UploadAPI(
+                        app_name=test_constants.VALID_UPLOAD_API["app_name"]
+                    )
+                    self.assertTrue(
+                        submit_artifacts.begin_prescan(upload_api=upload_api)
+                    )
 
-                # Sandbox scan
-                upload_api = UploadAPI(app_id=test_constants.VALID_UPLOAD_API["app_id"])
-                upload_api.sandbox_id = "12345"
-                self.assertTrue(submit_artifacts.begin_prescan(upload_api=upload_api))
+                    # Sandbox scan
+                    upload_api = UploadAPI(
+                        app_name=test_constants.VALID_UPLOAD_API["app_name"]
+                    )
+                    upload_api.sandbox_id = "12345"
+                    self.assertTrue(
+                        submit_artifacts.begin_prescan(upload_api=upload_api)
+                    )
 
             # Fail when the begin_prescan function gets a response containing an
             # error in the response body
             with patch(
                 "veracode.submit_artifacts.element_contains_error", return_value=True
             ):
-                # Policy scan
-                upload_api = UploadAPI(app_id=test_constants.VALID_UPLOAD_API["app_id"])
-                self.assertFalse(submit_artifacts.begin_prescan(upload_api=upload_api))
+                with patch("veracode.api.get_app_id", return_value="1337"):
+                    # Policy scan
+                    upload_api = UploadAPI(
+                        app_name=test_constants.VALID_UPLOAD_API["app_name"]
+                    )
+                    self.assertFalse(
+                        submit_artifacts.begin_prescan(upload_api=upload_api)
+                    )
 
-                # Sandbox scan
-                upload_api = UploadAPI(app_id=test_constants.VALID_UPLOAD_API["app_id"])
-                upload_api.sandbox_id = "12345"
-                self.assertFalse(submit_artifacts.begin_prescan(upload_api=upload_api))
+                    # Sandbox scan
+                    upload_api = UploadAPI(
+                        app_name=test_constants.VALID_UPLOAD_API["app_name"]
+                    )
+                    upload_api.sandbox_id = "12345"
+                    self.assertFalse(
+                        submit_artifacts.begin_prescan(upload_api=upload_api)
+                    )
 
         # Fail when calling the begin_prescan function and the api call gets a
         # mocked side effect of HTTPError
@@ -134,14 +179,19 @@ class TestSubmitArtifacts(TestCase):
             with patch(
                 "veracode.submit_artifacts.element_contains_error", return_value=False
             ):
-                # Policy scan
-                upload_api = UploadAPI(app_id="31337")
-                self.assertFalse(submit_artifacts.begin_prescan(upload_api=upload_api))
+                with patch("veracode.api.get_app_id", return_value="1337"):
+                    # Policy scan
+                    upload_api = UploadAPI(app_name="31337")
+                    self.assertFalse(
+                        submit_artifacts.begin_prescan(upload_api=upload_api)
+                    )
 
-                # Sandbox scan
-                upload_api = UploadAPI(app_id="31337")
-                upload_api.sandbox_id = "12345"
-                self.assertFalse(submit_artifacts.begin_prescan(upload_api=upload_api))
+                    # Sandbox scan
+                    upload_api = UploadAPI(app_name="31337")
+                    upload_api.sandbox_id = "12345"
+                    self.assertFalse(
+                        submit_artifacts.begin_prescan(upload_api=upload_api)
+                    )
 
     def test_filter_file_file_is_in_whitelist(self):
         """Test the filter_file function with a valid file suffix"""
@@ -171,8 +221,11 @@ class TestSubmitArtifacts(TestCase):
             ],
         ):
             # Policy scan
-            upload_api = UploadAPI(app_id=test_constants.VALID_UPLOAD_API["app_id"])
-            valid_artifact = test_constants.VALID_FILE["Path"]
+            with patch("veracode.api.get_app_id", return_value="1337"):
+                upload_api = UploadAPI(
+                    app_name=test_constants.VALID_UPLOAD_API["app_name"]
+                )
+                valid_artifact = test_constants.VALID_FILE["Path"]
 
             with patch(
                 "veracode.submit_artifacts.open",
@@ -185,9 +238,12 @@ class TestSubmitArtifacts(TestCase):
                 )
 
             # Sandbox scan
-            upload_api = UploadAPI(app_id=test_constants.VALID_UPLOAD_API["app_id"])
-            upload_api.sandbox_id = "12345"
-            valid_artifact = test_constants.VALID_FILE["Path"]
+            with patch("veracode.api.get_app_id", return_value="1337"):
+                upload_api = UploadAPI(
+                    app_name=test_constants.VALID_UPLOAD_API["app_name"]
+                )
+                upload_api.sandbox_id = "12345"
+                valid_artifact = test_constants.VALID_FILE["Path"]
 
             with patch(
                 "veracode.submit_artifacts.open",
@@ -210,8 +266,11 @@ class TestSubmitArtifacts(TestCase):
             side_effect=HTTPError(),
         ):
             # Policy scan
-            upload_api = UploadAPI(app_id=test_constants.VALID_UPLOAD_API["app_id"])
-            valid_artifact = test_constants.VALID_FILE["Path"]
+            with patch("veracode.api.get_app_id", return_value="1337"):
+                upload_api = UploadAPI(
+                    app_name=test_constants.VALID_UPLOAD_API["app_name"]
+                )
+                valid_artifact = test_constants.VALID_FILE["Path"]
 
             with patch(
                 "veracode.submit_artifacts.open",
@@ -225,9 +284,12 @@ class TestSubmitArtifacts(TestCase):
                 )
 
             # Sandbox scan
-            upload_api = UploadAPI(app_id=test_constants.VALID_UPLOAD_API["app_id"])
-            upload_api.sandbox_id = "12345"
-            valid_artifact = test_constants.VALID_FILE["Path"]
+            with patch("veracode.api.get_app_id", return_value="1337"):
+                upload_api = UploadAPI(
+                    app_name=test_constants.VALID_UPLOAD_API["app_name"]
+                )
+                upload_api.sandbox_id = "12345"
+                valid_artifact = test_constants.VALID_FILE["Path"]
 
             with patch(
                 "veracode.submit_artifacts.open",
@@ -253,7 +315,10 @@ class TestSubmitArtifacts(TestCase):
                 "Element"
             ],
         ):
-            sandbox_api = SandboxAPI(app_id="31337", sandbox_name="Project Security")
+            with patch("veracode.api.get_app_id", return_value="1337"):
+                sandbox_api = SandboxAPI(
+                    app_name="TestApp", sandbox_name="Project Security"
+                )
             with patch(
                 "veracode.submit_artifacts.element_contains_error", return_value=False
             ):
@@ -282,9 +347,10 @@ class TestSubmitArtifacts(TestCase):
                 "Element"
             ],
         ):
-            sandbox_api = SandboxAPI(
-                app_id="31337", sandbox_name="Unknown Sandbox Name"
-            )
+            with patch("veracode.api.get_app_id", return_value="1337"):
+                sandbox_api = SandboxAPI(
+                    app_name="TestApp", sandbox_name="Unknown Sandbox Name"
+                )
             with patch(
                 "veracode.submit_artifacts.element_contains_error", return_value=False
             ):
@@ -305,7 +371,10 @@ class TestSubmitArtifacts(TestCase):
                 "Element"
             ],
         ):
-            sandbox_api = SandboxAPI(app_id="31337", sandbox_name="Project Security")
+            with patch("veracode.api.get_app_id", return_value="1337"):
+                sandbox_api = SandboxAPI(
+                    app_name="31337", sandbox_name="Project Security"
+                )
             with patch(
                 "veracode.submit_artifacts.element_contains_error", return_value=False
             ):
@@ -333,7 +402,10 @@ class TestSubmitArtifacts(TestCase):
                 "Element"
             ],
         ):
-            sandbox_api = SandboxAPI(app_id="31337", sandbox_name="Project Security")
+            with patch("veracode.api.get_app_id", return_value="1337"):
+                sandbox_api = SandboxAPI(
+                    app_name="TestApp", sandbox_name="Project Security"
+                )
             with patch(
                 "veracode.submit_artifacts.element_contains_error", return_value=False
             ):
@@ -357,14 +429,16 @@ class TestSubmitArtifacts(TestCase):
             ],
         ):
             # Policy scan
-            upload_api = UploadAPI(app_id="31337")
+            with patch("veracode.api.get_app_id", return_value="1337"):
+                upload_api = UploadAPI(app_name="31337")
             with patch(
                 "veracode.submit_artifacts.element_contains_error", return_value=False
             ):
                 self.assertTrue(submit_artifacts.cancel_build(upload_api=upload_api))
 
             # Sandbox scan
-            upload_api.sandbox_id = "12345"
+            with patch("veracode.api.get_app_id", return_value="1337"):
+                upload_api.sandbox_id = "12345"
             with patch(
                 "veracode.submit_artifacts.element_contains_error", return_value=False
             ):
@@ -386,7 +460,8 @@ class TestSubmitArtifacts(TestCase):
             ],
             side_effect=ConnectionError,
         ):
-            upload_api = UploadAPI(app_id="31337")
+            with patch("veracode.api.get_app_id", return_value="1337"):
+                upload_api = UploadAPI(app_name="31337")
             with patch(
                 "veracode.submit_artifacts.element_contains_error", return_value=False
             ):
@@ -396,7 +471,9 @@ class TestSubmitArtifacts(TestCase):
         """
         Test the setup_scan_prereqs function
         """
-        upload_api = UploadAPI(app_id=test_constants.VALID_UPLOAD_API["app_id"])
+        with patch("veracode.api.get_app_id", return_value="1337"):
+            upload_api = UploadAPI(app_name=test_constants.VALID_UPLOAD_API["app_id"])
+
         ## Policy Scan
         # Successful when build exists and new build creation succeeds
         with patch("veracode.submit_artifacts.create_build", return_value=True):
@@ -458,7 +535,8 @@ class TestSubmitArtifacts(TestCase):
         """
         Test the build_exists function
         """
-        upload_api = UploadAPI(app_id=test_constants.VALID_UPLOAD_API["app_id"])
+        with patch("veracode.api.get_app_id", return_value="1337"):
+            upload_api = UploadAPI(app_name=test_constants.VALID_UPLOAD_API["app_name"])
 
         with patch.object(
             UploadAPI,
@@ -542,11 +620,12 @@ class TestSubmitArtifacts(TestCase):
         """
         Test the submit_artifacts function
         """
-        upload_api = UploadAPI(app_id=test_constants.VALID_UPLOAD_API["app_id"])
-        sandbox_api = SandboxAPI(
-            app_id=test_constants.VALID_SANDBOX_API["app_id"],
-            sandbox_name=test_constants.VALID_SANDBOX_API["sandbox_name"],
-        )
+        with patch("veracode.api.get_app_id", return_value="1337"):
+            upload_api = UploadAPI(app_name=test_constants.VALID_UPLOAD_API["app_name"])
+            sandbox_api = SandboxAPI(
+                app_name=test_constants.VALID_SANDBOX_API["app_name"],
+                sandbox_name=test_constants.VALID_SANDBOX_API["sandbox_name"],
+            )
 
         def iterdir_generator_valid():
             f = test_constants.VALID_FILE["Path"]

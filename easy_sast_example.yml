@@ -12,7 +12,7 @@ apis:
               "summaryreportpdf.do": "4.0",
               "thirdpartyreportpdf.do": "4.0",
              }
-    app_id: "31337"
+    app_name: "TestApp"
     ignore_compliance_status: False
   upload:
     base_url: "https://analysiscenter.veracode.com/api/"
@@ -37,7 +37,7 @@ apis:
               "uploadfile.do": "5.0",
               "uploadlargefile.do": "5.0"
              }
-    app_id: "31337"
+    app_name: "TestApp"
     build_dir: "/build/"
     build_id: "2037-03-13_03-14-15"
     scan_all_nonfatal_top_level_modules: True
@@ -51,7 +51,7 @@ apis:
               "updatesandbox.do": "5.0",
               "deletesandbox.do": "5.0"
              }
-    app_id: "31337"
+    app_name: "TestApp"
     sandbox_name: "fb/jonzeolla/name-of-branch"
 loglevel: "warning"
 workflow:

@@ -347,7 +347,7 @@ class TestVeracodeConfig(CLITestCase):
         # sandbox_name, and return that dict properly normalized
         before = {
             "base_url": "https://analysiscenter.veracode.com/api/",
-            "app_id": "31337",
+            "app_name": "TestApp",
             "loglevel": "WARNING",
             "workflow": ["submit_artifacts", "check_compliance"],
             "apis": {
@@ -360,16 +360,16 @@ class TestVeracodeConfig(CLITestCase):
             "workflow": ["submit_artifacts", "check_compliance"],
             "apis": {
                 "sandbox": {
-                    "app_id": "31337",
+                    "app_name": "TestApp",
                     "base_url": "https://analysiscenter.veracode.com/api/",
                     "sandbox_name": "easy_sast/fb/jonzeolla/testing",
                 },
                 "results": {
-                    "app_id": "31337",
+                    "app_name": "TestApp",
                     "base_url": "https://analysiscenter.veracode.com/api/",
                 },
                 "upload": {
-                    "app_id": "31337",
+                    "app_name": "TestApp",
                     "base_url": "https://analysiscenter.veracode.com/api/",
                     "build_dir": Path("/build/"),
                 },
@@ -384,7 +384,7 @@ class TestVeracodeConfig(CLITestCase):
         # build_dir, and return that dict properly normalized
         before = {
             "base_url": "https://analysiscenter.veracode.com/api/",
-            "app_id": "31337",
+            "app_name": "TestApp",
             "loglevel": "info",
             "workflow": ["submit_artifacts", "check_compliance"],
             "apis": {
@@ -397,16 +397,16 @@ class TestVeracodeConfig(CLITestCase):
             "workflow": ["submit_artifacts", "check_compliance"],
             "apis": {
                 "sandbox": {
-                    "app_id": "31337",
+                    "app_name": "TestApp",
                     "base_url": "https://analysiscenter.veracode.com/api/",
                 },
                 "results": {
-                    "app_id": "31337",
+                    "app_name": "TestApp",
                     "base_url": "https://analysiscenter.veracode.com/api/",
                     "ignore_compliance_status": False,
                 },
                 "upload": {
-                    "app_id": "31337",
+                    "app_name": "TestApp",
                     "base_url": "https://analysiscenter.veracode.com/api/",
                     "build_dir": Path("/build/"),
                 },
@@ -421,7 +421,7 @@ class TestVeracodeConfig(CLITestCase):
         # and return that dict properly normalized
         before = {
             "base_url": "https://analysiscenter.veracode.com/api/",
-            "app_id": "31337",
+            "app_name": "TestApp",
             "workflow": ["submit_artifacts", "check_compliance"],
             "apis": {
                 "upload": {"build_dir": Path("/build/")},
@@ -432,16 +432,16 @@ class TestVeracodeConfig(CLITestCase):
             "workflow": ["submit_artifacts", "check_compliance"],
             "apis": {
                 "sandbox": {
-                    "app_id": "31337",
+                    "app_name": "TestApp",
                     "base_url": "https://analysiscenter.veracode.com/api/",
                 },
                 "results": {
-                    "app_id": "31337",
+                    "app_name": "TestApp",
                     "base_url": "https://analysiscenter.veracode.com/api/",
                     "ignore_compliance_status": False,
                 },
                 "upload": {
-                    "app_id": "31337",
+                    "app_name": "TestApp",
                     "base_url": "https://analysiscenter.veracode.com/api/",
                     "build_dir": Path("/build/"),
                 },
@@ -625,7 +625,7 @@ class TestVeracodeConfig(CLITestCase):
         # config that doesn't contain a required config attribute
         mock_is_valid_attribute.return_value = True
         configuration = copy.deepcopy(test_constants.VALID_CLEAN_FILE_CONFIG["dict"])
-        del configuration["apis"]["upload"]["app_id"]
+        del configuration["apis"]["upload"]["app_name"]
         self.assertFalse(config.is_valid_api_config(config=configuration))
 
         # Return False after calling the is_valid_api_config function with a
@@ -732,33 +732,48 @@ class TestVeracodeConfig(CLITestCase):
 
         # Succeed when calling the apply_config function with a valid
         # Upload API object and config
-        upload_api = UploadAPI(app_id="31337")
+        with patch("veracode.api.get_app_id", return_value="1337"):
+            upload_api = UploadAPI(app_name="TestApp")
+
         applied_upload_api = config.apply_config(api=upload_api, config=configuration)
         self.assertEqual(applied_upload_api, upload_api)
 
         # Succeed when calling the apply_config function with a valid
         # Results API object and config
-        results_api = ResultsAPI(app_id="31337")
+        with patch("veracode.api.get_app_id", return_value="1337"):
+            results_api = ResultsAPI(app_name="TestApp")
+
         applied_results_api = config.apply_config(api=results_api, config=configuration)
         self.assertEqual(applied_results_api, results_api)
 
         # Succeed when calling the apply_config function with a valid
         # Sandbox API object and config
-        sandbox_api = SandboxAPI(
-            app_id="31337", sandbox_name="easy_sast/fb/jonzeolla/testing"
-        )
-        applied_sandbox_api = config.apply_config(api=sandbox_api, config=configuration)
-        self.assertEqual(applied_sandbox_api, sandbox_api)
+        with patch("veracode.api.get_app_id", return_value="1337"):
+            sandbox_api = SandboxAPI(
+                app_name="TestApp", sandbox_name="easy_sast/fb/jonzeolla/testing"
+            )
+            applied_sandbox_api = config.apply_config(
+                api=sandbox_api, config=configuration
+            )
+            self.assertEqual(applied_sandbox_api, sandbox_api)
 
         # Ensure calling the apply_config function with different `app_id`s
         # does not result in an object with the same version string (which is
         # unique per-API)
-        upload_api = UploadAPI(app_id="31337")
-        applied_upload_api = config.apply_config(api=upload_api, config=configuration)
-        # Note: This must be different than the above app_id
-        results_api = ResultsAPI(app_id="1337")
-        applied_results_api = config.apply_config(api=results_api, config=configuration)
-        self.assertNotEqual(applied_results_api.version, applied_upload_api.version)
+        with patch("veracode.api.get_app_id", return_value="31337"):
+            upload_api = UploadAPI(app_name="TestApp")
+            applied_upload_api = config.apply_config(
+                api=upload_api, config=configuration
+            )
+            # Note: This must be different than the above app_id
+            with patch("veracode.api.get_app_id", return_value="1337"):
+                results_api = ResultsAPI(app_name="TestApp")
+                applied_results_api = config.apply_config(
+                    api=results_api, config=configuration
+                )
+                self.assertNotEqual(
+                    applied_results_api.version, applied_upload_api.version
+                )
 
         # Fail when calling the apply_config function with a string instead of
         # an API object
@@ -770,10 +785,11 @@ class TestVeracodeConfig(CLITestCase):
         # Succeed when calling the apply_config function with a valid
         # Results API object and config
         configuration["apis"]["unknown"] = {"a": "b"}
-        results_api = ResultsAPI(app_id="31337")
-        self.assertEqual(
-            config.apply_config(api=results_api, config=configuration), results_api
-        )
+        with patch("veracode.api.get_app_id", return_value="1337"):
+            results_api = ResultsAPI(app_name="TestApp")
+            self.assertEqual(
+                config.apply_config(api=results_api, config=configuration), results_api
+            )
 
 
 class TestEasySASTConfig(CLITestCase):

@@ -49,15 +49,16 @@ def main() -> None:
     # Create the API objects and apply the config
     try:
         results_api = apply_config(
-            api=ResultsAPI(app_id=config["apis"]["results"]["app_id"]), config=config
+            api=ResultsAPI(app_name=config["apis"]["results"]["app_name"]),
+            config=config,
         )
         upload_api = apply_config(
-            api=UploadAPI(app_id=config["apis"]["upload"]["app_id"]), config=config
+            api=UploadAPI(app_name=config["apis"]["upload"]["app_name"]), config=config
         )
         if "sandbox_name" in config["apis"]["sandbox"]:
             sandbox_api = apply_config(
                 api=SandboxAPI(
-                    app_id=config["apis"]["sandbox"]["app_id"],
+                    app_name=config["apis"]["sandbox"]["app_name"],
                     sandbox_name=config["apis"]["sandbox"]["sandbox_name"],
                 ),
                 config=config,

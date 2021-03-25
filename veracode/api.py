@@ -10,8 +10,12 @@ from typing import Optional, Dict, Any
 from datetime import datetime
 
 # custom
-from veracode import __project_name__
-from veracode.utils import is_valid_attribute, http_request
+from veracode import constants, __project_name__
+from veracode.utils import (
+    is_valid_attribute,
+    http_request,
+    get_app_id,
+)
 
 LOG = logging.getLogger(__project_name__ + "." + __name__)
 
@@ -24,13 +28,16 @@ class VeracodeXMLAPI:
     https://help.veracode.com/reader/LMv_dtSHyb7iIxAQznC~9w/pd_p6JjB9PcDNH3GzWF5Ag
     """
 
-    def __init__(self):
-        # Hard code these to None as they should be specified in the derived classes
-        self._app_id = None
+    def __init__(self, *, app_name: str):
+        # Hard code to None as it should be specified in the derived classes
         self._version = None
 
         ## Use the setter to apply a default to ensure it is valid
-        self.base_url = "https://analysiscenter.veracode.com/api/"
+        self.base_url = constants.API_BASE_URL
+
+        # Set app name and look up ID
+        self.app_name = app_name
+        self.app_id = get_app_id(app_name=app_name)
 
     def http_get(
         self,
@@ -145,6 +152,31 @@ class VeracodeXMLAPI:
         self._validate(key="app_id", value=app_id)
         self._app_id = app_id
 
+    @property
+    def app_name(self):
+        """
+        Create the app_name property
+        """
+        return self._app_name  # pragma: no cover
+
+    @app_name.getter
+    def app_name(self):
+        """
+        Create an app_name getter that validates before returning
+        """
+        # Validate what was already stored
+        self._validate(key="app_name", value=self._app_name)
+        return self._app_name
+
+    @app_name.setter
+    def app_name(self, app_name):
+        """
+        Create an app_name setter that validates before setting
+        """
+        # Validate what was provided
+        self._validate(key="app_name", value=app_name)
+        self._app_name = app_name
+
     @staticmethod
     def _validate(*, key: str, value: Any):
         if is_valid_attribute(key=key, value=value):
@@ -157,35 +189,14 @@ class UploadAPI(VeracodeXMLAPI):  # pylint: disable=too-many-instance-attributes
     A class to interact with the Upload API
     """
 
-    def __init__(self, *, app_id: str):
+    def __init__(self, *, app_name: str):
         # Don't forget to call the init of the parent
-        super().__init__()
+        super().__init__(app_name=app_name)
 
         ## Use the setter to apply a default to ensure it is valid
-        self.app_id = app_id
         # version information was pulled from
         # https://help.veracode.com/reader/LMv_dtSHyb7iIxAQznC~9w/G1Nd5yH0QSlT~vPccPhtRQ
-        self.version = {
-            "beginprescan.do": "5.0",
-            "beginscan.do": "5.0",
-            "createapp.do": "5.0",
-            "createbuild.do": "5.0",
-            "deleteapp.do": "5.0",
-            "deletebuild.do": "5.0",
-            "getappinfo.do": "5.0",
-            "getapplist.do": "5.0",
-            "getbuildinfo.do": "5.0",
-            "getbuildlist.do": "5.0",
-            "getfilelist.do": "5.0",
-            "getpolicylist.do": "5.0",
-            "getprescanresults.do": "5.0",
-            "getvendorlist.do": "5.0",
-            "removefile.do": "5.0",
-            "updateapp.do": "5.0",
-            "updatebuild.do": "5.0",
-            "uploadfile.do": "5.0",
-            "uploadlargefile.do": "5.0",
-        }
+        self.version = constants.UPLOAD_API_VERSIONS
         self.build_dir = Path("/build").absolute()
         self.build_id = datetime.utcnow().strftime("%F_%H-%M-%S")
         self.scan_all_nonfatal_top_level_modules = True
@@ -336,25 +347,15 @@ class ResultsAPI(VeracodeXMLAPI):
     A class to interact with the Results API
     """
 
-    def __init__(self, *, app_id: str):
+    def __init__(self, *, app_name: str):
         # Don't forget to call the init of the parent
-        super().__init__()
+        super().__init__(app_name=app_name)
 
         ## Use the setter to apply a default to ensure it is valid
-        self.app_id = app_id
         self.ignore_compliance_status = False
         # version information was pulled from
         # https://help.veracode.com/reader/LMv_dtSHyb7iIxAQznC~9w/Mp2BEkLx6rD87k465BWqQg
-        self.version = {
-            "detailedreport.do": "5.0",
-            "detailedreportpdf.do": "4.0",
-            "getaccountcustomfieldlist.do": "5.0",
-            "getappbuilds.do": "4.0",
-            "getcallstacks.do": "5.0",
-            "summaryreport.do": "4.0",
-            "summaryreportpdf.do": "4.0",
-            "thirdpartyreportpdf.do": "4.0",
-        }
+        self.version = constants.RESULTS_API_VERSIONS
 
     @property
     def ignore_compliance_status(self):
@@ -389,21 +390,13 @@ class SandboxAPI(VeracodeXMLAPI):
     A class to interact with the Sandbox API
     """
 
-    def __init__(self, *, app_id: str, sandbox_name: str):
+    def __init__(self, *, app_name: str, sandbox_name: str):
         # Don't forget to call the init of the parent
-        super().__init__()
+        super().__init__(app_name=app_name)
 
-        ## Use the setter to apply a default to ensure it is valid
-        self.app_id = app_id
         # version information was pulled from
         # https://help.veracode.com/reader/LMv_dtSHyb7iIxAQznC~9w/KusbW5J7EG8jEr64JEiBzw
-        self.version = {
-            "createsandbox.do": "5.0",
-            "getsandboxlist.do": "5.0",
-            "promotesandbox.do": "5.0",
-            "updatesandbox.do": "5.0",
-            "deletesandbox.do": "5.0",
-        }
+        self.version = constants.SANDBOX_API_VERSIONS
         self.build_id = datetime.utcnow().strftime("%F_%H-%M-%S")
         self.sandbox_name = sandbox_name
         # sandbox_id is not meant to be set manually. Instead, configure using
