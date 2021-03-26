@@ -2,4 +2,4 @@
 Contact: mailto:security@SeisoLLC.com
  
 # Our security policy
-Policy: https://github.com/SeisoLLC/easy_sast/blob/master/SECURITY.md
+Policy: https://github.com/SeisoLLC/easy_sast/blob/main/SECURITY.md

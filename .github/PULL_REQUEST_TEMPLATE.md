@@ -1,11 +1,18 @@
 # Contributor Comments
+
 [Please insert a description of the change here]
 
 ## Pull Request Checklist
+
 Thank you for submitting a contribution to `easy_sast`!
 
-In order to streamline the review of your contribution we ask that you review and comply with the below requirements:
+In order to streamline the review of your contribution we ask that you review
+and comply with the below requirements:
+
  - [ ] Ensure that `make build` completes successfully
  - [ ] Keep our reports up-to-date by committing the output of `make report`
- - [ ] Rebase your branch against the latest commit of the target branch, which likely should be `master`
- - [ ] If there is an issue associated with your Pull Request, align your PR title with [this documentation](https://help.github.com/en/articles/closing-issues-using-keywords)
+ - [ ] Rebase your branch against the latest commit of the target branch, which
+   likely should be `main`
+ - [ ] If there is an issue associated with your Pull Request, align your PR
+   title with [this
+   documentation](https://help.github.com/en/articles/closing-issues-using-keywords)
