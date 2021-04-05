@@ -1,6 +1,6 @@
 <h1 align="center">Easy SAST</h1>
 <p align="center">
-<a href="https://github.com/SeisoLLC/easy_sast/actions"><img alt="CI: GitHub Actions" src="https://github.com/seisollc/easy_sast/workflows/Docker%20Image%20CI/badge.svg"></a>
+<a href="https://github.com/SeisoLLC/easy_sast/actions"><img alt="CI: GitHub Actions" src="https://github.com/seisollc/easy_sast/workflows/Commit/badge.svg"></a>
 <a href="https://codecov.io/gh/seisollc/easy_sast"><img alt="CI: Code Coverage" src="https://codecov.io/gh/seisollc/easy_sast/branch/main/graph/badge.svg"></a>
 <a href="https://snyk.io/test/github/seisollc/easy_sast"><img alt="Security: Snyk Vulnerabilities" src="https://snyk.io/test/github/seisollc/easy_sast/badge.svg"></a>
 <a href="https://github.com/PyCQA/bandit"><img alt="Security: Bandit" src="https://img.shields.io/badge/security-bandit-yellow.svg"></a>
