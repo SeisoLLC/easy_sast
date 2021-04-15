@@ -2,114 +2,92 @@ Dockerfile
 severity:error rule:generic.dockerfile.correctness.multiple-cmd-instructions.multiple-cmd-instructions: Multiple CMD instructions were found. Only the last one will take effect.
 
 27:CMD ["Dockerfile"]
-28:## Lint git
-29:FROM ci AS lint_git
-30:ENTRYPOINT ["gitlint"]
-31:CMD ["--commits", "HEAD"]
-32:## Lint Makefile
-33:# https://hub.docker.com/r/cytopia/checkmake/tags
-34:FROM cytopia/checkmake:0.1.0 AS lint_make
-35:WORKDIR /usr/src/app/
-36:ENTRYPOINT ["checkmake"]
--------- [hid 3 additional lines, adjust with --max-lines-per-finding] ---------
-32:CMD ["--commits", "HEAD"]
-33:## Lint Makefile
-34:# https://hub.docker.com/r/cytopia/checkmake/tags
-35:FROM cytopia/checkmake:0.1.0 AS lint_make
-36:WORKDIR /usr/src/app/
-37:ENTRYPOINT ["checkmake"]
-38:CMD ["Makefile"]
-39:## Lint Python
-40:FROM ci AS lint_python
-41:ENTRYPOINT find . -type f -name '*.py' -exec pylint -j 0 {} +
+28:## Lint Makefile
+29:# https://hub.docker.com/r/cytopia/checkmake/tags
+30:FROM cytopia/checkmake:0.1.0 AS lint_make
+31:WORKDIR /usr/src/app/
+32:ENTRYPOINT ["checkmake"]
+33:CMD ["Makefile"]
+34:## Lint Python
+35:FROM ci AS lint_python
+36:ENTRYPOINT find . -type f -name '*.py' -exec pylint -j 0 {} +
 -------- [hid 4 additional lines, adjust with --max-lines-per-finding] ---------
-60:CMD ["run", "-m", "unittest", "discover", "-s", "tests", "-p", "test_*.py"]
-61:## Security Tests
-62:FROM ci AS test_security
-63:CMD find . -type f -name '*.py' -exec bandit {} + \
-64:  ; trufflehog --regex --entropy=False file:///usr/src/app/ --exclude_paths .truffleHog-exclude.txt \
-65:  ; semgrep --config=p/r2c-ci --exclude='tests' --exclude='reports' --strict --verbose /usr/src/app
-66:## easy_sast
-67:FROM "${ARG_FROM_IMAGE}":"${ARG_FROM_IMAGE_TAG}" AS Final
-68:ARG ARG_VERSION
-69:ARG ARG_VENDOR
+55:CMD ["run", "-m", "unittest", "discover", "-s", "tests", "-p", "test_*.py"]
+56:## Security Tests
+57:FROM ci AS test_security
+58:CMD find . -type f -name '*.py' -exec bandit {} + \
+59:  ; trufflehog --regex --entropy=False file:///usr/src/app/ --exclude_paths .truffleHog-exclude.txt \
+60:  ; semgrep --config=p/r2c-ci --exclude='tests' --exclude='reports' --strict --verbose /usr/src/app
+61:## easy_sast
+62:FROM "${ARG_FROM_IMAGE}":"${ARG_FROM_IMAGE_TAG}" AS Final
+63:ARG ARG_VERSION
+64:ARG ARG_VENDOR
 -------- [hid 1 additional lines, adjust with --max-lines-per-finding] ---------
 severity:error rule:generic.dockerfile.correctness.multiple-entrypoint-instructions.multiple-entrypoint-instructions: Multiple ENTRYPOINT instructions were found. Only the last one will take effect.
 
 26:ENTRYPOINT ["hadolint"]
 27:CMD ["Dockerfile"]
-28:## Lint git
-29:FROM ci AS lint_git
-30:ENTRYPOINT ["gitlint"]
-31:CMD ["--commits", "HEAD"]
-32:## Lint Makefile
-33:# https://hub.docker.com/r/cytopia/checkmake/tags
-34:FROM cytopia/checkmake:0.1.0 AS lint_make
-35:WORKDIR /usr/src/app/
--------- [hid 3 additional lines, adjust with --max-lines-per-finding] ---------
-31:ENTRYPOINT ["gitlint"]
-32:CMD ["--commits", "HEAD"]
-33:## Lint Makefile
-34:# https://hub.docker.com/r/cytopia/checkmake/tags
-35:FROM cytopia/checkmake:0.1.0 AS lint_make
-36:WORKDIR /usr/src/app/
-37:ENTRYPOINT ["checkmake"]
-38:CMD ["Makefile"]
-39:## Lint Python
-40:FROM ci AS lint_python
+28:## Lint Makefile
+29:# https://hub.docker.com/r/cytopia/checkmake/tags
+30:FROM cytopia/checkmake:0.1.0 AS lint_make
+31:WORKDIR /usr/src/app/
+32:ENTRYPOINT ["checkmake"]
+33:CMD ["Makefile"]
+34:## Lint Python
+35:FROM ci AS lint_python
 -------- [hid 4 additional lines, adjust with --max-lines-per-finding] ---------
-38:ENTRYPOINT ["checkmake"]
-39:CMD ["Makefile"]
-40:## Lint Python
-41:FROM ci AS lint_python
-42:ENTRYPOINT find . -type f -name '*.py' -exec pylint -j 0 {} +
-43:## Lint yaml
-44:FROM ci AS lint_yaml
-45:ENTRYPOINT find . -type f \( -name '*.yml' -o -name '*.yaml' \) -exec yamllint {} +
-46:## Type Annotations Linter
-47:#FROM ci AS lint_types
+33:ENTRYPOINT ["checkmake"]
+34:CMD ["Makefile"]
+35:## Lint Python
+36:FROM ci AS lint_python
+37:ENTRYPOINT find . -type f -name '*.py' -exec pylint -j 0 {} +
+38:## Lint yaml
+39:FROM ci AS lint_yaml
+40:ENTRYPOINT find . -type f \( -name '*.yml' -o -name '*.yaml' \) -exec yamllint {} +
+41:## Type Annotations Linter
+42:#FROM ci AS lint_types
 -------- [hid 2 additional lines, adjust with --max-lines-per-finding] ---------
-43:ENTRYPOINT find . -type f -name '*.py' -exec pylint -j 0 {} +
-44:## Lint yaml
-45:FROM ci AS lint_yaml
-46:ENTRYPOINT find . -type f \( -name '*.yml' -o -name '*.yaml' \) -exec yamllint {} +
-47:## Type Annotations Linter
-48:#FROM ci AS lint_types
-49:#ENTRYPOINT find "${ENV_VENDOR}" -type f -name '*.py' -exec mypy {} +
-50:## Complexity Linter
-51:#FROM ci AS lint_complexity
-52:#ENTRYPOINT find "${ENV_VENDOR}" -type f -name '*.py' -exec xenon --max-absolute B {} +
+38:ENTRYPOINT find . -type f -name '*.py' -exec pylint -j 0 {} +
+39:## Lint yaml
+40:FROM ci AS lint_yaml
+41:ENTRYPOINT find . -type f \( -name '*.yml' -o -name '*.yaml' \) -exec yamllint {} +
+42:## Type Annotations Linter
+43:#FROM ci AS lint_types
+44:#ENTRYPOINT find "${ENV_VENDOR}" -type f -name '*.py' -exec mypy {} +
+45:## Complexity Linter
+46:#FROM ci AS lint_complexity
+47:#ENTRYPOINT find "${ENV_VENDOR}" -type f -name '*.py' -exec xenon --max-absolute B {} +
 -------- [hid 1 additional lines, adjust with --max-lines-per-finding] ---------
-47:ENTRYPOINT find . -type f \( -name '*.yml' -o -name '*.yaml' \) -exec yamllint {} +
-48:## Type Annotations Linter
-49:#FROM ci AS lint_types
-50:#ENTRYPOINT find "${ENV_VENDOR}" -type f -name '*.py' -exec mypy {} +
-51:## Complexity Linter
-52:#FROM ci AS lint_complexity
-53:#ENTRYPOINT find "${ENV_VENDOR}" -type f -name '*.py' -exec xenon --max-absolute B {} +
-54:## Unit Tests
-55:FROM ci AS test_unit
-56:ENTRYPOINT ["coverage"]
+42:ENTRYPOINT find . -type f \( -name '*.yml' -o -name '*.yaml' \) -exec yamllint {} +
+43:## Type Annotations Linter
+44:#FROM ci AS lint_types
+45:#ENTRYPOINT find "${ENV_VENDOR}" -type f -name '*.py' -exec mypy {} +
+46:## Complexity Linter
+47:#FROM ci AS lint_complexity
+48:#ENTRYPOINT find "${ENV_VENDOR}" -type f -name '*.py' -exec xenon --max-absolute B {} +
+49:## Unit Tests
+50:FROM ci AS test_unit
+51:ENTRYPOINT ["coverage"]
 -------- [hid 1 additional lines, adjust with --max-lines-per-finding] ---------
-51:#ENTRYPOINT find "${ENV_VENDOR}" -type f -name '*.py' -exec mypy {} +
-52:## Complexity Linter
-53:#FROM ci AS lint_complexity
-54:#ENTRYPOINT find "${ENV_VENDOR}" -type f -name '*.py' -exec xenon --max-absolute B {} +
-55:## Unit Tests
-56:FROM ci AS test_unit
-57:ENTRYPOINT ["coverage"]
-58:CMD ["run", "-m", "unittest", "discover", "-s", "tests", "-p", "test_*.py"]
-59:## Security Tests
-60:FROM ci AS test_security
+46:#ENTRYPOINT find "${ENV_VENDOR}" -type f -name '*.py' -exec mypy {} +
+47:## Complexity Linter
+48:#FROM ci AS lint_complexity
+49:#ENTRYPOINT find "${ENV_VENDOR}" -type f -name '*.py' -exec xenon --max-absolute B {} +
+50:## Unit Tests
+51:FROM ci AS test_unit
+52:ENTRYPOINT ["coverage"]
+53:CMD ["run", "-m", "unittest", "discover", "-s", "tests", "-p", "test_*.py"]
+54:## Security Tests
+55:FROM ci AS test_security
 -------- [hid 2 additional lines, adjust with --max-lines-per-finding] ---------
-55:#ENTRYPOINT find "${ENV_VENDOR}" -type f -name '*.py' -exec xenon --max-absolute B {} +
-56:## Unit Tests
-57:FROM ci AS test_unit
-58:ENTRYPOINT ["coverage"]
-59:CMD ["run", "-m", "unittest", "discover", "-s", "tests", "-p", "test_*.py"]
-60:## Security Tests
-61:FROM ci AS test_security
-62:CMD find . -type f -name '*.py' -exec bandit {} + \
-63:  ; trufflehog --regex --entropy=False file:///usr/src/app/ --exclude_paths .truffleHog-exclude.txt \
-64:  ; semgrep --config=p/r2c-ci --exclude='tests' --exclude='reports' --strict --verbose /usr/src/app
+50:#ENTRYPOINT find "${ENV_VENDOR}" -type f -name '*.py' -exec xenon --max-absolute B {} +
+51:## Unit Tests
+52:FROM ci AS test_unit
+53:ENTRYPOINT ["coverage"]
+54:CMD ["run", "-m", "unittest", "discover", "-s", "tests", "-p", "test_*.py"]
+55:## Security Tests
+56:FROM ci AS test_security
+57:CMD find . -type f -name '*.py' -exec bandit {} + \
+58:  ; trufflehog --regex --entropy=False file:///usr/src/app/ --exclude_paths .truffleHog-exclude.txt \
+59:  ; semgrep --config=p/r2c-ci --exclude='tests' --exclude='reports' --strict --verbose /usr/src/app
 -------- [hid 2 additional lines, adjust with --max-lines-per-finding] ---------

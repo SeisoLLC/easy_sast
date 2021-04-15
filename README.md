@@ -26,7 +26,7 @@ This code base was developed in line with the <b>[Rugged Manifesto](https://rugg
  - <b>Clear and understandable code</b>: Regular use of type hints, keyword arguments, and a normalized code style make understanding the code intent easy.
  - <b>Engineered to be robust</b>: Error handling, automated security validation, and pervasive validation.
  - <b>100% tested</b>: 100% code coverage for unit tests on all commits.
- - <b>100% consistently formatted</b>: Linting of Docker, make, YAML, git commits, and Python on all commits.
+ - <b>100% consistently formatted</b>: Linting of Docker, make, YAML, and Python on all commits.
 
 ## Quickstart
 ### Prerequisites

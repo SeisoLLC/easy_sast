@@ -36,7 +36,7 @@ init: init_git
 # lint_python may cause issues until https://github.com/psf/black/issues/1194
 # is resolved
 .PHONY: lint
-lint: clean lint_docker lint_git lint_make lint_python lint_yaml
+lint: clean lint_docker lint_make lint_python lint_yaml
 
 .PHONY: test
 test: test_unit test_security
@@ -74,7 +74,6 @@ init_git:
 	@if ! grep -q "make lint || exit 1" .git/hooks/pre-commit 2>/dev/null ; then echo '# $@ \nmake lint || exit 1' >> .git/hooks/pre-commit && chmod a+x .git/hooks/pre-commit && echo 'Successfully installed `make lint || exit 1` in a pre-commit hook'; fi
 	@if ! grep -q "make test || exit 1" .git/hooks/pre-commit 2>/dev/null ; then echo '# $@ \nmake test || exit 1' >> .git/hooks/pre-commit && chmod a+x .git/hooks/pre-commit && echo 'Successfully installed `make test || exit 1` in a pre-commit hook'; fi
 	@if ! grep -q "make hook_commit-msg || exit 1" .git/hooks/commit-msg 2>/dev/null ; then echo '# $@ \nmake hook_commit-msg || exit 1' >> .git/hooks/commit-msg && chmod a+x .git/hooks/commit-msg && echo 'Successfully installed `make hook_commit-msg || exit 1` in a commit-msg hook'; fi
-	@if ! grep -q "make lint_git || exit 1" .git/hooks/post-rewrite 2>/dev/null ; then echo '# $@ \nmake lint_git || exit 1' >> .git/hooks/post-rewrite && chmod a+x .git/hooks/post-rewrite && echo 'Successfully installed `make lint_git || exit 1` in a post-rewrite hook'; fi
 
 # Helper Rules
 .PHONY: requirements
@@ -82,11 +81,6 @@ requirements: requirements-to-freeze.txt $(VENDOR)/requirements-to-freeze.txt
 	@python3 -c 'print("Updating the requirements.txt files...")'
 	@docker run --rm -v $$(pwd):/usr/src/app/ python:3.9 /bin/bash -c "pip3 install -r /usr/src/app/requirements-to-freeze.txt && pip3 freeze > /usr/src/app/requirements.txt"
 	@docker run --rm -v $$(pwd):/usr/src/app/ python:3.9 /bin/bash -c "pip3 install -r /usr/src/app/$(VENDOR)/requirements-to-freeze.txt && pip3 freeze > /usr/src/app/$(VENDOR)/requirements.txt"
-
-.PHONY: hook_commit-msg
-hook_commit-msg:
-	@python3 -c 'print("Linting the latest git commit message...")'
-	@docker run --rm -v $$(pwd)/:/usr/src/app/ --entrypoint python $(IMAGE_NAME):latest-test_unit -m gitlint.cli -c title-max-length.line-length=64 --msg-filename ".git/COMMIT_EDITMSG"
 
 .PHONY: push_tag
 push_tag:
@@ -97,12 +91,6 @@ push_tag:
 .PHONY: lint_docker
 lint_docker:
 	@python3 -c 'print("Linting the Dockerfile...")'
-	@DOCKER_BUILDKIT=1 docker build --rm --target $@ -t $(IMAGE_NAME):latest-$@ .
-	@docker run --rm -v $$(pwd):/usr/src/app/ $(IMAGE_NAME):latest-$@
-
-.PHONY: lint_git
-lint_git:
-	@python3 -c 'print("Linting all git commit messages...")'
 	@DOCKER_BUILDKIT=1 docker build --rm --target $@ -t $(IMAGE_NAME):latest-$@ .
 	@docker run --rm -v $$(pwd):/usr/src/app/ $(IMAGE_NAME):latest-$@
 
