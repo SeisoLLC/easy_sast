@@ -73,7 +73,6 @@ clean_python:
 init_git:
 	@if ! grep -q "make lint || exit 1" .git/hooks/pre-commit 2>/dev/null ; then echo '# $@ \nmake lint || exit 1' >> .git/hooks/pre-commit && chmod a+x .git/hooks/pre-commit && echo 'Successfully installed `make lint || exit 1` in a pre-commit hook'; fi
 	@if ! grep -q "make test || exit 1" .git/hooks/pre-commit 2>/dev/null ; then echo '# $@ \nmake test || exit 1' >> .git/hooks/pre-commit && chmod a+x .git/hooks/pre-commit && echo 'Successfully installed `make test || exit 1` in a pre-commit hook'; fi
-	@if ! grep -q "make hook_commit-msg || exit 1" .git/hooks/commit-msg 2>/dev/null ; then echo '# $@ \nmake hook_commit-msg || exit 1' >> .git/hooks/commit-msg && chmod a+x .git/hooks/commit-msg && echo 'Successfully installed `make hook_commit-msg || exit 1` in a commit-msg hook'; fi
 
 # Helper Rules
 .PHONY: requirements
