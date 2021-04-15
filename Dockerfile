@@ -26,11 +26,6 @@ WORKDIR /usr/src/app/
 ENTRYPOINT ["hadolint"]
 CMD ["Dockerfile"]
 
-## Lint git
-FROM ci AS lint_git
-ENTRYPOINT ["gitlint"]
-CMD ["--commits", "HEAD"]
-
 ## Lint Makefile
 # https://hub.docker.com/r/cytopia/checkmake/tags
 FROM cytopia/checkmake:0.1.0 AS lint_make
