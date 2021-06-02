@@ -7,5 +7,5 @@ idna==2.10
 Pygments==2.8.1
 PyYAML==5.4.1
 requests==2.25.1
-urllib3==1.26.4
+urllib3==1.26.5
 veracode-api-signing==21.3.0
